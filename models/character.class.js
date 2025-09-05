@@ -40,35 +40,34 @@ class Character extends MovableObject {
         this.world.keyboard.RIGHT &&
         this.x < this.world.level.level_end_x
       ) {
-        this.x += this.speed;
-        this.otherDirection = false;
+        this.moveRight();
+        this.walking_sound.play();
       }
 
       if (this.world.keyboard.LEFT && this.x > 0) {
-        this.x -= this.speed;
-        this.otherDirection = true;
-        this.IMAGES_WALKING_sound.play();
+        this.moveLeft();
+        this.walking_sound.play();
       }
 
-if(this.world.keyboard.UP) {
-  this.speedY = 20;
-}
+      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+        this.jump();
+      }
 
       this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
 
     setInterval(() => {
-
-      if(this.isAboveGround()) {
+      if (this.isAboveGround()) {
         this.playAnimation(this.IMAGES_JUMPING);
       } else {
-
-      if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        this.playAnimation(this.IMAGES_WALKING);
+        if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+          this.playAnimation(this.IMAGES_WALKING);
+        }
       }
-    }
-   }, 50);
+    }, 50);
   }
 
-  jump() {}
+  jump() {
+    this.speedY = 30;
+  }
 }
