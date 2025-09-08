@@ -21,7 +21,7 @@ class Character extends MovableObject {
     'img/2_character_pepe/3_jump/J-37.png',
     'img/2_character_pepe/3_jump/J-38.png',
     'img/2_character_pepe/3_jump/J-39.png',
-    'img/2_character_pepe/3_jump/J-40.png'
+    
   ];
 
   world;
@@ -42,12 +42,10 @@ class Character extends MovableObject {
       ) {
         this.moveRight();
         this.otherDirection = false;
-        this.walking_sound.play();
       }
 
       if (this.world.keyboard.LEFT && this.x > 0) {
         this.moveLeft();
-        this.walking_sound.play();
         this.otherDirection = true;
       }
 
