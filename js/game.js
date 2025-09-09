@@ -9,8 +9,8 @@ function init() {
   console.log('My Character is', world.character);
 }
 
-
-window.addEventListener("keydown", (e) => {
+window.addEventListener('keydown', (e) => {
+  console.log(e.keyCode);
   if (e.keyCode == 39) {
     keyboard.RIGHT = true;
   }
@@ -26,10 +26,13 @@ window.addEventListener("keydown", (e) => {
   if (e.keyCode == 32) {
     keyboard.SPACE = true;
   }
-  console.log(e);
-  });
 
-  window.addEventListener("keyup", (e) => {
+  if (e.keyCode == 68) {
+    keyboard.D = true;
+  }
+});
+
+window.addEventListener('keyup', (e) => {
   if (e.keyCode == 39) {
     keyboard.RIGHT = false;
   }
@@ -45,5 +48,8 @@ window.addEventListener("keydown", (e) => {
   if (e.keyCode == 32) {
     keyboard.SPACE = false;
   }
-  console.log(e);
-  });
+
+  if (e.keyCode == 68) {
+    keyboard.D = false;
+  }
+});
