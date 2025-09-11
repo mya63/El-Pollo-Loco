@@ -24,24 +24,24 @@
     <script src="js/game.js"></script>
   </head>
 
-  <body onload="init()" onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
-    <h1>EL POLLO LOCO</h1>
+<body onload="showStart()" onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
+  <h1>EL POLLO LOCO</h1>
 
-    <div>
-      <img id="startScreen"
-           class="startScreen"
+  <main>
+    <div id="stage">
+      <canvas id="canvas" width="720" height="480"></canvas>
+      <img id="startOverlay"
+           class="overlay"
            src="img/9_intro_outro_screens/start/startscreen_1.png"
            onclick="startGame()"
            alt="Startscreen" />
     </div>
 
-<main>
-      <canvas id="canvas" width="720" height="480"></canvas>
-      <div class="description">
-        <h3>ARROW LEFT/RIGHT = WALK</h3>
-        <h3>D = THROW TABASCO</h3>
-        <h3>SPACE = JUMP</h3>
-      </div>
-    </main>
-  </body>
+    <div class="description">
+      <h3>ARROW LEFT/RIGHT = WALK</h3>
+      <h3>D = THROW TABASCO</h3>
+      <h3>SPACE = JUMP</h3>
+    </div>
+  </main>
+</body>
 </html>

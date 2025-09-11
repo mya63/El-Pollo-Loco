@@ -1,16 +1,23 @@
 let canvas;
 let world;
-let keyboard = new Keyboard();
+let keyboard = new Keyboard(); 
 
-function init() {
+function showStart(){
   canvas = document.getElementById('canvas');
+  const ov = document.getElementById('startOverlay');
+  if(canvas) canvas.style.visibility = 'hidden';
+  if(ov) ov.style.display = 'block';
+}
+
+function init(){
   initLevel();
   world = new World(canvas, keyboard);
 }
 
 function startGame(){
-  const s = document.getElementById('startScreen');
-  if(s) s.style.display = 'none';
+  const ov = document.getElementById('startOverlay');
+  if(ov) ov.style.display = 'none';
+  if(canvas) canvas.style.visibility = 'visible';
   init();
 }
 
