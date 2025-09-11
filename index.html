@@ -2,12 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EL POLLO LOCO</title>
     <link rel="stylesheet" href="style.css" />
-    <title>Document</title>
+    <link rel="icon" type="image/gif" href="img/8_coin/coin_2.png" />
+
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
@@ -20,13 +19,29 @@
     <script src="models/level.class.js"></script>
     <script src="models/throwable-object.class.js"></script>
     <script src="models/endboss.class.js"></script>
+
     <script src="levels/level1.js"></script>
     <script src="js/game.js"></script>
   </head>
 
-  <body onload="init()">
+  <body onload="init()" onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
     <h1>EL POLLO LOCO</h1>
 
-    <canvas id="canvas" width="720" height="480"> </canvas>
+    <div>
+      <img id="startScreen"
+           class="startScreen"
+           src="img/9_intro_outro_screens/start/startscreen_1.png"
+           onclick="startGame()"
+           alt="Startscreen" />
+    </div>
+
+<main>
+      <canvas id="canvas" width="720" height="480"></canvas>
+      <div class="description">
+        <h3>ARROW LEFT/RIGHT = WALK</h3>
+        <h3>D = THROW TABASCO</h3>
+        <h3>SPACE = JUMP</h3>
+      </div>
+    </main>
   </body>
 </html>

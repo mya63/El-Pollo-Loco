@@ -6,16 +6,15 @@
 }
 
 body {
-  font-family: 'zabars', Arial, Arial, Helvetica, sans-serif;
-}
-
-
-body {
+  max-width: 1920px;
+  margin: 0 auto;
+  font-family: 'zabars', Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-image: url('img/5_background/desert-7927409_1920.jpg');
   background-position: center;
+  background-size: cover;
 }
 
 h1 {
@@ -23,22 +22,56 @@ h1 {
   letter-spacing: 3px;
   color: #FFD700;
   text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
-  margin-bottom: 20px;
+  margin: 20px 0;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  gap: 16px;
+  width: 100%;
+  max-width: 1920px;
+  padding: 0 16px;
+  box-sizing: border-box;
 }
 
 canvas {
   background-color: black;
+  width: 100%;
+  height: auto;
   display: block;
 }
 
-@media only screen and (max-width: 720px) {
-  canvas {
-    width: 100%;
+.description {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.startScreen {
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+  .description {
+    align-items: center;
+    text-align: center;
   }
 }
 
-@media only screen and (max-width: 480px) {
-  canvas {
-    height: 100%;
-  }
+@media (max-width: 720px) {
+  canvas { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  canvas { height: auto; }
 }
