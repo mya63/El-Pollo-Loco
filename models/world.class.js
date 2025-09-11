@@ -123,21 +123,16 @@ checkBottleHits(){ // Deutsch: geworfene Objekte auf Gegner
 draw() {
   this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
   const cam = Math.round(this.camera_x); // Snap auf Integer
-
   this.ctx.translate(cam,0);
   this.addObjectsToMap(this.level.backgroundObjects);
   this.ctx.translate(-cam,0);
-
   this.addToMap(this.statusBar);
-
   this.ctx.translate(cam,0);
   this.addToMap(this.character);
   this.addObjectsToMap(this.level.clouds);
   this.addObjectsToMap(this.level.enemies);
   this.addObjectsToMap(this.throwableObjects);
   this.ctx.translate(-cam,0);
-  
-
   requestAnimationFrame(()=>this.draw());
 }
 
