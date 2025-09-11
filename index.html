@@ -8,7 +8,11 @@
     />
     <title>EL POLLO LOCO</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/gif" href="img/4_enemie_boss_chicken/2_alert/G11.png" />
+    <link
+      rel="icon"
+      type="image/gif"
+      href="img/4_enemie_boss_chicken/2_alert/G11.png"
+    />
 
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
@@ -56,6 +60,14 @@
         </button>
 
         <div
+          id="hud"
+          style="position: absolute; top: 10px; right: 10px"
+        >
+<button id="resetBtn" class="hud-btn hud-btn--top" onclick="resetGame()" aria-label="Reset">
+  <span class="icon">↻</span>
+</button>
+
+        <div
           id="infoCard"
           class="info-card"
           onclick="hideInfo()"
@@ -68,7 +80,6 @@
           </div>
         </div>
       </div>
-
     </main>
   </body>
 </html>

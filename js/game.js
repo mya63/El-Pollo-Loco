@@ -21,6 +21,13 @@ function startGame(){
   init();
 }
 
+function resetGame(){ 
+  let c = document.getElementById('canvas');            
+  let ctx = c.getContext('2d');                          
+  ctx.clearRect(0,0,c.width,c.height);                   
+  init();                                                
+}
+
 function handleKeyDown(e){
   if(e.code==='ArrowRight') keyboard.RIGHT=true;
   if(e.code==='ArrowLeft')  keyboard.LEFT=true;
