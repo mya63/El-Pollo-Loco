@@ -26,9 +26,8 @@ h1 {
 }
 
 main {
-  display: grid;
-  grid-template-columns: 70% 30%;
-  gap: 16px;
+  display: flex;
+  justify-content: center; 
   width: 100%;
   max-width: 1920px;
   padding: 0 16px;
@@ -88,7 +87,8 @@ canvas {
 #stage {
   position: relative;
   width: 100%;
-  max-width: 1920px;
+  max-width: 960px; 
+  margin: 0 auto;  
 }
 #stage canvas {
   display: block;
