@@ -25,13 +25,34 @@ class World {
     }
   }
 
-  run() {
-    setInterval(() => {
-      this.checkCollisions();
-      this.checkThrowObjects();
-      this.checkEndbossIntro();
-    }, 200);
-  }
+  isColliding(a,b){ // Deutsch: AABB Rechteck-Kollision
+  return a.x+a.width>b.x && a.y+a.height>b.y &&
+         a.x<b.x+b.width && a.y<b.y+b.height;
+}
+
+isStomp(c,e){ // Deutsch: Spieler von oben?
+  return c.speedY>0 && (c.y + c.height*0.6) <= e.y;
+}
+
+hitEnemy(e,d){ // Deutsch: Gegner Schaden/Tod
+  if(!e || !e.alive) return;
+  if(e.takeDamage) e.takeDamage(d);
+  else { e.hp = (e.hp||1)-d; if(e.hp<=0 && e.die) e.die(); }
+}
+
+hitPlayer(d){ // Deutsch: Spieler Schaden + UI
+  if(this.character && this.character.hit) this.character.hit();
+  if(this.statusBar) this.statusBar.setPercentage(this.character.energy);
+}
+
+run(){
+  setInterval(()=>{
+    this.checkCollisions();
+    this.checkBottleHits();      // Deutsch: Flaschentreffer prüfen
+    this.checkThrowObjects();
+    this.checkEndbossIntro();
+  },200);
+}
 
   checkThrowObjects() {
     if (this.keyboard.D) {
@@ -43,15 +64,29 @@ class World {
     }
   }
 
-  checkCollisions() {
-    for (let i = 0; i < this.level.enemies.length; i++) {
-      let e = this.level.enemies[i];
-      if (this.character.isCollided(e)) {
-        this.character.hit();
-        this.statusBar.setPercentage(this.character.energy);
-      }
+checkCollisions(){ // Deutsch: Spieler trifft Gegner
+  for(let i=0;i<this.level.enemies.length;i++){
+    let e=this.level.enemies[i];
+    if(!e || !e.alive) continue;
+    if(this.character.isCollided(e)){
+      if(this.isStomp(this.character,e)){
+        this.hitEnemy(e,1);
+        if(this.character.bounce) this.character.bounce(); // kurzer Rücksprung
+      } else this.hitPlayer(e.damage||10);
     }
   }
+}
+
+checkBottleHits(){ // Deutsch: geworfene Objekte auf Gegner
+  for(let i=0;i<this.throwableObjects.length;i++){
+    let t=this.throwableObjects[i]; if(!t || t.broken) continue;
+    for(let j=0;j<this.level.enemies.length;j++){
+      let e=this.level.enemies[j]; if(!e || !e.alive) continue;
+      if(this.isColliding(t,e)){ this.hitEnemy(e,1); t.broken=true; break; }
+    }
+  }
+}
+
 
   checkEndbossIntro() {
     for (let i = 0; i < this.level.enemies.length; i++) {
@@ -102,9 +137,12 @@ draw() {
   requestAnimationFrame(()=>this.draw());
 }
 
-  addObjectsToMap(objs) {
-    for (let i = 0; i < objs.length; i++) this.addToMap(objs[i]);
+addObjectsToMap(objs){
+  for(let i=0;i<objs.length;i++){
+    let o=objs[i]; if(!o || o.alive===false || o.broken) continue; // Deutsch: überspringen
+    this.addToMap(o);
   }
+}
 
   addToMap(mo) {
     if (mo.otherDirection) this.flipImage(mo);

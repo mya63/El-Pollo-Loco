@@ -1,11 +1,7 @@
 class Endboss extends MovableObject {
-  // Deutscher Kommentar: Zustände/Größe
-  hadFirstContact = false;
-  isIntro = false;
-  height = 400;
-  width = 250;
-  y = 55;
-  speed = 0.4;
+  hadFirstContact=false; isIntro=false;
+  height=400; width=250; y=55; speed=0.4;
+  hp=5; damage=30; alive=true; 
 
   IMAGES_INTRO = [
     'img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -24,12 +20,18 @@ class Endboss extends MovableObject {
     'img/4_enemie_boss_chicken/1_walk/G4.png'
   ];
 
-  constructor() {
-    super().loadImage('img/4_enemie_boss_chicken/1_walk/G1.png');
-    this.loadImages(this.IMAGES_INTRO);
-    this.loadImages(this.IMAGES_WALK);
-    this.x = 2500; 
+ constructor(){ super().loadImage(this.IMAGES_WALK[0]);
+    this.loadImages(this.IMAGES_INTRO); this.loadImages(this.IMAGES_WALK);
+    this.x=2500;
   }
+
+  takeDamage(d){ 
+    if(!this.alive) return;
+    this.hp -= d; if(this.hp<=0) this.die();
+  }
+
+  die(){ this.alive=false; this.speed=0; clearInterval(this._moveInt);
+    clearInterval(this._animInt); }
 
   
   startIntro() {
