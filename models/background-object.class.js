@@ -1,9 +1,9 @@
+// Deutscher Kommentar: Kachel exakt in Canvas-Größe
 class BackgroundObject extends MovableObject {
-  width = 720;
-  height = 480;
-  constructor(imagePath, x, y) {
-    super().loadImage(imagePath);
-    this.x = x;
-    this.y = 480 - this.height;
+  constructor(path, x) {
+    super().loadImage(path);
+    this.x = x; this.y = 0;
+    this.width = 720;  // exakt Canvas-Breite
+    this.height = 480; // exakt Canvas-Höhe
   }
 }
