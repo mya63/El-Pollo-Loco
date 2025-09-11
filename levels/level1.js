@@ -1,4 +1,3 @@
-// Deutscher Kommentar: Background-Setup (Kachelbreite = 720)
 const bgConfig = {
   startX: -720, endX: 4320, step: 720,
   layers: {
@@ -9,7 +8,6 @@ const bgConfig = {
   }
 };
 
-// Deutscher Kommentar: Gegner-Verteilung
 const enemySetup = { count: 10, startX: 900, minGap: 220, maxGap: 420 };
  
 
@@ -37,16 +35,15 @@ function spawnEndbossAt(x) {
 }
 function initLevel() {
   const enemies = buildChickenWave(enemySetup);
-  enemies.push(spawnEndbossAt(4000));           // falls schon vorhanden
+  enemies.push(spawnEndbossAt(4000));           
 
-  const backgrounds = buildBackground(bgConfig); // nahtlos bis 4320
+  const backgrounds = buildBackground(bgConfig); 
   level1 = new Level(enemies, [ new Cloud() ], backgrounds);
-  level1.level_end_x = bgConfig.endX;           // Grenze passend setzen
+  level1.level_end_x = bgConfig.endX;           
 }
 
 
 function buildBackground(cfg) {
-  // Deutscher Kommentar: reiht Tiles nahtlos – 2/1-Wechsel pro X
   let list = [], t = 0;
   for (let x = cfg.startX; x <= cfg.endX; x += cfg.step) {
     list.push(new BackgroundObject(cfg.layers.air, x));

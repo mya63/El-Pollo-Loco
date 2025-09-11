@@ -2,26 +2,26 @@ let canvas;
 let world;
 let keyboard = new Keyboard(); 
 
-function showStart(){ // Startscreen anzeigen
-  canvas = document.getElementById('canvas');           // Canvas holen
-  const ov = document.getElementById('startOverlay');   // Overlay holen
-  const ui = document.getElementById('startUI');        // UI holen
-  if(canvas) canvas.style.visibility = 'hidden';        // Canvas verstecken
-  if(ov) ov.style.display = 'block';                    // Bild zeigen
-  if(ui) ui.style.display = 'grid';                     // Button zeigen
+function showStart(){ 
+  canvas = document.getElementById('canvas');           
+  const ov = document.getElementById('startOverlay');   
+  const ui = document.getElementById('startUI');        
+  if(canvas) canvas.style.visibility = 'hidden';        
+  if(ov) ov.style.display = 'block';                    
+  if(ui) ui.style.display = 'grid';                     
 }
 function init(){
   initLevel();
   world = new World(canvas, keyboard);
 }
 
-function startGame(){ // Spiel starten
-  const ov = document.getElementById('startOverlay');   // Overlay holen
-  const ui = document.getElementById('startUI');        // UI holen
-  if(ov) ov.style.display = 'none';                     // Bild aus
-  if(ui) ui.style.display = 'none';                     // Button aus
-  if(canvas) canvas.style.visibility = 'visible';       // Canvas an
-  init();                                               // Level + World
+function startGame(){ 
+  const ov = document.getElementById('startOverlay');   
+  const ui = document.getElementById('startUI');        
+  if(ov) ov.style.display = 'none';                     
+  if(ui) ui.style.display = 'none';                     
+  if(canvas) canvas.style.visibility = 'visible';       
+  init();                                               
 }
 function resetGame(){ 
   let c = document.getElementById('canvas');            
