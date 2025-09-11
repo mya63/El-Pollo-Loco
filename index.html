@@ -67,6 +67,11 @@
   <span class="icon">↻</span>
 </button>
 
+<button id="fsBtn" class="hud-btn hud-btn--top" style="right:56px" onclick="toggleFullscreen()" aria-label="Fullscreen">
+    ⛶
+  </button>
+</div>
+
         <div
           id="infoCard"
           class="info-card"
@@ -81,5 +86,25 @@
         </div>
       </div>
     </main>
+    <script src="js/game.js"></script>
+  <script>
+function toggleFullscreen() {
+  let el = document.getElementById('stage'); // ganze Bühne
+  if (!document.fullscreenElement) {
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+
+// Button-Label anpassen
+document.onfullscreenchange = function () {
+  let btn = document.getElementById('fsBtn');
+  btn.innerText = document.fullscreenElement ? '✖' : '⛶';
+};
+  </script>
   </body>
 </html>
