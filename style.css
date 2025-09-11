@@ -84,16 +84,23 @@ canvas {
   }
 }
 
-#stage {
-  position: relative;
-  width: 100%;
-  max-width: 960px; 
-  margin: 0 auto;  
+#stage{ position:relative; }                 
+.start-ui{
+  position:absolute; inset:0; display:none;  
+  place-items:center; z-index:20; pointer-events:none;
 }
-#stage canvas {
-  display: block;
-  width: 100%;
-  height: auto;
+.start-btn{
+  width:64px; height:64px; border:none; border-radius:9999px;
+  background:#222; color:#fff; font-size:22px; line-height:1;
+  display:grid; place-items:center; cursor:pointer; opacity:.95;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+  transition:transform .15s ease, box-shadow .15s ease;
+  pointer-events:auto;                        
+}
+.start-btn:hover,.start-btn:focus{
+  transform:scale(1.06);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+  outline:none;
 }
 
 .overlay {

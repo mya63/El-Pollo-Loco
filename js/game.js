@@ -2,25 +2,27 @@ let canvas;
 let world;
 let keyboard = new Keyboard(); 
 
-function showStart(){
-  canvas = document.getElementById('canvas');
-  const ov = document.getElementById('startOverlay');
-  if(canvas) canvas.style.visibility = 'hidden';
-  if(ov) ov.style.display = 'block';
+function showStart(){ // Startscreen anzeigen
+  canvas = document.getElementById('canvas');           // Canvas holen
+  const ov = document.getElementById('startOverlay');   // Overlay holen
+  const ui = document.getElementById('startUI');        // UI holen
+  if(canvas) canvas.style.visibility = 'hidden';        // Canvas verstecken
+  if(ov) ov.style.display = 'block';                    // Bild zeigen
+  if(ui) ui.style.display = 'grid';                     // Button zeigen
 }
-
 function init(){
   initLevel();
   world = new World(canvas, keyboard);
 }
 
-function startGame(){
-  const ov = document.getElementById('startOverlay');
-  if(ov) ov.style.display = 'none';
-  if(canvas) canvas.style.visibility = 'visible';
-  init();
+function startGame(){ // Spiel starten
+  const ov = document.getElementById('startOverlay');   // Overlay holen
+  const ui = document.getElementById('startUI');        // UI holen
+  if(ov) ov.style.display = 'none';                     // Bild aus
+  if(ui) ui.style.display = 'none';                     // Button aus
+  if(canvas) canvas.style.visibility = 'visible';       // Canvas an
+  init();                                               // Level + World
 }
-
 function resetGame(){ 
   let c = document.getElementById('canvas');            
   let ctx = c.getContext('2d');                          

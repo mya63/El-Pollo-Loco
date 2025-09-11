@@ -42,13 +42,15 @@
     <main>
       <div id="stage">
         <canvas id="canvas" width="720" height="480"></canvas>
-        <img
-          id="startOverlay"
-          class="overlay"
-          src="img/9_intro_outro_screens/start/startscreen_1.png"
-          onclick="startGame()"
-          alt="Startscreen"
-        />
+<!-- Startscreen-Bild (ohne onclick!) -->
+<img id="startOverlay" class="overlay"
+     src="img/9_intro_outro_screens/start/startscreen_1.png"
+     alt="Startscreen" />
+
+<!-- Start-Button Overlay -->
+<div id="startUI" class="start-ui">
+  <button class="start-btn" onclick="startGame()" aria-label="Spiel starten">▶</button>
+</div>
 
         <button
           id="infoBtn"
