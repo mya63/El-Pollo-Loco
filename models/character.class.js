@@ -49,6 +49,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.applyGravity();
   }
+  
 
   animate() {
     setInterval(() => {
@@ -91,5 +92,9 @@ this.world.camera_x = -this.x + 100;
 
   jump() {
     this.speedY = 30;
+  }
+
+  bounce() {
+    this.speedY = 12;
   }
 }

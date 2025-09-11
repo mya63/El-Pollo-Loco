@@ -30,8 +30,10 @@ class World {
          a.x<b.x+b.width && a.y<b.y+b.height;
 }
 
-isStomp(c,e){ // Deutsch: Spieler von oben?
-  return c.speedY>0 && (c.y + c.height*0.6) <= e.y;
+isStomp(c,e){ // Deutsch: von oben getroffen?
+  let cFoot = c.y + c.height;          // Fuß des Spielers
+  let eTop  = e.y + e.height*0.35;      // oberes Drittel Gegner
+  return c.speedY < 0 && cFoot <= eTop; // fallend + oberer Treffer
 }
 
 hitEnemy(e,d){ // Deutsch: Gegner Schaden/Tod
@@ -64,14 +66,16 @@ run(){
     }
   }
 
-checkCollisions(){ // Deutsch: Spieler trifft Gegner
-  for(let i=0;i<this.level.enemies.length;i++){
-    let e=this.level.enemies[i];
-    if(!e || !e.alive) continue;
+checkCollisions(){ // Deutsch: Spieler ↔ Gegner
+  let es=this.level.enemies; if(!es) return;
+  for(let i=0;i<es.length;i++){
+    let e=es[i]; if(!e||e.alive===false) continue;
     if(this.character.isCollided(e)){
       if(this.isStomp(this.character,e)){
-        this.hitEnemy(e,1);
-        if(this.character.bounce) this.character.bounce(); // kurzer Rücksprung
+        if(this.character.bounce) this.character.bounce(); // kleiner Hopser
+        let t=e.constructor?e.constructor.name:'';         // Typ prüfen
+        let dmg=(t==='Chicken'||t==='SmallChicken')?(e.hp||1):1;
+        this.hitEnemy(e,dmg);                              // Hühner sofort tot
       } else this.hitPlayer(e.damage||10);
     }
   }
