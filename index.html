@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>EL POLLO LOCO</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/gif" href="img/8_coin/coin_2.png" />
@@ -24,24 +27,47 @@
     <script src="js/game.js"></script>
   </head>
 
-<body onload="showStart()" onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
-  <h1>EL POLLO LOCO</h1>
+  <body
+    onload="showStart()"
+    onkeydown="handleKeyDown(event)"
+    onkeyup="handleKeyUp(event)"
+  >
+    <h1>EL POLLO LOCO</h1>
 
-  <main>
-    <div id="stage">
-      <canvas id="canvas" width="720" height="480"></canvas>
-      <img id="startOverlay"
-           class="overlay"
-           src="img/9_intro_outro_screens/start/startscreen_1.png"
-           onclick="startGame()"
-           alt="Startscreen" />
-    </div>
+    <main>
+      <div id="stage">
+        <canvas id="canvas" width="720" height="480"></canvas>
+        <img
+          id="startOverlay"
+          class="overlay"
+          src="img/9_intro_outro_screens/start/startscreen_1.png"
+          onclick="startGame()"
+          alt="Startscreen"
+        />
 
-    <div class="description">
-      <h3>ARROW LEFT/RIGHT = WALK</h3>
-      <h3>D = THROW TABASCO</h3>
-      <h3>SPACE = JUMP</h3>
-    </div>
-  </main>
-</body>
+        <button
+          id="infoBtn"
+          class="hud-btn"
+          onclick="toggleInfo()"
+          aria-label="Info"
+        >
+          i
+        </button>
+
+        <div
+          id="infoCard"
+          class="info-card"
+          onclick="hideInfo()"
+          aria-hidden="true"
+        >
+          <div class="info-box" onclick="event.stopPropagation()">
+            <h3>Steuerung</h3>
+            <div id="infoList"></div>
+            <button class="close-btn" onclick="hideInfo()">OK</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </body>
 </html>

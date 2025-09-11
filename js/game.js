@@ -38,3 +38,27 @@ function handleKeyUp(e){
   if(e.code==='Space')      keyboard.SPACE=false;
   if(e.code==='KeyD')       keyboard.D=false;
 }
+
+const UI = { open:false, controls:{ '← / →':'Gehen', 'Leertaste':'Springen', 'D':'Tabasco werfen' } };
+
+function renderInfoList(){
+  const box = document.getElementById('infoList'); let html='';
+  for (let k in UI.controls){
+    html += `<p><span class="kbd">${k}</span> – ${UI.controls[k]}</p>`;
+  }
+  box.innerHTML = html;
+}
+
+function showInfo(){
+  renderInfoList();
+  const c = document.getElementById('infoCard'); c.style.display='flex'; UI.open=true;
+}
+
+function hideInfo(){
+  const c = document.getElementById('infoCard'); c.style.display='none'; UI.open=false;
+}
+
+function toggleInfo(){
+  if(UI.open){ hideInfo(); } else { showInfo(); }
+}
+
