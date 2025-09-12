@@ -31,79 +31,82 @@
     <script src="levels/level1.js"></script>
   </head>
 
-  <body
-    onload="showStart()"
-    onkeydown="handleKeyDown(event)"
-    onkeyup="handleKeyUp(event)"
-  >
-    <h1>EL POLLO LOCO</h1>
+<body onload="showStart()" onresize="checkOrientation()"
+      onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
+  <h1>EL POLLO LOCO</h1>
 
-    <main>
-      <div id="stage">
-        <canvas id="canvas" width="720" height="480"></canvas>
-  <img id="startOverlay" class="overlay"
-     src="img/9_intro_outro_screens/start/startscreen_1.png"
-     alt="Startscreen" />
+  <main>
+    <div id="stage">
+      <canvas id="canvas" width="720" height="480"></canvas>
 
-  <div id="startUI" class="start-ui">
-  <button class="start-btn" onclick="startGame()" aria-label="Spiel starten">▶</button>
-</div>
+      <!-- Start -->
+      <img id="startOverlay" class="overlay"
+           src="img/9_intro_outro_screens/start/startscreen_1.png"
+           alt="Startscreen"/>
 
-        <button
-          id="infoBtn"
-          class="hud-btn"
-          onclick="toggleInfo()"
-          aria-label="Info"
-        >
-          i
-        </button>
+      <!-- Game Over -->
+      <img id="gameOverOverlay" class="overlay"
+           src="img/You won, you lost/Game over A.png"
+           alt="Game Over" style="display:none"/>
 
-        <div
-          id="hud"
-          style="position: absolute; top: 10px; right: 10px"
-        >
-<button id="resetBtn" class="hud-btn hud-btn--top" onclick="resetGame()" aria-label="Reset">
-  <span class="icon">↻</span>
-</button>
+      <!-- You Won -->
+      <img id="youWonOverlay" class="overlay"
+           src="img/You won, you lost/You Win A.png"
+           alt="You Won" style="display:none"/>
 
-<button id="fsBtn" class="hud-btn hud-btn--top" style="right:56px" onclick="toggleFullscreen()" aria-label="Fullscreen">
-    ⛶
-  </button>
-</div>
-
-        <div
-          id="infoCard"
-          class="info-card"
-          onclick="hideInfo()"
-          aria-hidden="true"
-        >
-          <div class="info-box" onclick="event.stopPropagation()">
-            <h3>Steuerung</h3>
-            <div id="infoList"></div>
-            <button class="close-btn" onclick="hideInfo()">OK</button>
-          </div>
+      <!-- Rotate-Hinweis (nur Hochformat) -->
+      <div id="rotateOverlay" class="overlay rotate-center" style="display:none">
+        <div class="rotate-box">
+          <h2>Bitte Gerät drehen</h2>
+          <p>Das Spiel funktioniert nur im <b>Querformat</b>.</p>
         </div>
       </div>
-    </main>
-    <script src="js/game.js"></script>
-  <script>
-function toggleFullscreen() {
-  let el = document.getElementById('stage'); // ganze Bühne
-  if (!document.fullscreenElement) {
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-    else if (el.msRequestFullscreen) el.msRequestFullscreen();
-  } else {
-    if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-  }
-}
 
-// Button-Label anpassen
-document.onfullscreenchange = function () {
-  let btn = document.getElementById('fsBtn');
-  btn.innerText = document.fullscreenElement ? '✖' : '⛶';
-};
+      <!-- Start-UI -->
+      <div id="startUI" class="start-ui">
+        <button class="start-btn" onclick="startGame()" aria-label="Spiel starten">▶</button>
+      </div>
+
+      <!-- Info-Button -->
+      <button id="infoBtn" class="hud-btn" onclick="toggleInfo()" aria-label="Info">i</button>
+
+      <!-- HUD oben rechts -->
+      <div id="hud" style="position:absolute; top:10px; right:10px">
+        <button id="resetBtn" class="hud-btn hud-btn--top" onclick="resetGame()" aria-label="Reset">
+          <span class="icon">↻</span>
+        </button>
+        <button id="fsBtn" class="hud-btn hud-btn--top" style="right:56px"
+                onclick="toggleFullscreen()" aria-label="Fullscreen">⛶</button>
+      </div>
+
+      <!-- Info-Card -->
+      <div id="infoCard" class="info-card" onclick="hideInfo()" aria-hidden="true">
+        <div class="info-box" onclick="event.stopPropagation()">
+          <h3>Steuerung</h3>
+          <div id="infoList"></div>
+          <button class="close-btn" onclick="hideInfo()">OK</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/game.js"></script>
+  <script>
+    function toggleFullscreen(){                 // Deutsch: Fullscreen ein/aus
+      let el=document.getElementById('stage');
+      if(!document.fullscreenElement){
+        if(el.requestFullscreen) el.requestFullscreen();
+        else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        else if(el.msRequestFullscreen) el.msRequestFullscreen();
+      } else {
+        if(document.exitFullscreen) document.exitFullscreen();
+        else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    }
+    document.onfullscreenchange=function(){
+      let btn=document.getElementById('fsBtn');
+      btn.innerText=document.fullscreenElement?'✖':'⛶';
+    };
   </script>
-  </body>
+</body>
 </html>

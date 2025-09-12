@@ -193,3 +193,10 @@ canvas {
 .hud-btn--top{ position:absolute; top:8px; right:8px; }
 
 .hud-btn .icon{ font-size:16px; line-height:1; user-select:none; }
+
+/* Deutsch: Rotate-Hinweis mittig ausrichten */
+.rotate-center { display:flex; align-items:center; justify-content:center; }
+.rotate-box { font-family: Arial, Helvetica, sans-serif; text-align:center;
+  background: rgba(0,0,0,.55); padding:16px 20px; border-radius:10px; }
+.rotate-box h2 { margin:0 0 6px; font-size:20px; }
+.rotate-box p  { margin:0; font-size:14px; }

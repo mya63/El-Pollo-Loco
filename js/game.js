@@ -2,27 +2,38 @@ let canvas;
 let world;
 let keyboard = new Keyboard(); 
 
-function showStart(){ 
-  canvas = document.getElementById('canvas');           
-  const ov = document.getElementById('startOverlay');   
-  const ui = document.getElementById('startUI');        
-  if(canvas) canvas.style.visibility = 'hidden';        
-  if(ov) ov.style.display = 'block';                    
-  if(ui) ui.style.display = 'grid';                     
+function showStart(){
+  canvas=document.getElementById('canvas');
+  let ov=document.getElementById('startOverlay');
+  let ui=document.getElementById('startUI');
+  if(canvas) canvas.style.visibility='hidden';
+  if(ov) ov.style.display='block';
+  if(ui) ui.style.display='grid';
+  checkOrientation();                               // jetzt gleich prüfen
 }
 function init(){
   initLevel();
   world = new World(canvas, keyboard);
 }
 
-function startGame(){ 
-  const ov = document.getElementById('startOverlay');   
-  const ui = document.getElementById('startUI');        
-  if(ov) ov.style.display = 'none';                     
-  if(ui) ui.style.display = 'none';                     
-  if(canvas) canvas.style.visibility = 'visible';       
-  init();                                               
+function startGame(){
+  let ov=document.getElementById('startOverlay');
+  let ui=document.getElementById('startUI');
+  if(ov) ov.style.display='none';
+  if(ui) ui.style.display='none';
+  if(canvas) canvas.style.visibility='visible';
+  init();                                           // Welt erstellen
+  checkOrientation();                               // nach Start prüfen
 }
+
+function checkOrientation(){
+  let rot=document.getElementById('rotateOverlay');
+  let stg=document.getElementById('stage');
+  let isPortrait=window.innerHeight>window.innerWidth && window.innerWidth<900;
+  if(rot) rot.style.display=isPortrait?'flex':'none';
+  if(stg) stg.style.visibility=isPortrait?'hidden':'visible';
+}
+
 function resetGame(){ 
   let c = document.getElementById('canvas');            
   let ctx = c.getContext('2d');                          
@@ -69,5 +80,15 @@ function hideInfo(){
 
 function toggleInfo(){
   if(UI.open){ hideInfo(); } else { showInfo(); }
+}
+
+// Deutsch: Spieler hat verloren
+function showGameOver(){
+  document.getElementById('gameOverOverlay').style.display='block';
+}
+
+// Deutsch: Endboss ist tot
+function showYouWon(){
+  document.getElementById('youWonOverlay').style.display='block';
 }
 

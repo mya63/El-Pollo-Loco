@@ -88,4 +88,16 @@ this.world.camera_x = -this.x + 100;}
   bounce() {
     this.speedY = 12;
   }
+
+  // character.class.js
+isDead(){
+  if(this.energy <= 0){
+    showGameOver();
+    return true;
+  }
+  return false;
 }
+
+}
+
+
