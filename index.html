@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/gif" href="img/4_enemie_boss_chicken/2_alert/G11.png" />
 
-    <!-- Modelle -->
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
     <script src="models/character.class.js"></script>
@@ -31,16 +30,12 @@
       <div id="stage">
         <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
 
-        <!-- Start -->
         <img id="startOverlay" class="overlay" src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startscreen" />
 
-        <!-- Game Over -->
         <img id="gameOverOverlay" class="overlay" src="img/You won, you lost/Game over A.png" alt="Game Over" style="display:none" />
 
-        <!-- You Won -->
         <img id="youWonOverlay" class="overlay" src="img/You won, you lost/You Win A.png" alt="You Won" style="display:none" />
 
-        <!-- Rotate-Hinweis (nur Hochformat) -->
         <div id="rotateOverlay" class="overlay rotate-center" style="display:none">
           <div class="rotate-box">
             <h2>Bitte Gerät drehen</h2>
@@ -48,19 +43,16 @@
           </div>
         </div>
 
-        <!-- Start-UI -->
         <div id="startUI" class="start-ui">
           <button class="start-btn" tabindex="-1"
                   onclick="startGame()" onmousedown="return blurToCanvas(this)"
                   aria-label="Spiel starten">▶</button>
         </div>
 
-        <!-- Info-Button -->
         <button id="infoBtn" class="hud-btn" tabindex="-1"
                 onclick="toggleInfo()" onmousedown="return blurToCanvas(this)"
                 aria-label="Info">i</button>
 
-        <!-- HUD oben rechts -->
         <div id="hud" style="position:absolute; top:10px; right:10px">
           <button id="resetBtn" class="hud-btn hud-btn--top" tabindex="-1"
                   onclick="resetGame()" onmousedown="return blurToCanvas(this)"
@@ -70,7 +62,6 @@
                   aria-label="Fullscreen">⛶</button>
         </div>
 
-        <!-- Info-Card -->
         <div id="infoCard" class="info-card" onclick="hideInfo()" aria-hidden="true">
           <div class="info-box" onclick="event.stopPropagation()">
             <h3>Steuerung</h3>
@@ -82,9 +73,7 @@
       </div>
     </main>
 
-    <!-- Touch-Pads: nur Tablet/Handy + Landscape -->
     <div id="pads" class="pads" aria-hidden="true">
-      <!-- Links: Bewegung -->
       <div class="pad pad-left">
         <button class="pad-btn"
           onpointerdown="press('LEFT',this)"  onpointerup="release('LEFT',this)"
@@ -99,7 +88,6 @@
           onmouseleave="release('RIGHT',this)">▶</button>
       </div>
 
-      <!-- Rechts: Aktionen -->
       <div class="pad pad-right">
         <button class="pad-btn"
           onpointerdown="press('SPACE',this)" onpointerup="release('SPACE',this)"

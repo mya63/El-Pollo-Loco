@@ -25,24 +25,24 @@ class World {
     }
   }
 
-  isColliding(a,b){ // Deutsch: AABB Rechteck-Kollision
+  isColliding(a,b){ 
   return a.x+a.width>b.x && a.y+a.height>b.y &&
          a.x<b.x+b.width && a.y<b.y+b.height;
 }
 
-isStomp(c,e){ // Deutsch: von oben getroffen?
-  let cFoot = c.y + c.height;          // Fuß des Spielers
-  let eTop  = e.y + e.height*0.35;      // oberes Drittel Gegner
-  return c.speedY < 0 && cFoot <= eTop; // fallend + oberer Treffer
+isStomp(c,e){ 
+  let cFoot = c.y + c.height;        
+  let eTop  = e.y + e.height*0.35;      
+  return c.speedY < 0 && cFoot <= eTop; 
 }
 
-hitEnemy(e,d){ // Deutsch: Gegner Schaden/Tod
+hitEnemy(e,d){ 
   if(!e || !e.alive) return;
   if(e.takeDamage) e.takeDamage(d);
   else { e.hp = (e.hp||1)-d; if(e.hp<=0 && e.die) e.die(); }
 }
 
-hitPlayer(d){ // Deutsch: Spieler Schaden + UI
+hitPlayer(d){ 
   if(this.character && this.character.hit) this.character.hit();
   if(this.statusBar) this.statusBar.setPercentage(this.character.energy);
 }
@@ -50,7 +50,7 @@ hitPlayer(d){ // Deutsch: Spieler Schaden + UI
 run(){
   setInterval(()=>{
     this.checkCollisions();
-    this.checkBottleHits();      // Deutsch: Flaschentreffer prüfen
+    this.checkBottleHits();      
     this.checkThrowObjects();
     this.checkEndbossIntro();
   },200);
@@ -66,22 +66,21 @@ run(){
     }
   }
 
-checkCollisions(){ // Deutsch: Spieler ↔ Gegner
+checkCollisions(){ 
   let es=this.level.enemies; if(!es) return;
   for(let i=0;i<es.length;i++){
     let e=es[i]; if(!e||e.alive===false) continue;
     if(this.character.isCollided(e)){
       if(this.isStomp(this.character,e)){
-        if(this.character.bounce) this.character.bounce(); // kleiner Hopser
-        let t=e.constructor?e.constructor.name:'';         // Typ prüfen
+        let t=e.constructor?e.constructor.name:'';         
         let dmg=(t==='Chicken'||t==='SmallChicken')?(e.hp||1):1;
-        this.hitEnemy(e,dmg);                              // Hühner sofort tot
+        this.hitEnemy(e,dmg);                              
       } else this.hitPlayer(e.damage||10);
     }
   }
 }
 
-checkBottleHits(){ // Deutsch: geworfene Objekte auf Gegner
+checkBottleHits(){ 
   for(let i=0;i<this.throwableObjects.length;i++){
     let t=this.throwableObjects[i]; if(!t || t.broken) continue;
     for(let j=0;j<this.level.enemies.length;j++){
@@ -119,10 +118,10 @@ checkBottleHits(){ // Deutsch: geworfene Objekte auf Gegner
     }
   }
 
-// Deutscher Kommentar: Kamera nur in ganzen Pixeln bewegen
+
 draw() {
   this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-  const cam = Math.round(this.camera_x); // Snap auf Integer
+  const cam = Math.round(this.camera_x); 
   this.ctx.translate(cam,0);
   this.addObjectsToMap(this.level.backgroundObjects);
   this.ctx.translate(-cam,0);
@@ -138,14 +137,14 @@ draw() {
 
 addObjectsToMap(objs){
   for(let i=0;i<objs.length;i++){
-    let o=objs[i]; if(!o || o.alive===false || o.broken) continue; // Deutsch: überspringen
+    let o=objs[i]; if(!o || o.alive===false || o.broken) continue; 
     this.addToMap(o);
   }
 }
 
   addToMap(mo) {
     if (mo.otherDirection) this.flipImage(mo);
-    mo.draw(this.ctx); //mo.drawFrame(this.ctx);
+    mo.draw(this.ctx); 
     if (mo.otherDirection) this.flipImageBack(mo);
   }
 

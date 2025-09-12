@@ -6,7 +6,6 @@ font-style: normal;
 }
 
 
-/* Deutsch: Content auf 1920px begrenzen */
 body {
 max-width: 1920px;
 margin: 0 auto;
@@ -21,7 +20,7 @@ background-size: cover;
 
 
 h1 {
-font-size: 48px; /* etwas kleiner und professioneller */
+font-size: 48px; 
 letter-spacing: 2px;
 color: #ffd700;
 text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
@@ -33,7 +32,7 @@ main {
 display: flex;
 justify-content: center;
 width: 100%;
-max-width: 1280px; /* Canvas Bereich kleiner für Desktop */
+max-width: 1280px; 
 padding: 0 16px;
 box-sizing: border-box;
 }
@@ -44,7 +43,7 @@ box-sizing: border-box;
 position: relative;
 margin: 0 auto;
 width: min(90vw, calc((100vh - var(--pads)) * (720 / 480)));
-max-width: 960px; /* feste Obergrenze für Desktop */
+max-width: 960px; 
 aspect-ratio: 720 / 480;
 }
 
@@ -54,11 +53,11 @@ background-color: black;
 width: 100%;
 height: 100%;
 display: block;
-border: 2px solid #333; /* dezenter Rahmen */
+border: 2px solid #333;
 border-radius: 8px;
 }
 
-/* ===== Overlay/Start/HUD ===== */
+
 .start-ui{ position:absolute; inset:0; display:none; place-items:center; z-index:20; pointer-events:none; }
 .start-btn{
   width:64px; height:64px; border:none; border-radius:9999px;
@@ -93,13 +92,11 @@ border-radius: 8px;
 #infoList p{ margin:8px 0 }
 .close-btn{ margin-top:10px; width:100%; border:none; border-radius:8px; padding:8px 10px; background:#ffd700; color:#000; font-weight:700; cursor:pointer; }
 
-/* ===== Rotate-Hinweis ===== */
 .rotate-center{ display:flex; align-items:center; justify-content:center; }
 .rotate-box{ font-family: Arial, Helvetica, sans-serif; text-align:center; background:rgba(0,0,0,.55); padding:16px 20px; border-radius:10px; }
 .rotate-box h2{ margin:0 0 6px; font-size:20px; }
 .rotate-box p{ margin:0; font-size:14px; }
 
-/* ===== Seitliche Mobile-Pads ===== */
 .pads{ display:none; position:fixed; inset:0; pointer-events:none; z-index:12; }
 .pad{ position:absolute; bottom:clamp(12px, 2.5vh, 24px); gap:12px; pointer-events:auto; }
 .pad-left{ left:clamp(12px, 3vw, 28px); display:flex; }
@@ -115,18 +112,16 @@ border-radius: 8px;
 .pad-btn:active, .pad-btn[data-active="1"]{ opacity:1; transform:scale(1.04); }
 .pad, .pad * { pointer-events: auto; }
 
-/* Jump-Button Symbol statt Text */
 .pads .pad-right button:nth-child(1)::after {
-content: "\2191"; /* Pfeil nach oben */
+content: "\2191"; 
 font-size: 22px;
 }
 .pads .pad-right button:nth-child(1) {
-font-size: 0; /* Text ausblenden */
+font-size: 0; 
 }
 
-/* Jump-Button Symbol mittig im Kreis platzieren */
 .pads .pad-right button:nth-child(1)::after {
-  content: "\2191"; /* Pfeil nach oben */
+  content: "\2191"; 
   font-size: 24px;
   display: flex;
   align-items: center;
@@ -136,73 +131,61 @@ font-size: 0; /* Text ausblenden */
 }
 
 .pads .pad-right button:nth-child(1) {
-  font-size: 0; /* Text ausblenden */
+  font-size: 0; 
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ===== Responsive Regeln ===== */
-/* Portrait: Spiel aus + Hinweis an + kein Scrollen */
 @media (orientation:portrait){
   html, body{ overflow:hidden; height:100%; }
   #stage{ display:none; }
   #rotateOverlay{ display:flex; }
 }
 
-/* Mobile/Tablet Landscape: Pads an, Platz reservieren, kein Scrollen */
 @media (max-width:1024px) and (orientation:landscape){
-  :root{ --pads: 112px; }  /* Höhe für Pads abziehen -> Canvas bleibt komplett sichtbar */
+  :root{ --pads: 112px; }  
   .pads{ display:block; }
   html, body{ overflow:hidden; height:100%; }
 }
 
-/* Desktop: keine Pads */
+
 @media (min-width:1025px){
   .pads{ display:none; }
 }
 
-/* ===== Desktop-Canvas professioneller skalieren =====
-   Kopiere diesen Block ans Ende deiner style.css ODER ersetze die bestehenden
-   #stage- und Desktop-@media-Regeln damit. */
 
 :root{
-  /* Maximale Breite des Spiels auf Desktop */
-  --game-max-w: 1100px;   /* 1024–1200 ist üblich; 1100 wirkt modern */
-  --game-max-vw: 85vw;    /* nicht die ganze Breite fressen */
+  --game-max-w: 1100px;   
+  --game-max-vw: 85vw;    
 }
 
-/* Bühne: bleibt immer 3:2, skaliert nach Höhe oder Breite, mit Caps */
 #stage{
   position: relative;
   margin: 0 auto;
   width: min(
-    var(--game-max-w),           /* Cap: feste Maxbreite */
-    var(--game-max-vw),          /* Cap: prozentual zum Viewport */
-    calc((100vh - var(--pads)) * (720 / 480)) /* Cap: Höhe => 3:2 */
+    var(--game-max-w),         
+    var(--game-max-vw),          
+    calc((100vh - var(--pads)) * (720 / 480)) 
   );
   aspect-ratio: 720 / 480;
 }
 
-/* Überschrift etwas dezenter auf Desktop */
 @media (min-width: 1025px){
   h1{ font-size: 48px; }
 }
 
-/* Sehr große Monitore: noch kompakter & mehr Randluft */
 @media (min-width: 1440px){
   :root{ --game-max-w: 1000px; --game-max-vw: 70vw; }
   h1{ font-size: 44px; }
 }
 
-/* Mobile/Tablet Landscape bleibt wie gehabt (Pads) */
 @media (max-width:1024px) and (orientation:landscape){
   :root{ --pads: 112px; }
   .pads{ display:block; }
   html, body{ overflow:hidden; height:100%; }
 }
 
-/* Portrait sperren bleibt unverändert */
 @media (orientation:portrait){
   html, body{ overflow:hidden; height:100%; }
   #stage{ display:none; }

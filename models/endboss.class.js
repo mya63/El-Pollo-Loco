@@ -62,7 +62,6 @@ class Endboss extends MovableObject {
       self.playAnimation(self.IMAGES_WALK);
     }, 180);
   }
-  // endboss.class.js
 die(){
   this.alive=false; this.speed=0;
   clearInterval(this._moveInt); clearInterval(this._animInt);
