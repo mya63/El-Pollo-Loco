@@ -17,14 +17,50 @@ function init(){
   world = new World(canvas, keyboard);
 }
 
+// Deutsch: Fokus sicher auf Canvas setzen
+function focusCanvas(){
+  let c = document.getElementById('canvas');
+  if(!c) return;
+  if(!c.hasAttribute('tabindex')) c.setAttribute('tabindex','0');
+  c.focus();
+}
+
+// Deutsch: Button-Fokus sofort entfernen und Canvas fokussieren
+function blurToCanvas(el){
+  if(el && el.blur) el.blur();
+  focusCanvas();
+  return true; // erlaubt den Klick normal weiterlaufen
+}
+
+
 function startGame(){
-  const ov = document.getElementById('startOverlay');
-  const ui = document.getElementById('startUI');
-  if(ov) ov.style.display = 'none';
-  if(ui) ui.style.display = 'none';
-  if(canvas) canvas.style.visibility = 'visible';
-  init();                                            // Welt erstellen
-  checkOrientation();                                // nach Start prüfen
+  let ov=document.getElementById('startOverlay');
+  let ui=document.getElementById('startUI');
+  if(ov) ov.style.display='none';
+  if(ui) ui.style.display='none';
+  if(canvas) canvas.style.visibility='visible';
+  init();
+  checkOrientation();
+  focusCanvas();                    // ← neu
+}
+
+document.onfullscreenchange = function(){
+  let btn=document.getElementById('fsBtn');
+  btn.innerText=document.fullscreenElement ? '✖' : '⛶';
+  focusCanvas();                    // ← Fokus nach Event sichern
+};
+
+function toggleFullscreen(){
+  let el=document.getElementById('stage');
+  if(!document.fullscreenElement){
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if(el.msRequestFullscreen) el.msRequestFullscreen();
+  } else {
+    if(document.exitFullscreen) document.exitFullscreen();
+    else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+  setTimeout(focusCanvas,200);      // ← nach Wechsel erneut fokussieren
 }
 
 function checkOrientation(){
@@ -36,11 +72,11 @@ function checkOrientation(){
 }
 
 function resetGame(){
-  // Overlays aus, Canvas sichtbar
-  let ids = ['gameOverOverlay','youWonOverlay','startOverlay'];
-  for (let i=0;i<ids.length;i++){ let el=document.getElementById(ids[i]); if(el) el.style.display='none'; }
+  let ids=['gameOverOverlay','youWonOverlay','startOverlay'];
+  for(let i=0;i<ids.length;i++){ let el=document.getElementById(ids[i]); if(el) el.style.display='none'; }
   if(canvas){ let ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
-  location.reload();                                 // Seite neu laden = sauberer Reset
+  location.reload();                // sauberer Reset
+  // focusCanvas() nach reload nicht nötig
 }
 
 function handleKeyDown(e){
@@ -72,16 +108,21 @@ function renderInfoList(){
 }
 
 function showInfo(){
-  renderInfoList();
-  const c = document.getElementById('infoCard'); c.style.display='flex'; UI.open=true;
+  let c=document.getElementById('infoCard');
+  if(c){ c.style.display='flex'; c.ariaHidden='false'; }
+  renderInfolist();
 }
 
 function hideInfo(){
-  const c = document.getElementById('infoCard'); c.style.display='none'; UI.open=false;
+  let c=document.getElementById('infoCard');
+  if(c){ c.style.display='none'; c.ariaHidden='true'; }
+  focusCanvas();                    // ← neu
 }
 
 function toggleInfo(){
-  if(UI.open){ hideInfo(); } else { showInfo(); }
+  let c=document.getElementById('infoCard');
+  if(c && c.style.display==='flex'){ hideInfo(); } else { showInfo(); }
+  focusCanvas();                    // ← neu
 }
 
 // Deutsch: Spieler hat verloren
@@ -93,4 +134,6 @@ function showGameOver(){
 function showYouWon(){
   document.getElementById('youWonOverlay').style.display='block';
 }
+
+
 
