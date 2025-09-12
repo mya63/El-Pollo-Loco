@@ -1,20 +1,23 @@
 let canvas;
 let world;
-let keyboard = new Keyboard(); 
+let keyboard = new Keyboard();
 
 const UI = {
   open: false,
-  controls: { '←': 'Gehen', '→': 'Gehen', 'SPACE': 'Springen', 'D': 'Tabasco werfen' }
+  controls: {
+    '←': 'Gehen',
+    '→': 'Gehen',
+    'SPACE': 'Springen',
+    'D': 'Tabasco werfen'
+  }
 };
 
 function showStart(){
   canvas = document.getElementById('canvas');
-  const ov = document.getElementById('startOverlay');
-  const ui = document.getElementById('startUI');
   if(canvas) canvas.style.visibility = 'hidden';
-  if(ov) ov.style.display = 'block';
-  if(ui) ui.style.display = 'grid';
-  checkOrientation();                                // sofort prüfen
+  document.getElementById('startOverlay').style.display = 'block';
+  document.getElementById('startUI').style.display = 'grid';
+  checkOrientation();
 }
 
 function init(){
@@ -22,37 +25,28 @@ function init(){
   world = new World(canvas, keyboard);
 }
 
-// Deutsch: Fokus sicher auf Canvas setzen
 function focusCanvas(){
-  let c = document.getElementById('canvas');
-  if(!c) return;
-  if(!c.hasAttribute('tabindex')) c.setAttribute('tabindex','0');
-  c.focus();
+  if(!canvas) canvas = document.getElementById('canvas');
+  if(!canvas) return;
+  if(!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex','0');
+  canvas.focus();
 }
 
-// Deutsch: Button-Fokus sofort entfernen und Canvas fokussieren
-function blurToCanvas(el){
-  if(el && el.blur) el.blur();
-  focusCanvas();
-  return true; // erlaubt den Klick normal weiterlaufen
-}
-
+function blurToCanvas(el){ if(el && el.blur) el.blur(); focusCanvas(); return true; }
 
 function startGame(){
-  let ov=document.getElementById('startOverlay');
-  let ui=document.getElementById('startUI');
-  if(ov) ov.style.display='none';
-  if(ui) ui.style.display='none';
+  document.getElementById('startOverlay').style.display='none';
+  document.getElementById('startUI').style.display='none';
   if(canvas) canvas.style.visibility='visible';
   init();
   checkOrientation();
-  focusCanvas();                    // ← neu
+  focusCanvas();
 }
 
 document.onfullscreenchange = function(){
   let btn=document.getElementById('fsBtn');
-  btn.innerText=document.fullscreenElement ? '✖' : '⛶';
-  focusCanvas();                    // ← Fokus nach Event sichern
+  if(btn) btn.innerText=document.fullscreenElement ? '✖' : '⛶';
+  focusCanvas();
 };
 
 function toggleFullscreen(){
@@ -65,23 +59,27 @@ function toggleFullscreen(){
     if(document.exitFullscreen) document.exitFullscreen();
     else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
   }
-  setTimeout(focusCanvas,200);      // ← nach Wechsel erneut fokussieren
+  setTimeout(focusCanvas,200);
 }
 
 function checkOrientation(){
-  let rot = document.getElementById('rotateOverlay');
-  let stg = document.getElementById('stage');
-  let portrait = window.innerHeight > window.innerWidth; // kein fester px-Schwellenwert
-  if(rot) rot.style.display = portrait ? 'flex' : 'none';
-  if(stg) stg.style.visibility = portrait ? 'hidden' : 'visible';
+  let portrait = window.innerHeight > window.innerWidth;
+  document.getElementById('rotateOverlay').style.display = portrait ? 'flex' : 'none';
+  document.getElementById('stage').style.visibility = portrait ? 'hidden' : 'visible';
 }
 
+function setKey(key, val){
+  if(world && world.keyboard) world.keyboard[key] = val;
+  else keyboard[key] = val;
+}
+
+function press(key, el){ if(el) el.setAttribute('data-active','1'); setKey(key,true); focusCanvas(); return false; }
+function release(key, el){ if(el) el.removeAttribute('data-active'); setKey(key,false); return false; }
+
 function resetGame(){
-  let ids=['gameOverOverlay','youWonOverlay','startOverlay'];
-  for(let i=0;i<ids.length;i++){ let el=document.getElementById(ids[i]); if(el) el.style.display='none'; }
+  ['gameOverOverlay','youWonOverlay','startOverlay'].forEach(id=>{ let el=document.getElementById(id); if(el) el.style.display='none'; });
   if(canvas){ let ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
-  location.reload();                // sauberer Reset
-  // focusCanvas() nach reload nicht nötig
+  location.reload();
 }
 
 function handleKeyDown(e){
@@ -102,36 +100,19 @@ function handleKeyUp(e){
   if(e.code==='KeyD')       keyboard.D=false;
 }
 
+function uiTap(action){
+  if(!keyboard) return;
+  setKey(action,true);
+  setTimeout(()=>setKey(action,false),220);
+}
 
 function renderInfoList(){
-  let box = document.getElementById('infoList'); if(!box) return;
-  let html = '';
-  for (let k in UI.controls) {
-    html += '<p><span class="kbd">'+k+'</span> – '+UI.controls[k]+'</p>';
-  }
-  box.innerHTML = html;
+  let box=document.getElementById('infoList'); if(!box) return;
+  box.innerHTML = Object.entries(UI.controls).map(([k,v])=>`<p><span class="kbd">${k}</span> – ${v}</p>`).join('');
 }
-function showInfo(){
-  let c = document.getElementById('infoCard'); if(!c) return;
-  renderInfoList();
-  c.style.display = 'flex'; c.ariaHidden = 'false'; UI.open = true;
-}
-function hideInfo(){
-  let c = document.getElementById('infoCard'); if(!c) return;
-  c.style.display = 'none'; c.ariaHidden = 'true'; UI.open = false; focusCanvas();
-}
-function toggleInfo(){
-  if (UI.open) { hideInfo(); } else { showInfo(); }
-}
-// Deutsch: Spieler hat verloren
-function showGameOver(){
-  document.getElementById('gameOverOverlay').style.display='block';
-}
+function showInfo(){ renderInfoList(); let c=document.getElementById('infoCard'); if(c){ c.style.display='flex'; c.ariaHidden='false'; UI.open=true; }}
+function hideInfo(){ let c=document.getElementById('infoCard'); if(c){ c.style.display='none'; c.ariaHidden='true'; UI.open=false; focusCanvas(); }}
+function toggleInfo(){ UI.open?hideInfo():showInfo(); }
 
-// Deutsch: Endboss ist tot
-function showYouWon(){
-  document.getElementById('youWonOverlay').style.display='block';
-}
-
-
-
+function showGameOver(){ document.getElementById('gameOverOverlay').style.display='block'; }
+function showYouWon(){ document.getElementById('youWonOverlay').style.display='block'; }
