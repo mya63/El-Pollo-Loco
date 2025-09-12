@@ -1,54 +1,61 @@
 @font-face {
-  font-family: 'zabars';
-  src: url('fonts/zabars.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+font-family: 'zabars';
+src: url('fonts/zabars.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
 }
+
 
 /* Deutsch: Content auf 1920px begrenzen */
 body {
-  max-width: 1920px;
-  margin: 0 auto;
-  font-family: 'zabars', Arial, Helvetica, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-image: url('img/5_background/desert-7927409_1920.jpg');
-  background-position: center;
-  background-size: cover;
+max-width: 1920px;
+margin: 0 auto;
+font-family: 'zabars', Arial, Helvetica, sans-serif;
+display: flex;
+flex-direction: column;
+align-items: center;
+background-image: url('img/5_background/desert-7927409_1920.jpg');
+background-position: center;
+background-size: cover;
 }
+
 
 h1 {
-  font-size: 64px;
-  letter-spacing: 3px;
-  color: #ffd700;
-  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
-  margin: 20px 0;
+font-size: 48px; /* etwas kleiner und professioneller */
+letter-spacing: 2px;
+color: #ffd700;
+text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+margin: 16px 0;
 }
+
 
 main {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 1920px;
-  padding: 0 16px;
-  box-sizing: border-box;
+display: flex;
+justify-content: center;
+width: 100%;
+max-width: 1280px; /* Canvas Bereich kleiner für Desktop */
+padding: 0 16px;
+box-sizing: border-box;
 }
 
-:root { --pads: 0px; } /* Platz für Touchpads reservieren */
+
+:root { --pads: 0px; }
 #stage{
-  position: relative;
-  margin: 0 auto;
-  /* 720x480 = 3:2; passt in Breite ODER in (Höhe - Pads) * Ratio */
-  width: min(100vw, calc((100vh - var(--pads)) * (720 / 480)));
-  aspect-ratio: 720 / 480;
+position: relative;
+margin: 0 auto;
+width: min(90vw, calc((100vh - var(--pads)) * (720 / 480)));
+max-width: 960px; /* feste Obergrenze für Desktop */
+aspect-ratio: 720 / 480;
 }
+
 
 canvas {
-  background-color: black;
-  width: 100%;
-  height: 100%;
-  display: block;
+background-color: black;
+width: 100%;
+height: 100%;
+display: block;
+border: 2px solid #333; /* dezenter Rahmen */
+border-radius: 8px;
 }
 
 /* ===== Overlay/Start/HUD ===== */
@@ -107,6 +114,33 @@ canvas {
 }
 .pad-btn:active, .pad-btn[data-active="1"]{ opacity:1; transform:scale(1.04); }
 .pad, .pad * { pointer-events: auto; }
+
+/* Jump-Button Symbol statt Text */
+.pads .pad-right button:nth-child(1)::after {
+content: "\2191"; /* Pfeil nach oben */
+font-size: 22px;
+}
+.pads .pad-right button:nth-child(1) {
+font-size: 0; /* Text ausblenden */
+}
+
+/* Jump-Button Symbol mittig im Kreis platzieren */
+.pads .pad-right button:nth-child(1)::after {
+  content: "\2191"; /* Pfeil nach oben */
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.pads .pad-right button:nth-child(1) {
+  font-size: 0; /* Text ausblenden */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /* ===== Responsive Regeln ===== */
 /* Portrait: Spiel aus + Hinweis an + kein Scrollen */
