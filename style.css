@@ -127,3 +127,50 @@ canvas {
 @media (min-width:1025px){
   .pads{ display:none; }
 }
+
+/* ===== Desktop-Canvas professioneller skalieren =====
+   Kopiere diesen Block ans Ende deiner style.css ODER ersetze die bestehenden
+   #stage- und Desktop-@media-Regeln damit. */
+
+:root{
+  /* Maximale Breite des Spiels auf Desktop */
+  --game-max-w: 1100px;   /* 1024–1200 ist üblich; 1100 wirkt modern */
+  --game-max-vw: 85vw;    /* nicht die ganze Breite fressen */
+}
+
+/* Bühne: bleibt immer 3:2, skaliert nach Höhe oder Breite, mit Caps */
+#stage{
+  position: relative;
+  margin: 0 auto;
+  width: min(
+    var(--game-max-w),           /* Cap: feste Maxbreite */
+    var(--game-max-vw),          /* Cap: prozentual zum Viewport */
+    calc((100vh - var(--pads)) * (720 / 480)) /* Cap: Höhe => 3:2 */
+  );
+  aspect-ratio: 720 / 480;
+}
+
+/* Überschrift etwas dezenter auf Desktop */
+@media (min-width: 1025px){
+  h1{ font-size: 48px; }
+}
+
+/* Sehr große Monitore: noch kompakter & mehr Randluft */
+@media (min-width: 1440px){
+  :root{ --game-max-w: 1000px; --game-max-vw: 70vw; }
+  h1{ font-size: 44px; }
+}
+
+/* Mobile/Tablet Landscape bleibt wie gehabt (Pads) */
+@media (max-width:1024px) and (orientation:landscape){
+  :root{ --pads: 112px; }
+  .pads{ display:block; }
+  html, body{ overflow:hidden; height:100%; }
+}
+
+/* Portrait sperren bleibt unverändert */
+@media (orientation:portrait){
+  html, body{ overflow:hidden; height:100%; }
+  #stage{ display:none; }
+  #rotateOverlay{ display:flex; }
+}
