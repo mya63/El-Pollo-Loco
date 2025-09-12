@@ -3,42 +3,44 @@ let world;
 let keyboard = new Keyboard(); 
 
 function showStart(){
-  canvas=document.getElementById('canvas');
-  let ov=document.getElementById('startOverlay');
-  let ui=document.getElementById('startUI');
-  if(canvas) canvas.style.visibility='hidden';
-  if(ov) ov.style.display='block';
-  if(ui) ui.style.display='grid';
-  checkOrientation();                               // jetzt gleich prüfen
+  canvas = document.getElementById('canvas');
+  const ov = document.getElementById('startOverlay');
+  const ui = document.getElementById('startUI');
+  if(canvas) canvas.style.visibility = 'hidden';
+  if(ov) ov.style.display = 'block';
+  if(ui) ui.style.display = 'grid';
+  checkOrientation();                                // sofort prüfen
 }
+
 function init(){
   initLevel();
   world = new World(canvas, keyboard);
 }
 
 function startGame(){
-  let ov=document.getElementById('startOverlay');
-  let ui=document.getElementById('startUI');
-  if(ov) ov.style.display='none';
-  if(ui) ui.style.display='none';
-  if(canvas) canvas.style.visibility='visible';
-  init();                                           // Welt erstellen
-  checkOrientation();                               // nach Start prüfen
+  const ov = document.getElementById('startOverlay');
+  const ui = document.getElementById('startUI');
+  if(ov) ov.style.display = 'none';
+  if(ui) ui.style.display = 'none';
+  if(canvas) canvas.style.visibility = 'visible';
+  init();                                            // Welt erstellen
+  checkOrientation();                                // nach Start prüfen
 }
 
 function checkOrientation(){
-  let rot=document.getElementById('rotateOverlay');
-  let stg=document.getElementById('stage');
-  let isPortrait=window.innerHeight>window.innerWidth && window.innerWidth<900;
-  if(rot) rot.style.display=isPortrait?'flex':'none';
-  if(stg) stg.style.visibility=isPortrait?'hidden':'visible';
+  let rot = document.getElementById('rotateOverlay');
+  let stg = document.getElementById('stage');
+  let portrait = window.innerHeight > window.innerWidth; // kein fester px-Schwellenwert
+  if(rot) rot.style.display = portrait ? 'flex' : 'none';
+  if(stg) stg.style.visibility = portrait ? 'hidden' : 'visible';
 }
 
-function resetGame(){ 
-  let c = document.getElementById('canvas');            
-  let ctx = c.getContext('2d');                          
-  ctx.clearRect(0,0,c.width,c.height);                   
-  init();                                                
+function resetGame(){
+  // Overlays aus, Canvas sichtbar
+  let ids = ['gameOverOverlay','youWonOverlay','startOverlay'];
+  for (let i=0;i<ids.length;i++){ let el=document.getElementById(ids[i]); if(el) el.style.display='none'; }
+  if(canvas){ let ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
+  location.reload();                                 // Seite neu laden = sauberer Reset
 }
 
 function handleKeyDown(e){
