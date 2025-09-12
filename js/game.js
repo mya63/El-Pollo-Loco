@@ -2,6 +2,11 @@ let canvas;
 let world;
 let keyboard = new Keyboard(); 
 
+const UI = {
+  open: false,
+  controls: { '←': 'Gehen', '→': 'Gehen', 'SPACE': 'Springen', 'D': 'Tabasco werfen' }
+};
+
 function showStart(){
   canvas = document.getElementById('canvas');
   const ov = document.getElementById('startOverlay');
@@ -97,34 +102,27 @@ function handleKeyUp(e){
   if(e.code==='KeyD')       keyboard.D=false;
 }
 
-const UI = { open:false, controls:{ '← / →':'Gehen', 'Leertaste':'Springen', 'D':'Tabasco werfen' } };
 
 function renderInfoList(){
-  const box = document.getElementById('infoList'); let html='';
-  for (let k in UI.controls){
-    html += `<p><span class="kbd">${k}</span> – ${UI.controls[k]}</p>`;
+  let box = document.getElementById('infoList'); if(!box) return;
+  let html = '';
+  for (let k in UI.controls) {
+    html += '<p><span class="kbd">'+k+'</span> – '+UI.controls[k]+'</p>';
   }
   box.innerHTML = html;
 }
-
 function showInfo(){
-  let c=document.getElementById('infoCard');
-  if(c){ c.style.display='flex'; c.ariaHidden='false'; }
-  renderInfolist();
+  let c = document.getElementById('infoCard'); if(!c) return;
+  renderInfoList();
+  c.style.display = 'flex'; c.ariaHidden = 'false'; UI.open = true;
 }
-
 function hideInfo(){
-  let c=document.getElementById('infoCard');
-  if(c){ c.style.display='none'; c.ariaHidden='true'; }
-  focusCanvas();                    // ← neu
+  let c = document.getElementById('infoCard'); if(!c) return;
+  c.style.display = 'none'; c.ariaHidden = 'true'; UI.open = false; focusCanvas();
 }
-
 function toggleInfo(){
-  let c=document.getElementById('infoCard');
-  if(c && c.style.display==='flex'){ hideInfo(); } else { showInfo(); }
-  focusCanvas();                    // ← neu
+  if (UI.open) { hideInfo(); } else { showInfo(); }
 }
-
 // Deutsch: Spieler hat verloren
 function showGameOver(){
   document.getElementById('gameOverOverlay').style.display='block';
