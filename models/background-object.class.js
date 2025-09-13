@@ -6,3 +6,5 @@ class BackgroundObject extends MovableObject {
     this.height = 480; 
   }
 }
+
+
