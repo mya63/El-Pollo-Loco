@@ -6,6 +6,8 @@ class World {
   keyboard;
   camera_x = 0; bossFocus = false;
   statusBar = new StatusBar();
+  bottleBar = new StatusBarBottle();
+  bossBar = new StatusBarEndboss();
   throwableObjects = [];
   bottleCount = 0;
 
@@ -35,11 +37,14 @@ isStomp(c,e){
   return c.speedY < 0 && c.y < e.y && c.isAboveGround();
 }
 
-hitEnemy(e,d){ 
-  if(!e || !e.alive) return;
-  if(e.takeDamage) e.takeDamage(d);
-  else { e.hp = (e.hp||1)-d; if(e.hp<=0 && e.die) e.die(); }
-}
+  hitEnemy(e,d){
+    if(!e || !e.alive) return;
+    if(e.takeDamage) e.takeDamage(d);
+    else { e.hp = (e.hp||1)-d; if(e.hp<=0 && e.die) e.die(); }
+    if(e instanceof Endboss && this.bossBar){
+      this.bossBar.setPercentage(Math.max(e.hp,0) * 20);
+    }
+  }
 
 hitPlayer(d){ 
   if(this.character && this.character.hit) this.character.hit();
@@ -67,6 +72,7 @@ run(){
       );
       this.throwableObjects.push(b);
       this.bottleCount--;
+      this.bottleBar.setPercentage(Math.min(this.bottleCount,5) * 20);
       this.keyboard.D = false;
     }
   }
@@ -79,6 +85,7 @@ run(){
       if(this.isColliding(this.character, bo)){
         bo.collect();
         this.bottleCount++;
+        this.bottleBar.setPercentage(Math.min(this.bottleCount,5) * 20);
       }
     }
   }
@@ -125,6 +132,8 @@ checkBottleHits(){
       if (e instanceof Endboss && !e.hadFirstContact) {
         if (this.character.x > e.x - 600) {
           e.startIntro();
+          this.bossBar.visible = true;
+          this.bossBar.setPercentage(e.hp * 20);
           this.bossFocus = true;
           this.camera_x = -(e.x - 200);
           setTimeout(() => {
@@ -154,6 +163,10 @@ draw() {
   this.addObjectsToMap(this.level.backgroundObjects);
   this.ctx.translate(-cam,0);
   this.addToMap(this.statusBar);
+  this.addToMap(this.bottleBar);
+  if (this.bossBar.visible) {
+    this.addToMap(this.bossBar);
+  }
   this.ctx.translate(cam,0);
   this.addToMap(this.character);
   this.addObjectsToMap(this.level.clouds);
