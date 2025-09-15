@@ -35,8 +35,11 @@ class World {
 
 isStomp(c,e){
   const charBottom = c.y + c.height;
-  const enemyMid = e.y + e.height / 2;
-  return c.speedY < 0 && charBottom < enemyMid;
+  let limit = e.y + e.height / 2;
+  if(e instanceof SmallChicken){
+    limit = e.y + e.height;
+  }
+  return c.speedY < 0 && charBottom < limit;
 }
 
   hitEnemy(e,d){
@@ -54,14 +57,14 @@ hitPlayer(d){
 }
 
 run(){
-  setInterval(()=>{
+  this.runInterval = setInterval(()=>{
     this.checkCollisions();
     this.checkBottleHits();
-    this.checkThrowObjects();
     this.checkBottlePickups();
     this.checkEndbossIntro();
     this.checkGameOver();
   },200);
+  this.throwInterval = setInterval(()=>{ this.checkThrowObjects(); }, 1000/60);
 }
 
   checkThrowObjects() {
@@ -117,7 +120,7 @@ checkCollisions(){
   }
 }
 
-checkBottleHits(){ 
+  checkBottleHits(){
   for(let i=0;i<this.throwableObjects.length;i++){
     let t=this.throwableObjects[i]; if(!t || t.broken) continue;
     for(let j=0;j<this.level.enemies.length;j++){
@@ -159,8 +162,9 @@ checkBottleHits(){
 
 
 draw() {
+  if(this.isStopped) return;
   this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-  const cam = Math.round(this.camera_x); 
+  const cam = Math.round(this.camera_x);
   this.ctx.translate(cam,0);
   this.addObjectsToMap(this.level.backgroundObjects);
   this.ctx.translate(-cam,0);
@@ -206,5 +210,11 @@ addObjectsToMap(objs){
   flipImageBack(mo) {
     mo.x *= -1;
     this.ctx.restore();
+  }
+
+  stop(){
+    this.isStopped = true;
+    if(this.runInterval) clearInterval(this.runInterval);
+    if(this.throwInterval) clearInterval(this.throwInterval);
   }
 }
