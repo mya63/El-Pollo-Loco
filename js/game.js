@@ -1,6 +1,15 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let bgMusic;
+
+const audioStart = new Audio('audio/start.ogg');
+const audioGame = new Audio('audio/game.mp3');
+const audioWin = new Audio('audio/win.mp3');
+const audioGameOver = new Audio('audio/gameover.mp3');
+[audioStart, audioGame, audioWin, audioGameOver].forEach(a=>{a.volume=0.2;});
+audioStart.loop = true;
+audioGame.loop = true;
 
 const UI = {
   open: false,
@@ -18,6 +27,8 @@ function showStart(){
   document.getElementById('startOverlay').style.display = 'block';
   document.getElementById('startUI').style.display = 'grid';
   checkOrientation();
+  audioStart.currentTime = 0;
+  audioStart.play();
 }
 
 function init(){
@@ -41,6 +52,12 @@ function startGame(){
   init();
   checkOrientation();
   focusCanvas();
+  audioStart.pause();
+  audioStart.currentTime = 0;
+  audioGame.currentTime = 0;
+  audioGame.play();
+  if(!bgMusic) bgMusic = document.getElementById('bgMusic');
+  if(bgMusic) bgMusic.play().catch(()=>{});
 }
 
 document.onfullscreenchange = function(){
@@ -73,6 +90,15 @@ function checkOrientation(){
 
 window.addEventListener('orientationchange', checkOrientation);
 
+function toggleMute(){
+  if(!bgMusic) bgMusic = document.getElementById('bgMusic');
+  if(!bgMusic) return;
+  bgMusic.muted = !bgMusic.muted;
+  let btn=document.getElementById('muteBtn');
+  if(btn) btn.innerText = bgMusic.muted ? '🔇' : '🔊';
+}
+window.toggleMute = toggleMute;
+
 function setKey(key, val){
   if(world && world.keyboard) world.keyboard[key] = val;
   else keyboard[key] = val;
@@ -90,6 +116,9 @@ function resetGame(){
   init();
   checkOrientation();
   focusCanvas();
+  [audioStart, audioWin, audioGameOver].forEach(a=>{a.pause(); a.currentTime=0;});
+  audioGame.currentTime = 0;
+  audioGame.play();
 }
 
 // expose function for inline button handlers
@@ -127,5 +156,17 @@ function showInfo(){ renderInfoList(); let c=document.getElementById('infoCard')
 function hideInfo(){ let c=document.getElementById('infoCard'); if(c){ c.style.display='none'; c.ariaHidden='true'; UI.open=false; focusCanvas(); }}
 function toggleInfo(){ UI.open?hideInfo():showInfo(); }
 
-function showGameOver(){ document.getElementById('gameOverOverlay').style.display='block'; }
-function showYouWon(){ document.getElementById('youWonOverlay').style.display='block'; }
+function showGameOver(){
+  audioGame.pause();
+  audioGame.currentTime = 0;
+  audioGameOver.currentTime = 0;
+  audioGameOver.play();
+  document.getElementById('gameOverOverlay').style.display='block';
+}
+function showYouWon(){
+  audioGame.pause();
+  audioGame.currentTime = 0;
+  audioWin.currentTime = 0;
+  audioWin.play();
+  document.getElementById('youWonOverlay').style.display='block';
+}

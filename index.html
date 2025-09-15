@@ -32,6 +32,7 @@
     <main>
       <div id="stage">
         <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
+        <audio id="bgMusic" src="audio/start.ogg" loop muted></audio>
 
         <img id="startOverlay" class="overlay" src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startscreen" />
 
@@ -52,17 +53,18 @@
                   aria-label="Spiel starten">▶</button>
         </div>
 
-        <button id="infoBtn" class="hud-btn" tabindex="-1"
-                onclick="toggleInfo()" onmousedown="return blurToCanvas(this)"
-                aria-label="Info">i</button>
-
-        <div id="hud" style="position:absolute; top:10px; right:10px">
-          <button id="resetBtn" class="hud-btn hud-btn--top" tabindex="-1"
-                  onclick="resetGame()" onmousedown="return blurToCanvas(this)"
+<div id="hud">
+          <button id="resetBtn" class="hud-btn" tabindex="-1"                  onclick="resetGame()" onmousedown="return blurToCanvas(this)"
                   aria-label="Reset"><span class="icon">↻</span></button>
-          <button id="fsBtn" class="hud-btn hud-btn--top" tabindex="-1" style="right:56px"
+          <button id="fsBtn" class="hud-btn" tabindex="-1"
                   onclick="toggleFullscreen()" onmousedown="return blurToCanvas(this)"
                   aria-label="Fullscreen">⛶</button>
+                  <button id="muteBtn" class="hud-btn" tabindex="-1"
+                  onclick="toggleMute()" onmousedown="return blurToCanvas(this)"
+                  aria-label="Ton umschalten">🔇</button>
+          <button id="infoBtn" class="hud-btn" tabindex="-1"
+                  onclick="toggleInfo()" onmousedown="return blurToCanvas(this)"
+                  aria-label="Info">i</button>
         </div>
 
         <div id="infoCard" class="info-card" onclick="hideInfo()" aria-hidden="true">
