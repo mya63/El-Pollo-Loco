@@ -108,6 +108,7 @@ animate() {
     }
   }, 1000 / 60);
 
+  // slow down animation cycle to avoid jittering
   setInterval(() => {
     if (this.isDead()) {
       this.playAnimation(this.IMAGES_DEAD);
@@ -125,7 +126,7 @@ animate() {
         this.playAnimation(this.IMAGES_IDLE);
       }
     }
-  }, 1000 / 60);
+  }, 100);
 }
 
 

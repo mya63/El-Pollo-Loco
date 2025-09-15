@@ -1,7 +1,7 @@
 class Endboss extends MovableObject {
   hadFirstContact=false; isIntro=false;
-  height=400; width=250; y=55; speed=0.4;
-  hp=5; damage=30; alive=true; 
+  height=400; width=250; y=55; speed=0.6;
+  maxHp=8; hp=8; damage=30; alive=true;
 
   IMAGES_INTRO = [
     'img/4_enemie_boss_chicken/2_alert/G5.png',
