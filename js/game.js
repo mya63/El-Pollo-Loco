@@ -1,13 +1,13 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let bgMusic;
 
 const audioStart = new Audio('audio/start.ogg');
 const audioGame = new Audio('audio/game.mp3');
 const audioWin = new Audio('audio/win.mp3');
 const audioGameOver = new Audio('audio/gameover.mp3');
-[audioStart, audioGame, audioWin, audioGameOver].forEach(a=>{a.volume=0.2;});
+const sounds = [audioStart, audioGame, audioWin, audioGameOver];
+sounds.forEach(a=>{a.volume=0.2;});
 audioStart.loop = true;
 audioGame.loop = true;
 
@@ -28,7 +28,8 @@ function showStart(){
   document.getElementById('startUI').style.display = 'grid';
   checkOrientation();
   audioStart.currentTime = 0;
-  audioStart.play();
+  audioStart.play().catch(()=>{});
+  updateMuteButton();
 }
 
 function init(){
@@ -55,9 +56,7 @@ function startGame(){
   audioStart.pause();
   audioStart.currentTime = 0;
   audioGame.currentTime = 0;
-  audioGame.play();
-  if(!bgMusic) bgMusic = document.getElementById('bgMusic');
-  if(bgMusic) bgMusic.play().catch(()=>{});
+  audioGame.play().catch(()=>{});
 }
 
 document.onfullscreenchange = function(){
@@ -90,12 +89,15 @@ function checkOrientation(){
 
 window.addEventListener('orientationchange', checkOrientation);
 
-function toggleMute(){
-  if(!bgMusic) bgMusic = document.getElementById('bgMusic');
-  if(!bgMusic) return;
-  bgMusic.muted = !bgMusic.muted;
+function updateMuteButton(){
   let btn=document.getElementById('muteBtn');
-  if(btn) btn.innerText = bgMusic.muted ? '🔇' : '🔊';
+  if(btn) btn.innerText = audioStart.muted ? '🔇' : '🔊';
+}
+
+function toggleMute(){
+  const mute = !audioStart.muted;
+  sounds.forEach(a=>a.muted = mute);
+  updateMuteButton();
 }
 window.toggleMute = toggleMute;
 
@@ -116,9 +118,8 @@ function resetGame(){
   init();
   checkOrientation();
   focusCanvas();
-  [audioStart, audioWin, audioGameOver].forEach(a=>{a.pause(); a.currentTime=0;});
-  audioGame.currentTime = 0;
-  audioGame.play();
+  sounds.forEach(a=>{a.pause(); a.currentTime=0;});
+  audioGame.play().catch(()=>{});
 }
 
 // expose function for inline button handlers
