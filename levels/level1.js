@@ -8,14 +8,14 @@ const bgConfig = {
   }
 };
 
-const enemySetup = { count: 10, startX: 900, minGap: 220, maxGap: 420 };
+const enemySetup = { count: 20, startX: 900, minGap: 220, maxGap: 420 };
  
 
 function buildChickenWave(cfg) {
   let list = [], x = cfg.startX;
   for (let i = 0; i < cfg.count; i++) {
     x += randBetween(cfg.minGap, cfg.maxGap);
-    if (i % 3 === 0) {
+    if (Math.random() < 0.5) {
       list.push(new SmallChicken(x));
     } else {
       list.push(new Chicken(x));
@@ -28,6 +28,15 @@ function randBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function buildBottles(count, startX, endX){
+  let list = [];
+  for(let i=0;i<count;i++){
+    let x = randBetween(startX, endX);
+    list.push(new Bottle(x));
+  }
+  return list;
+}
+
 function spawnEndbossAt(x) {
   let e = new Endboss();
   e.x = x;
@@ -35,11 +44,12 @@ function spawnEndbossAt(x) {
 }
 function initLevel() {
   const enemies = buildChickenWave(enemySetup);
-  enemies.push(spawnEndbossAt(4000));           
+  enemies.push(spawnEndbossAt(4000));
 
-  const backgrounds = buildBackground(bgConfig); 
-  level1 = new Level(enemies, [ new Cloud() ], backgrounds);
-  level1.level_end_x = bgConfig.endX;           
+  const backgrounds = buildBackground(bgConfig);
+  const bottles = buildBottles(10, 500, 3500);
+  level1 = new Level(enemies, [ new Cloud() ], backgrounds, bottles);
+  level1.level_end_x = bgConfig.endX;
 }
 
 

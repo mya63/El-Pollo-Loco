@@ -7,6 +7,7 @@ class World {
   camera_x = 0; bossFocus = false;
   statusBar = new StatusBar();
   throwableObjects = [];
+  bottleCount = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
@@ -31,7 +32,7 @@ class World {
 }
 
 isStomp(c,e){
-  return c.speedY < 0 && c.y < e.y;
+  return c.speedY < 0 && c.y < e.y && c.isAboveGround();
 }
 
 hitEnemy(e,d){ 
@@ -48,19 +49,44 @@ hitPlayer(d){
 run(){
   setInterval(()=>{
     this.checkCollisions();
-    this.checkBottleHits();      
+    this.checkBottleHits();
     this.checkThrowObjects();
+    this.checkBottlePickups();
     this.checkEndbossIntro();
+    this.checkGameOver();
   },200);
 }
 
   checkThrowObjects() {
-    if (this.keyboard.D) {
+    if (this.keyboard.D && this.bottleCount > 0) {
+      let dir = this.character.otherDirection ? -1 : 1;
       let b = new ThrowableObject(
-        this.character.x + 100,
-        this.character.y + 100
+        this.character.x + (dir === 1 ? this.character.width : -20),
+        this.character.y + 100,
+        dir
       );
       this.throwableObjects.push(b);
+      this.bottleCount--;
+      this.keyboard.D = false;
+    }
+  }
+
+  checkBottlePickups(){
+    let bottles = this.level.bottles || [];
+    for(let i=0;i<bottles.length;i++){
+      let bo = bottles[i];
+      if(!bo || bo.collected) continue;
+      if(this.isColliding(this.character, bo)){
+        bo.collect();
+        this.bottleCount++;
+      }
+    }
+  }
+
+  checkGameOver(){
+    if(this.character.isDead() && !this.gameOverShown){
+      this.gameOverShown = true;
+      showGameOver();
     }
   }
 
@@ -131,6 +157,7 @@ draw() {
   this.ctx.translate(cam,0);
   this.addToMap(this.character);
   this.addObjectsToMap(this.level.clouds);
+  this.addObjectsToMap(this.level.bottles);
   this.addObjectsToMap(this.level.enemies);
   this.addObjectsToMap(this.throwableObjects);
   this.ctx.translate(-cam,0);
@@ -141,7 +168,7 @@ addObjectsToMap(objs){
   const now = Date.now();
   for(let i=0;i<objs.length;i++){
     let o=objs[i];
-    if(!o || o.broken) continue;
+    if(!o || o.broken || o.collected) continue;
     if(o.alive===false){
       if(!o.deadTime || now - o.deadTime > 1000) continue;
     }
