@@ -63,10 +63,12 @@ function toggleFullscreen(){
 }
 
 function checkOrientation(){
-  let portrait = window.innerHeight > window.innerWidth;
-  document.getElementById('rotateOverlay').style.display = portrait ? 'flex' : 'none';
-  document.getElementById('stage').style.visibility = portrait ? 'hidden' : 'visible';
+  const portrait = window.matchMedia('(orientation: portrait)').matches;
+  const overlay = document.getElementById('rotateOverlay');
+  if (overlay) overlay.style.display = portrait ? 'flex' : 'none';
 }
+
+window.addEventListener('orientationchange', checkOrientation);
 
 function setKey(key, val){
   if(world && world.keyboard) world.keyboard[key] = val;
