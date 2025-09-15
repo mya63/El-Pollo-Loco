@@ -53,7 +53,7 @@ box-sizing: border-box;
 
 :root {
   --pads: 0px;
-  --stage-offset: clamp(200px, 26vh, 280px);
+  --stage-offset: clamp(140px, 22vh, 260px);
 }
 #stage{
   position: relative;
@@ -174,7 +174,7 @@ font-size: 0;
 }
 
 @media (max-width:1024px) and (orientation:landscape){
-  :root{ --pads: 112px; }  
+  :root{ --pads: clamp(64px, 16vh, 120px); }  
   .pads{ display:block; }
   html, body{ overflow:hidden; height:100%; }
 }
@@ -186,8 +186,41 @@ font-size: 0;
 
 
 :root{
-  --game-max-w: 1100px;   
-  --game-max-vw: 85vw;    
+  --game-max-w: 1100px;
+  --game-max-vw: 85vw;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --game-max-vw: 94vw;
+    --stage-offset: clamp(112px, 20vh, 220px);
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --game-max-vw: 96vw;
+    --stage-offset: clamp(92px, 18vh, 200px);
+  }
+}
+
+@media (max-width: 520px) {
+  :root {
+    --game-max-vw: 98vw;
+    --stage-offset: clamp(74px, 17vh, 180px);
+  }
+}
+
+@media (max-height: 720px) {
+  :root {
+    --stage-offset: clamp(88px, 18vh, 200px);
+  }
+}
+
+@media (max-height: 600px) {
+  :root {
+    --stage-offset: clamp(64px, 16vh, 160px);
+  }
 }
 
 #stage{
@@ -211,7 +244,7 @@ font-size: 0;
 }
 
 @media (max-width:1024px) and (orientation:landscape){
-  :root{ --pads: 112px; }
+  :root{ --pads: clamp(64px, 16vh, 120px); }
   .pads{ display:block; }
   html, body{ overflow:hidden; height:100%; }
 }
