@@ -83,8 +83,13 @@ function release(key, el){ if(el) el.removeAttribute('data-active'); setKey(key,
 
 function resetGame(){
   ['gameOverOverlay','youWonOverlay','startOverlay'].forEach(id=>{ let el=document.getElementById(id); if(el) el.style.display='none'; });
+  let ui=document.getElementById('startUI'); if(ui) ui.style.display='none';
+  if(world && world.stop) world.stop();
+  keyboard = new Keyboard();
   if(canvas){ let ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }
-  location.reload();
+  init();
+  checkOrientation();
+  focusCanvas();
 }
 
 // expose function for inline button handlers
