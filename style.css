@@ -139,8 +139,6 @@ font-size: 0;
 
 @media (orientation:portrait){
   html, body{ overflow:hidden; height:100%; }
-  #stage{ display:none; }
-  #rotateOverlay{ display:flex; }
 }
 
 @media (max-width:1024px) and (orientation:landscape){
@@ -186,8 +184,3 @@ font-size: 0;
   html, body{ overflow:hidden; height:100%; }
 }
 
-@media (orientation:portrait){
-  html, body{ overflow:hidden; height:100%; }
-  #stage{ display:none; }
-  #rotateOverlay{ display:flex; }
-}
