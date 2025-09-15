@@ -7,14 +7,41 @@ class ThrowableObject extends MovableObject {
     this.height = 60;
     this.width = 50;
     this.dir = dir || 1;
+    this.speed = 10;
     this.trow();
   }
 
+findNearestEnemy(){
+  if(typeof world === 'undefined' || !world || !world.level) return null;
+  let enemies = world.level.enemies || [];
+  let nearest = null;
+  let min = Infinity;
+  for(let i=0;i<enemies.length;i++){
+    let e = enemies[i];
+    if(!e || !e.alive) continue;
+    let dx = (e.x + e.width/2) - (this.x + this.width/2);
+    let dy = (e.y + e.height/2) - (this.y + this.height/2);
+    let dist = dx*dx + dy*dy;
+    if(dist < min){ min = dist; nearest = e; }
+  }
+  return nearest;
+}
+
 trow(){
-  this.speedY = 20;
-  this.acceleration = 2.5;
-  this.applyGravity();
-  let vx = 10 * this.dir;
-  setInterval(()=>{ this.x += vx; }, 1000/60);
+  setInterval(()=>{
+    if(this.broken) return;
+    let target = this.findNearestEnemy();
+    if(target){
+      let dx = (target.x + target.width/2) - (this.x + this.width/2);
+      let dy = (target.y + target.height/2) - (this.y + this.height/2);
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist){
+        this.x += (dx/dist) * this.speed;
+        this.y += (dy/dist) * this.speed;
+      }
+    } else {
+      this.x += this.dir * this.speed;
+    }
+  }, 1000/60);
 }
 }
