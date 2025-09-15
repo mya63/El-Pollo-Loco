@@ -63,10 +63,14 @@ function toggleFullscreen(){
 }
 
 function checkOrientation(){
-  let portrait = window.innerHeight > window.innerWidth;
-  document.getElementById('rotateOverlay').style.display = portrait ? 'flex' : 'none';
-  document.getElementById('stage').style.visibility = portrait ? 'hidden' : 'visible';
+  const portrait = window.matchMedia('(orientation: portrait)').matches;
+  const overlay = document.getElementById('rotateOverlay');
+  const stage = document.getElementById('stage');
+  if (overlay) overlay.style.display = portrait ? 'flex' : 'none';
+  if (stage) stage.style.visibility = portrait ? 'hidden' : 'visible';
 }
+
+window.addEventListener('orientationchange', checkOrientation);
 
 function setKey(key, val){
   if(world && world.keyboard) world.keyboard[key] = val;
