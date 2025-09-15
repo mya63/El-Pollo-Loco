@@ -74,6 +74,10 @@ border-radius: 8px;
   object-fit: contain; display: block; background: #000; z-index: 4;
 }
 
+#rotateOverlay{
+  background: rgba(0,0,0,.8);
+}
+
 .hud-btn{
   position: absolute; right: 16px; bottom: 16px;
   width:36px; height:36px; border:none; border-radius:9999px;
@@ -93,7 +97,7 @@ border-radius: 8px;
 .close-btn{ margin-top:10px; width:100%; border:none; border-radius:8px; padding:8px 10px; background:#ffd700; color:#000; font-weight:700; cursor:pointer; }
 
 .rotate-center{ display:flex; align-items:center; justify-content:center; }
-.rotate-box{ font-family: Arial, Helvetica, sans-serif; text-align:center; background:rgba(0,0,0,.55); padding:16px 20px; border-radius:10px; }
+.rotate-box{ font-family: Arial, Helvetica, sans-serif; text-align:center; background:rgba(0,0,0,.55); padding:16px 20px; border-radius:10px; color:#fff; }
 .rotate-box h2{ margin:0 0 6px; font-size:20px; }
 .rotate-box p{ margin:0; font-size:14px; }
 
