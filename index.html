@@ -107,6 +107,80 @@
       </div>
     </div>
 
+    <button id="legalBtn" class="legal-btn" type="button" onclick="openLegalModal()">
+      Impressum
+    </button>
+
+    <div id="legalModal" class="legal-modal" aria-hidden="true" role="dialog" aria-modal="true" onclick="closeLegalModal()">
+      <div class="legal-dialog" role="document" onclick="event.stopPropagation()">
+        <button class="legal-close" type="button" aria-label="Schließen" onclick="closeLegalModal()">&times;</button>
+        <div class="legal-scroll">
+          <section id="impressum">
+            <h2>Impressum</h2>
+            <p><strong>Angaben gemäß § 5 TMG:</strong></p>
+            <p>
+              Muhammed Yunus Amini<br />
+              Frankfurter Straße<br />
+              63263 Neu-Isenburg<br />
+              Deutschland
+            </p>
+
+            <p><strong>Kontakt:</strong><br />
+              E-Mail: <a href="mailto:muhammedyunusamini4@gmail.com">muhammedyunusamini4@gmail.com</a>
+            </p>
+
+            <p><strong>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</strong><br />
+              Muhammed Yunus Amini<br />
+              Frankfurter Straße<br />
+              63263 Neu-Isenburg
+            </p>
+
+            <p><em>Hinweis:</em> Das Spiel "El Pollo Loco" ist ein nicht-kommerzielles Lern- und Ausbildungsprojekt im Rahmen der Developer Akademie.</p>
+          </section>
+
+          <section id="datenschutz">
+            <h2>Datenschutzerklärung</h2>
+            <p><strong>Allgemeiner Hinweis</strong></p>
+            <p>
+              Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website dient ausschließlich
+              zu Lern- und Demonstrationszwecken. Personenbezogene Daten werden nur im technisch notwendigen Umfang verarbeitet.
+            </p>
+
+            <h3>Erhebung und Verarbeitung von Daten</h3>
+            <p>
+              Beim Aufrufen dieser Website werden automatisch technische Informationen gespeichert,
+              wie z. B. Browsertyp, Betriebssystem, Datum und Uhrzeit des Zugriffs. Diese Daten sind nicht bestimmten Personen zuordenbar.
+            </p>
+
+            <h3>Cookies</h3>
+            <p>
+              Dieses Spiel verwendet keine Cookies, die personenbezogene Daten speichern.
+            </p>
+
+            <h3>Externe Inhalte</h3>
+            <p>
+              Das Spiel „El Pollo Loco“ kann externe Bibliotheken oder Medien (z. B. Audio-/Grafikdateien)
+              laden. Hierbei können technisch bedingt Daten wie die IP-Adresse an den jeweiligen Anbieter übertragen werden.
+            </p>
+
+            <h3>Ihre Rechte</h3>
+            <p>
+              Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten,
+              deren Herkunft und Empfänger sowie den Zweck der Datenverarbeitung. Außerdem haben Sie ein Recht auf
+              Berichtigung, Sperrung oder Löschung dieser Daten.
+            </p>
+
+            <h3>Kontakt</h3>
+            <p>
+              Bei Fragen zum Datenschutz wenden Sie sich bitte an:<br />
+              Muhammed Yunus Amini<br />
+              E-Mail: <a href="mailto:muhammedyunusamini4@gmail.com">muhammedyunusamini4@gmail.com</a>
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+
     <script src="js/game.js"></script>
   </body>
 </html>
