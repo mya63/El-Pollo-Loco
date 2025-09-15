@@ -106,21 +106,25 @@ run(){
     }
   }
 
-checkCollisions(){ 
-  let es=this.level.enemies; if(!es) return;
-  for(let i=0;i<es.length;i++){
-    let e=es[i]; if(!e||e.alive===false) continue;
-      if(this.isColliding(this.character, e)){
-      if(this.isStomp(this.character, e)){
-        if(e instanceof Chicken || e instanceof SmallChicken){
-          this.hitEnemy(e, e.hp||1);
-        } else {
-          this.hitEnemy(e,1);
-        }
-      } else {
-        this.hitPlayer(e.damage||10);
-      }
-    }
+checkCollisions(){
+  const enemies = this.level.enemies;
+  if (!enemies) return;
+  enemies.forEach(e => {
+    if (!e || e.alive === false) return;
+    if (this.isColliding(this.character, e)) this.resolveCollision(e);
+  });
+}
+
+resolveCollision(e){
+  if(this.isStomp(this.character, e)) this.handleStomp(e);
+  else this.hitPlayer(e.damage||10);
+}
+
+handleStomp(e){
+  if(e instanceof Chicken || e instanceof SmallChicken){
+    this.hitEnemy(e, e.hp||1);
+  } else {
+    this.hitEnemy(e,1);
   }
 }
 
@@ -136,20 +140,21 @@ checkCollisions(){
 
 
   checkEndbossIntro() {
-    for (let i = 0; i < this.level.enemies.length; i++) {
-      let e = this.level.enemies[i];
+    this.level.enemies.forEach(e => {
       if (e instanceof Endboss && !e.hadFirstContact) {
-        if (this.character.x > e.x - 600) {
-          e.startIntro();
-          this.bossBar.visible = true;
-          this.bossBar.setPercentage(e.hp / e.maxHp * 100);
-          this.bossFocus = true;
-          this.camera_x = -(e.x - 200);
-          setTimeout(() => {
-            this.bossFocus = false;
-          }, 1600);
-        }
+        this.tryStartBossIntro(e);
       }
+    });
+  }
+
+  tryStartBossIntro(e) {
+    if (this.character.x > e.x - 600) {
+      e.startIntro();
+      this.bossBar.visible = true;
+      this.bossBar.setPercentage(e.hp / e.maxHp * 100);
+      this.bossFocus = true;
+      this.camera_x = -(e.x - 200);
+      setTimeout(() => this.bossFocus = false, 1600);
     }
   }
 
@@ -167,24 +172,38 @@ checkCollisions(){
 
 draw() {
   if(this.isStopped) return;
-  this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+  this.clearCanvas();
   const cam = Math.round(this.camera_x);
   this.ctx.translate(cam,0);
+  this.drawScene(cam);
+  this.ctx.translate(-cam,0);
+  requestAnimationFrame(()=>this.draw());
+}
+
+clearCanvas(){
+  this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+}
+
+drawScene(cam){
   this.addObjectsToMap(this.level.backgroundObjects);
   this.ctx.translate(-cam,0);
+  this.drawUI();
+  this.ctx.translate(cam,0);
+  this.drawEntities();
+}
+
+drawUI(){
   this.addToMap(this.statusBar);
   this.addToMap(this.bottleBar);
-  if (this.bossBar.visible) {
-    this.addToMap(this.bossBar);
-  }
-  this.ctx.translate(cam,0);
+  if (this.bossBar.visible) this.addToMap(this.bossBar);
+}
+
+drawEntities(){
   this.addToMap(this.character);
   this.addObjectsToMap(this.level.clouds);
   this.addObjectsToMap(this.level.bottles);
   this.addObjectsToMap(this.level.enemies);
   this.addObjectsToMap(this.throwableObjects);
-  this.ctx.translate(-cam,0);
-  requestAnimationFrame(()=>this.draw());
 }
 
 addObjectsToMap(objs){
