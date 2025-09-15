@@ -170,53 +170,71 @@ handleStomp(e){
   }
 
 
-draw() {
-  if(this.isStopped) return;
-  this.clearCanvas();
-  const cam = Math.round(this.camera_x);
-  this.ctx.translate(cam,0);
-  this.drawScene(cam);
-  this.ctx.translate(-cam,0);
-  requestAnimationFrame(()=>this.draw());
-}
+  draw() {
+    if (this.isStopped) return;
+    this.clearCanvas();
+    this.clampCamera();
+    const cam = Math.round(this.camera_x);
+    const view = this.getViewBounds(cam);
+    this.ctx.translate(cam, 0);
+    this.drawScene(cam, view);
+    this.ctx.translate(-cam, 0);
+    requestAnimationFrame(() => this.draw());
+  }
 
-clearCanvas(){
-  this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-}
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
 
-drawScene(cam){
-  this.addObjectsToMap(this.level.backgroundObjects);
-  this.ctx.translate(-cam,0);
-  this.drawUI();
-  this.ctx.translate(cam,0);
-  this.drawEntities();
-}
+  drawScene(cam, view) {
+    this.addObjectsToMap(this.level.backgroundObjects, view, true);
+    this.ctx.translate(-cam, 0);
+    this.drawUI();
+    this.ctx.translate(cam, 0);
+    this.drawEntities(view);
+  }
 
-drawUI(){
+  drawUI(){
   this.addToMap(this.statusBar);
   this.addToMap(this.bottleBar);
   if (this.bossBar.visible) this.addToMap(this.bossBar);
 }
 
-drawEntities(){
-  this.addToMap(this.character);
-  this.addObjectsToMap(this.level.clouds);
-  this.addObjectsToMap(this.level.bottles);
-  this.addObjectsToMap(this.level.enemies);
-  this.addObjectsToMap(this.throwableObjects);
-}
-
-addObjectsToMap(objs){
-  const now = Date.now();
-  for(let i=0;i<objs.length;i++){
-    let o=objs[i];
-    if(!o || o.broken || o.collected) continue;
-    if(o.alive===false){
-      if(!o.deadTime || now - o.deadTime > 1000) continue;
-    }
-    this.addToMap(o);
+  drawEntities(view){
+    this.addToMap(this.character);
+    this.addObjectsToMap(this.level.clouds, view);
+    this.addObjectsToMap(this.level.bottles, view);
+    this.addObjectsToMap(this.level.enemies, view);
+    this.addObjectsToMap(this.throwableObjects, view);
   }
-}
+
+  addObjectsToMap(objs, view, skipCull = false){
+    if (!Array.isArray(objs) || objs.length === 0) return;
+    const now = Date.now();
+    for (let i = 0; i < objs.length; i++) {
+      const o = objs[i];
+      if (!o || o.broken || o.collected) continue;
+      if (o.alive === false) {
+        if (!o.deadTime || now - o.deadTime > 1000) continue;
+      }
+      if (!skipCull && !this.isInView(o, view)) continue;
+      this.addToMap(o);
+    }
+  }
+
+  getViewBounds(cam) {
+    const padding = this.canvas.width;
+    const left = -cam - padding;
+    const right = left + this.canvas.width + padding * 2;
+    return { left, right };
+  }
+
+  isInView(obj, view) {
+    if (!view) return true;
+    const x = obj.x || 0;
+    const width = obj.width || 0;
+    return x + width >= view.left && x <= view.right;
+  }
 
   addToMap(mo) {
     if (mo.otherDirection) this.flipImage(mo);
