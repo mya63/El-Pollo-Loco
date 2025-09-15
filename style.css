@@ -9,6 +9,9 @@ font-style: normal;
 body {
   max-width: 1920px;
   margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
   font-family: 'zabars', Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
@@ -16,6 +19,12 @@ body {
   background-image: url('img/5_background/desert-7927409_1920.jpg');
   background-position: center;
   background-size: cover;
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 body.modal-open {
@@ -42,13 +51,19 @@ box-sizing: border-box;
 }
 
 
-:root { --pads: 0px; }
+:root {
+  --pads: 0px;
+  --stage-offset: clamp(200px, 26vh, 280px);
+}
 #stage{
-position: relative;
-margin: 0 auto;
-width: min(90vw, calc((100vh - var(--pads)) * (720 / 480)));
-max-width: 960px; 
-aspect-ratio: 720 / 480;
+  position: relative;
+  margin: 0 auto;
+  width: min(
+    90vw,
+    max(0px, calc((100vh - var(--pads) - var(--stage-offset)) * (720 / 480)))
+  );
+  max-width: 960px;
+  aspect-ratio: 720 / 480;
 }
 
 
@@ -179,9 +194,9 @@ font-size: 0;
   position: relative;
   margin: 0 auto;
   width: min(
-    var(--game-max-w),         
-    var(--game-max-vw),          
-    calc((100vh - var(--pads)) * (720 / 480)) 
+    var(--game-max-w),
+    var(--game-max-vw),
+    max(0px, calc((100vh - var(--pads) - var(--stage-offset)) * (720 / 480)))
   );
   aspect-ratio: 720 / 480;
 }
