@@ -30,10 +30,8 @@ class World {
          a.x<b.x+b.width && a.y<b.y+b.height;
 }
 
-isStomp(c,e){ 
-  let cFoot = c.y + c.height;        
-  let eTop  = e.y + e.height*0.35;      
-  return c.speedY < 0 && cFoot <= eTop; 
+isStomp(c,e){
+  return c.speedY < 0 && c.y < e.y;
 }
 
 hitEnemy(e,d){ 
@@ -70,12 +68,16 @@ checkCollisions(){
   let es=this.level.enemies; if(!es) return;
   for(let i=0;i<es.length;i++){
     let e=es[i]; if(!e||e.alive===false) continue;
-    if(this.character.isCollided(e)){
+      if(this.character.isCollided(e)){
       if(this.isStomp(this.character,e)){
-        let t=e.constructor?e.constructor.name:'';         
-        let dmg=(t==='Chicken'||t==='SmallChicken')?(e.hp||1):1;
-        this.hitEnemy(e,dmg);                              
-      } else this.hitPlayer(e.damage||10);
+        if(e instanceof Chicken || e instanceof SmallChicken){
+          this.hitEnemy(e, e.hp||1);
+        } else {
+          this.hitEnemy(e,1);
+        }
+      } else {
+        this.hitPlayer(e.damage||10);
+      }
     }
   }
 }
