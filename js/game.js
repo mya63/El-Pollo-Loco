@@ -87,6 +87,9 @@ function resetGame(){
   location.reload();
 }
 
+// expose function for inline button handlers
+window.resetGame = resetGame;
+
 function handleKeyDown(e){
   if(e.code==='ArrowRight') keyboard.RIGHT=true;
   if(e.code==='ArrowLeft')  keyboard.LEFT=true;
