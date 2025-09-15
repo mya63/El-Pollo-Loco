@@ -65,9 +65,7 @@ function toggleFullscreen(){
 function checkOrientation(){
   const portrait = window.matchMedia('(orientation: portrait)').matches;
   const overlay = document.getElementById('rotateOverlay');
-  const stage = document.getElementById('stage');
-  if (overlay) overlay.style.display = portrait ? 'flex' : 'none';
-  if (stage) stage.style.visibility = portrait ? 'hidden' : 'visible';
+
 }
 
 window.addEventListener('orientationchange', checkOrientation);
