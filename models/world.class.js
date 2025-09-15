@@ -38,7 +38,7 @@ isStomp(c,e){
   // are above the enemy. This prevents running into enemies from
   // the side from defeating them instantly.
   const falling = c.speedY < 0;
-  const above = (c.y + c.height) - e.y < 15;
+  const above = (c.y + c.height) - e.y < 30;
   return falling && above;
 }
 
@@ -63,7 +63,7 @@ run(){
     this.checkBottlePickups();
     this.checkEndbossIntro();
     this.checkGameOver();
-  },200);
+  }, 1000/60);
   this.throwInterval = setInterval(()=>{ this.checkThrowObjects(); }, 1000/60);
 }
 
