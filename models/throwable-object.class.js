@@ -7,7 +7,7 @@ class ThrowableObject extends MovableObject {
     this.height = 60;
     this.width = 50;
     this.dir = dir || 1;
-    this.speed = 10;
+    this.speed = 8;
     this.trow();
   }
 
@@ -35,9 +35,16 @@ trow(){
       let dx = (target.x + target.width/2) - (this.x + this.width/2);
       let dy = (target.y + target.height/2) - (this.y + this.height/2);
       let dist = Math.sqrt(dx*dx + dy*dy);
-      if(dist){
-        this.x += (dx/dist) * this.speed;
-        this.y += (dy/dist) * this.speed;
+      if(dist < 350){
+        dx += (Math.random()-0.5) * 100;
+        dy += (Math.random()-0.5) * 100;
+        dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist){
+          this.x += (dx/dist) * this.speed;
+          this.y += (dy/dist) * this.speed;
+        }
+      } else {
+        this.x += this.dir * this.speed;
       }
     } else {
       this.x += this.dir * this.speed;

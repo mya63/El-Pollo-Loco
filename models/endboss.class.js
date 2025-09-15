@@ -1,7 +1,7 @@
 class Endboss extends MovableObject {
-  hadFirstContact=false; isIntro=false;
+  hadFirstContact=false; isIntro=false; aggressive=false;
   height=400; width=250; y=55; speed=0.6;
-  maxHp=8; hp=8; damage=30; alive=true;
+  maxHp=9; hp=9; damage=30; alive=true;
 
   IMAGES_INTRO = [
     'img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -19,6 +19,16 @@ class Endboss extends MovableObject {
     'img/4_enemie_boss_chicken/1_walk/G3.png',
     'img/4_enemie_boss_chicken/1_walk/G4.png',
   ];
+  IMAGES_ATTACK = [
+    'img/4_enemie_boss_chicken/3_attack/G13.png',
+    'img/4_enemie_boss_chicken/3_attack/G14.png',
+    'img/4_enemie_boss_chicken/3_attack/G15.png',
+    'img/4_enemie_boss_chicken/3_attack/G16.png',
+    'img/4_enemie_boss_chicken/3_attack/G17.png',
+    'img/4_enemie_boss_chicken/3_attack/G18.png',
+    'img/4_enemie_boss_chicken/3_attack/G19.png',
+    'img/4_enemie_boss_chicken/3_attack/G20.png'
+  ];
   IMAGES_DEAD = [
     'img/4_enemie_boss_chicken/5_dead/G24.png',
     'img/4_enemie_boss_chicken/5_dead/G25.png',
@@ -26,13 +36,15 @@ class Endboss extends MovableObject {
   ];
 
  constructor(){ super().loadImage(this.IMAGES_WALK[0]);
-    this.loadImages(this.IMAGES_INTRO); this.loadImages(this.IMAGES_WALK); this.loadImages(this.IMAGES_DEAD);
+    this.loadImages(this.IMAGES_INTRO); this.loadImages(this.IMAGES_WALK); this.loadImages(this.IMAGES_ATTACK); this.loadImages(this.IMAGES_DEAD);
     this.x=2500;
-  }
+ }
 
-  takeDamage(d){ 
+  takeDamage(d){
     if(!this.alive) return;
-    this.hp -= d; if(this.hp<=0) this.die();
+    this.hp -= d;
+    if(this.hp <= 3 && !this.aggressive) this.becomeAggressive();
+    if(this.hp<=0) this.die();
   }
 
   die(){
@@ -76,5 +88,23 @@ class Endboss extends MovableObject {
     this._animInt = setInterval(function () {
       self.playAnimation(self.IMAGES_WALK);
     }, 180);
+  }
+
+  becomeAggressive(){
+    this.aggressive = true;
+    clearInterval(this._moveInt);
+    clearInterval(this._animInt);
+    this.speed = 1.2;
+    this.startAttack();
+  }
+
+  startAttack(){
+    let self = this;
+    this._moveInt = setInterval(function(){
+      self.moveLeft();
+    },1000/60);
+    this._animInt = setInterval(function(){
+      self.playAnimation(self.IMAGES_ATTACK);
+    },120);
   }
 }
