@@ -47,7 +47,7 @@ function initLevel() {
   enemies.push(spawnEndbossAt(4000));
 
   const backgrounds = buildBackground(bgConfig);
-  const bottles = buildBottles(10, 500, 3500);
+
   level1 = new Level(enemies, [ new Cloud() ], backgrounds, bottles);
   level1.level_end_x = bgConfig.endX;
 }
