@@ -21,7 +21,7 @@ this.animate();
 die(){
  this.alive=false; this.speed=0;
  this.deadTime = Date.now();
-
+ this.playAnimation(this.IMAGES_DEAD);
 }
 
 
