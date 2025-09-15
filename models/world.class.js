@@ -34,12 +34,7 @@ class World {
 }
 
 isStomp(c,e){
-  const charBottom = c.y + c.height;
-  let limit = e.y + e.height / 2;
-  if(e instanceof SmallChicken){
-    limit = e.y + e.height;
-  }
-  return c.speedY < 0 && charBottom < limit;
+  return c.speedY < 0;
 }
 
   hitEnemy(e,d){
@@ -125,7 +120,7 @@ checkCollisions(){
     let t=this.throwableObjects[i]; if(!t || t.broken) continue;
     for(let j=0;j<this.level.enemies.length;j++){
       let e=this.level.enemies[j]; if(!e || !e.alive) continue;
-      if(this.isColliding(t,e)){ this.hitEnemy(e,1); t.broken=true; break; }
+      if(this.isColliding(t,e)){ this.hitEnemy(e, e.hp||1); t.broken=true; break; }
     }
   }
 }
