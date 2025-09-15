@@ -32,6 +32,8 @@ const UI = {
   }
 };
 
+let lastFocusedElement = null;
+
 /**
  * Displays the start screen and prepares the game.
  */
@@ -208,6 +210,8 @@ function resetGame() {
 
 // expose function for inline button handlers
 window.resetGame = resetGame;
+window.openLegalModal = openLegalModal;
+window.closeLegalModal = closeLegalModal;
 
 /**
  * Handles keydown events and updates the keyboard state.
@@ -288,6 +292,41 @@ function hideInfo() {
 function toggleInfo() {
   UI.open ? hideInfo() : showInfo();
 }
+
+function openLegalModal() {
+  const modal = document.getElementById('legalModal');
+  if (!modal) return;
+  lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  const closeBtn = modal.querySelector('.legal-close');
+  if (closeBtn) closeBtn.focus();
+}
+
+function closeLegalModal() {
+  const modal = document.getElementById('legalModal');
+  if (!modal) return;
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  const shouldFocusCanvas = !lastFocusedElement || lastFocusedElement.id === 'canvas';
+  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
+    lastFocusedElement.focus();
+  } else {
+    const btn = document.getElementById('legalBtn');
+    if (btn) btn.focus();
+  }
+  if (shouldFocusCanvas) focusCanvas();
+  lastFocusedElement = null;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('legalModal');
+    if (modal && modal.getAttribute('aria-hidden') === 'false') {
+      closeLegalModal();
+    }
+  }
+});
 
 /**
  * Displays the game over screen and plays the lose sound.
