@@ -34,7 +34,9 @@ class World {
 }
 
 isStomp(c,e){
-  return c.speedY < 0 && c.y < e.y && c.isAboveGround();
+  const charBottom = c.y + c.height;
+  const enemyMid = e.y + e.height / 2;
+  return c.speedY < 0 && charBottom < enemyMid;
 }
 
   hitEnemy(e,d){
@@ -42,7 +44,7 @@ isStomp(c,e){
     if(e.takeDamage) e.takeDamage(d);
     else { e.hp = (e.hp||1)-d; if(e.hp<=0 && e.die) e.die(); }
     if(e instanceof Endboss && this.bossBar){
-      this.bossBar.setPercentage(Math.max(e.hp,0) * 20);
+      this.bossBar.setPercentage(Math.max(e.hp,0) / e.maxHp * 100);
     }
   }
 
@@ -133,7 +135,7 @@ checkBottleHits(){
         if (this.character.x > e.x - 600) {
           e.startIntro();
           this.bossBar.visible = true;
-          this.bossBar.setPercentage(e.hp * 20);
+          this.bossBar.setPercentage(e.hp / e.maxHp * 100);
           this.bossFocus = true;
           this.camera_x = -(e.x - 200);
           setTimeout(() => {
