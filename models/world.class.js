@@ -136,8 +136,13 @@ draw() {
 }
 
 addObjectsToMap(objs){
+  const now = Date.now();
   for(let i=0;i<objs.length;i++){
-    let o=objs[i]; if(!o || o.alive===false || o.broken) continue; 
+    let o=objs[i];
+    if(!o || o.broken) continue;
+    if(o.alive===false){
+      if(!o.deadTime || now - o.deadTime > 1000) continue;
+    }
     this.addToMap(o);
   }
 }

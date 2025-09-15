@@ -26,8 +26,9 @@ setInterval(()=>{ if(this.alive) this.playAnimation(this.IMAGES_WALKING); }, 200
 
 
 die(){
-this.alive = false;
-this.playAnimation(this.IMAGES_DEAD);
+ this.alive = false;
+ this.deadTime = Date.now();
+ this.playAnimation(this.IMAGES_DEAD);
 }
 }
 
