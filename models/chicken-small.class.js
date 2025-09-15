@@ -21,13 +21,7 @@ this.animate();
 die(){
  this.alive=false; this.speed=0;
  this.deadTime = Date.now();
- this.loadImage(this.IMAGES_DEAD[0]);
-}
 
-takeDamage(d){
- if(!this.alive) return;
- this.hp -= d;
- if(this.hp<=0) this.die();
 }
 
 
