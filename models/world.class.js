@@ -51,9 +51,13 @@ isStomp(c,e){
     }
   }
 
-hitPlayer(d){ 
-  if(this.character && this.character.hit) this.character.hit();
-  if(this.statusBar) this.statusBar.setPercentage(this.character.energy);
+hitPlayer(d){
+  if(this.character && this.character.hit && !this.character.isHurt()){
+    this.character.hit(d);
+    if(this.statusBar){
+      this.statusBar.setPercentage(this.character.energy / this.character.maxEnergy * 100);
+    }
+  }
 }
 
 run(){

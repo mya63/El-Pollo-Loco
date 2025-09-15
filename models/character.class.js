@@ -71,6 +71,8 @@ IMAGES_LONG_IDLE = [
 
 world;
 lastMoveTime = 0;
+energy = 200;
+maxEnergy = 200;
 
 
 constructor() {
