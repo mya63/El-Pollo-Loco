@@ -144,6 +144,9 @@ function toggleMute() {
   const mute = !audioStart.muted;
   sounds.forEach(a => (a.muted = mute));
   updateMuteButton();
+  const btn = document.getElementById('muteBtn');
+  if (btn && document.activeElement === btn) btn.blur();
+  focusCanvas();
 }
 window.toggleMute = toggleMute;
 
