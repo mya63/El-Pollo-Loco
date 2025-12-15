@@ -9,6 +9,7 @@ const bgConfig = {
 };
 
 const enemySetup = { count: 20, startX: 900, minGap: 220, maxGap: 420 };
+
  
 
 function buildChickenWave(cfg) {
@@ -48,7 +49,10 @@ function initLevel() {
 
   const backgrounds = buildBackground(bgConfig);
   const bottles = buildBottles(60, 500, 3500);
+  const coins = buildCoins(); // [MYA NEU]
+
   level1 = new Level(enemies, [ new Cloud() ], backgrounds, bottles);
+  level1.coins = coins; // [MYA NEU]
   level1.level_end_x = bgConfig.endX;
 }
 
@@ -67,3 +71,15 @@ function buildBackground(cfg) {
   }
   return list;
 }
+
+// [MYA NEU] Coins spawnen (einfach, kontrolliert)
+function buildCoins() {
+  let list = [];
+  for (let i = 0; i < 25; i++) {
+    let x = randBetween(300, 3800);
+    let y = randBetween(120, 300);
+    list.push(new Coin(x, y));
+  }
+  return list;
+}
+

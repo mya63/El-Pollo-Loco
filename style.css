@@ -77,7 +77,7 @@ border-radius: 8px;
 }
 
 
-.start-ui{ position:absolute; inset:0; display:none; place-items:center; z-index:20; pointer-events:none; }
+.start-ui{ position:absolute; inset:0; display:none; place-items:center; z-index:10; pointer-events:none; }
 .start-btn{
   width:64px; height:64px; border:none; border-radius:9999px;
   background:#222; color:#fff; font-size:22px; line-height:1;
@@ -116,7 +116,7 @@ position:absolute;  width:36px; height:36px; border:none; border-radius:9999px;
 #hud #muteBtn{ bottom:0; left:38px; }
 #hud #infoBtn{ top:38px; left:0; }
 
-.info-card{ position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.45); z-index:7; }
+.info-card{ position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.45); z-index:30; }
 .info-box, .info-box *{ font-family: Arial, Helvetica, sans-serif; letter-spacing:.2px; }
 .info-box{ font-size:16px; line-height:1.5 }
 .info-box h3{ font-size:18px; margin:0 0 8px }

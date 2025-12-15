@@ -266,27 +266,26 @@ function renderInfoList() {
 /**
  * Displays the info overlay.
  */
-function showInfo() {
+function showInfo() { // ÄNDERN - MYA
   renderInfoList();
   let c = document.getElementById('infoCard');
-  if (c) {
-    c.style.display = 'flex';
-    c.ariaHidden = 'false';
-    UI.open = true;
-  }
+  let s = document.getElementById('startUI');
+  if (s && s.style.display !== 'none') s.style.display = 'none';
+  if (!c) return;
+  c.style.display = 'flex';
+  c.setAttribute('aria-hidden', 'false');
+  UI.open = true;
 }
 
-/**
- * Hides the info overlay.
- */
-function hideInfo() {
+function hideInfo() { // ÄNDERN - MYA
   let c = document.getElementById('infoCard');
-  if (c) {
-    c.style.display = 'none';
-    c.ariaHidden = 'true';
-    UI.open = false;
-    focusCanvas();
-  }
+  let s = document.getElementById('startUI');
+  let o = document.getElementById('startOverlay');
+  if (c) c.style.display = 'none';
+  if (c) c.setAttribute('aria-hidden', 'true');
+  UI.open = false;
+  if (o && o.style.display !== 'none' && s) s.style.display = 'grid';
+  focusCanvas();
 }
 
 /**
