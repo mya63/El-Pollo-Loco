@@ -97,22 +97,25 @@ class World {
     }, 100);
   }
 
-  checkThrowObjects() {
-    if (this.keyboard.D && this.bottleCount > 0) {
-      let dir = this.character.otherDirection ? -1 : 1;
-      let b = new ThrowableObject(
-        this.character.x + (dir === 1 ? this.character.width : -20),
-        this.character.y + 100,
-        dir
-      );
-      this.throwableObjects.push(b);
-      this.bottleCount--;
-      this.bottleBar.setPercentage(
-        Math.min(this.bottleCount, 5) * 20
-      );
-      this.keyboard.D = false;
-    }
+checkThrowObjects() {
+  if (this.keyboard.D && this.bottleCount > 0) {
+    let dir = this.character.otherDirection ? -1 : 1;
+    let b = new ThrowableObject(
+      this.character.x + (dir === 1 ? this.character.width : -20),
+      this.character.y + 100,
+      dir
+    );
+    this.throwableObjects.push(b);
+    this.bottleCount--;
+    this.bottleBar.setPercentage(
+      Math.min(this.bottleCount, 5) * 20
+    );
+
+    playThrowSound(); // [MYA NEW] Sound beim Werfen
+
+    this.keyboard.D = false;
   }
+}
 
 checkCoinCollision() {
   let coins = this.level.coins || [];

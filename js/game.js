@@ -11,11 +11,20 @@ const audioStart = new Audio('audio/start.ogg');
 const audioGame = new Audio('audio/game.mp3');
 const audioWin = new Audio('audio/win.mp3');
 const audioGameOver = new Audio('audio/gameover.mp3');
-const sounds = [audioStart, audioGame, audioWin, audioGameOver];
-sounds.forEach(a => {
-  a.volume = 0.2;
-});
-audioStart.loop = true;
+const throwSound = new Audio('audio/throw.mp3');
+
+const sounds = { // [MYA CHANGE] Objekt statt Array
+  start: audioStart,
+  game: audioGame,
+  win: audioWin,
+  over: audioGameOver,
+  throw: throwSound
+};
+
+function setDefaultVolumes() { // [MYA NEW] deutsche Kommentare, keine forEach
+  for (let k in sounds) sounds[k].volume = 0.2;
+}
+setDefaultVolumes(); // [MYA NEW]audioStart.loop = true;
 audioGame.loop = true;
 
 /**
@@ -45,6 +54,7 @@ function showStart() {
   checkOrientation();
   audioStart.currentTime = 0;
   audioStart.play().catch(() => {});
+  loadSoundState(); // [MYA NEW] Status aus localStorage übernehmen
   updateMuteButton();
 }
 
@@ -132,17 +142,18 @@ window.addEventListener('orientationchange', checkOrientation);
 /**
  * Updates the mute button to reflect current sound state.
  */
-function updateMuteButton() {
+function updateMuteButton() { // [MYA CHANGE]
   let btn = document.getElementById('muteBtn');
-  if (btn) btn.innerText = audioStart.muted ? '🔇' : '🔊';
+  if (btn) btn.innerText = sounds.start.muted ? '🔇' : '🔊';
 }
 
 /**
  * Toggles mute state for all game sounds.
  */
-function toggleMute() {
-  const mute = !audioStart.muted;
-  sounds.forEach(a => (a.muted = mute));
+function toggleMute() { // [MYA CHANGE]
+  const next = !sounds.start.muted;
+  setAllSoundsMuted(next);
+  localStorage.setItem('soundMuted', next);
   updateMuteButton();
   const btn = document.getElementById('muteBtn');
   if (btn && document.activeElement === btn) btn.blur();
@@ -350,4 +361,34 @@ function showYouWon() {
   audioWin.currentTime = 0;
   audioWin.play();
   document.getElementById('youWonOverlay').style.display = 'block';
+}
+
+
+// [MYA NEW] Sound abspielen
+function playThrowSound() { // [MYA CHANGE]
+  if (sounds.throw.muted) return;
+  sounds.throw.currentTime = 0;
+  sounds.throw.play().catch(() => {});
+}
+
+/**
+ * Lädt den Sound-Status aus dem LocalStorage
+ */
+function loadSoundState() {
+  isMuted = localStorage.getItem('soundMuted') === 'true';
+  setAllSoundsMuted(isMuted);
+}
+
+/**
+ * Wendet Mute auf alle Sounds an
+ */
+
+function loadSoundState() { // [MYA NEW]
+  const muted = localStorage.getItem('soundMuted') === 'true';
+  setAllSoundsMuted(muted);
+  updateMuteButton();
+}
+
+function setAllSoundsMuted(muted) { // [MYA NEW]
+  for (let k in sounds) sounds[k].muted = muted;
 }
