@@ -32,20 +32,15 @@ class MovableObject extends DrawableObject {
     );
   }
 
-  hit(damage = 5) {
-    this.energy -= damage;
-    if (this.energy < 0) {
-      this.energy = 0;
-    } else {
-      this.lastHit = new Date().getTime();
-    }
-  }
+hit(damage = 20) { // [MYA NEW] vorher 5
+  this.energy -= damage;
+  if (this.energy < 0) this.energy = 0;
+  this.lastHit = Date.now(); // [MYA NEW] immer setzen
+}
 
-  isHurt() {
-    let timespassed = new Date().getTime() - this.lastHit;
-    timespassed = timespassed / 1000;
-    return timespassed < 1;
-  }
+isHurt() { // [MYA NEW] vorher 1 sekunde
+  return (Date.now() - this.lastHit) < 300;
+}
 
   isDead() {
     return this.energy == 0;
