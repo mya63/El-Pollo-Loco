@@ -24,7 +24,8 @@ const sounds = { // [MYA CHANGE] Objekt statt Array
 function setDefaultVolumes() { // [MYA NEW] deutsche Kommentare, keine forEach
   for (let k in sounds) sounds[k].volume = 0.2;
 }
-setDefaultVolumes(); // [MYA NEW]audioStart.loop = true;
+setDefaultVolumes(); // [MYA FIX]
+audioStart.loop = true; // [MYA FIX]
 audioGame.loop = true;
 
 /**
@@ -137,7 +138,7 @@ function checkOrientation() {
   overlay.style.display = portrait && isMobile ? 'flex' : 'none';
 }
 
-window.addEventListener('orientationchange', checkOrientation);
+window.onorientationchange = checkOrientation; // [MYA CHANGE]
 
 /**
  * Updates the mute button to reflect current sound state.
@@ -199,26 +200,14 @@ function release(key, el) {
 /**
  * Resets the game world and restarts the level.
  */
-function resetGame() {
-  ['gameOverOverlay', 'youWonOverlay', 'startOverlay'].forEach(id => {
-    let el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  let ui = document.getElementById('startUI');
-  if (ui) ui.style.display = 'none';
+function resetGame() { // [MYA FIX]
+  const ids = { a:'gameOverOverlay', b:'youWonOverlay', c:'startOverlay' };
+  for (let k in ids) { let el = document.getElementById(ids[k]); if (el) el.style.display = 'none'; }
+  let ui = document.getElementById('startUI'); if (ui) ui.style.display = 'none';
   if (world && world.stop) world.stop();
-  keyboard = new Keyboard();
-  if (canvas) {
-    let ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  init();
-  checkOrientation();
-  focusCanvas();
-  sounds.forEach(a => {
-    a.pause();
-    a.currentTime = 0;
-  });
+  keyboard = new Keyboard(); if (canvas) canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+  init(); checkOrientation(); focusCanvas();
+  for (let s in sounds) { sounds[s].pause(); sounds[s].currentTime = 0; }
   audioGame.play().catch(() => {});
 }
 
@@ -332,14 +321,15 @@ function closeLegalModal() {
   lastFocusedElement = null;
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    const modal = document.getElementById('legalModal');
-    if (modal && modal.getAttribute('aria-hidden') === 'false') {
-      closeLegalModal();
-    }
-  }
-});
+function handleKeyDown(e) {
+  if (e.key === 'Escape') closeLegalModal(); // [MYA CHANGE]
+  if (e.code === 'ArrowRight') keyboard.RIGHT = true;
+  if (e.code === 'ArrowLeft') keyboard.LEFT = true;
+  if (e.code === 'ArrowUp') keyboard.UP = true;
+  if (e.code === 'ArrowDown') keyboard.DOWN = true;
+  if (e.code === 'Space') keyboard.SPACE = true;
+  if (e.code === 'KeyD') keyboard.D = true;
+}
 
 /**
  * Displays the game over screen and plays the lose sound.
@@ -374,10 +364,6 @@ function playThrowSound() { // [MYA CHANGE]
 /**
  * Lädt den Sound-Status aus dem LocalStorage
  */
-function loadSoundState() {
-  isMuted = localStorage.getItem('soundMuted') === 'true';
-  setAllSoundsMuted(isMuted);
-}
 
 /**
  * Wendet Mute auf alle Sounds an

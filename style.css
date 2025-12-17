@@ -173,8 +173,9 @@ font-size: 0;
   html, body{ overflow:hidden; height:100%; }
 }
 
-@media (max-width:1024px) and (orientation:landscape){
-  :root{ --pads: clamp(64px, 16vh, 120px); }  
+/* [MYA FIX] iPad Pro (1366px) + Touch-Geräte: Pads anzeigen */
+@media (max-width: 1366px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
+  :root{ --pads: clamp(64px, 16vh, 120px); }
   .pads{ display:block; }
   html, body{ overflow:hidden; height:100%; }
 }
@@ -243,7 +244,8 @@ font-size: 0;
   h1{ font-size: 44px; }
 }
 
-@media (max-width:1024px) and (orientation:landscape){
+/* [MYA FIX] iPad Pro (1366px) + Touch-Geräte: Pads anzeigen */
+@media (max-width: 1366px) and (orientation: landscape) and (hover: none) and (pointer: coarse) {
   :root{ --pads: clamp(64px, 16vh, 120px); }
   .pads{ display:block; }
   html, body{ overflow:hidden; height:100%; }
@@ -387,3 +389,18 @@ font-size: 0;
   }
 }
 
+/* [MYA CHANGE] Rotate-Overlay FULLSCREEN statt nur Stage */
+#rotateOverlay{
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: rgba(0,0,0,.85) !important;
+  display: none;
+}
+
+/* [MYA NEW] Box bleibt sauber zentriert */
+#rotateOverlay .rotate-box{
+  max-width: min(420px, 90vw);
+}
