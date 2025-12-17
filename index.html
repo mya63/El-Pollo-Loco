@@ -29,14 +29,16 @@
   </head>
 
 <!-- [MYA CHANGE] Body Events vereinheitlicht -->
+<!-- [MYA NEW] Contextmenü (Long-Press) deaktivieren -->
 <body onload="showStart()"
       onresize="checkOrientation(); applyAutoLayoutFullscreen()"
-      onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
+      onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)"
+      oncontextmenu="return blockContextMenu(event)">
     <h1>EL POLLO LOCO</h1>
 
     <main>
       <div id="stage">
-        <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
+<canvas id="canvas" width="720" height="480" tabindex="0" oncontextmenu="return false"></canvas>
 
         <img id="startOverlay" class="overlay" src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startscreen" />
 
@@ -82,7 +84,7 @@
       </div>
     </main>
 
-    <div id="pads" class="pads" aria-hidden="true">
+<div id="pads" class="pads no-context" aria-hidden="true" oncontextmenu="return false">
       <div class="pad pad-left">
         <button class="pad-btn"
           onpointerdown="press('LEFT',this)"  onpointerup="release('LEFT',this)"

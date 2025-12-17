@@ -264,6 +264,13 @@ function renderInfoList() {
     .join('');
 }
 
+// [MYA NEW] blockt Long-Press Kontextmenü (Mobile)
+function blockContextMenu(e) {
+  if (!e) return false;
+  e.preventDefault();
+  return false;
+}
+
 /**
  * Displays the info overlay.
  */
