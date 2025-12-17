@@ -338,3 +338,11 @@ function showYouWon() { // [MYA NEW]
 
 window.showGameOver = showGameOver; // [MYA NEW]
 window.showYouWon = showYouWon;     // [MYA NEW]
+
+// [MYA FIX] Inline-HTML braucht globale Referenzen
+window.handleKeyDown = handleKeyDown;
+window.handleKeyUp   = handleKeyUp;
+
+// [MYA FIX] Inline-HTML braucht globale Referenzen
+window.checkOrientation = checkOrientation;
+window.applyAutoLayoutFullscreen = applyAutoLayoutFullscreen;

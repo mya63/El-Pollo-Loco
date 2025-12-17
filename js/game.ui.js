@@ -71,6 +71,14 @@ function toggleInfo() {
 }
 window.toggleInfo = toggleInfo;
 
+function blockContextMenu(e) { // [MYA NEW] Rechtsklick/Longpress blocken
+  if (!e) return false;
+  e.preventDefault();
+  return false;
+}
+window.blockContextMenu = blockContextMenu; // [MYA NEW] für inline HTML
+
+
 /**
  * Opens the legal modal and stores the previously focused element.
  * @returns {void}
@@ -124,9 +132,4 @@ window.playThrowSound = playThrowSound;
  * @param {Event} e - Browser event.
  * @returns {boolean} Always returns false.
  */
-function blockContextMenu(e) {
-  if (!e) return false;
-  e.preventDefault();
-  return false;
-}
-window.blockContextMenu = blockContextMenu;
+

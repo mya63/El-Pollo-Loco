@@ -30,7 +30,7 @@
 <!-- [MYA CHANGE] Body Events vereinheitlicht -->
 <!-- [MYA NEW] Contextmenü (Long-Press) deaktivieren -->
 <body onload="showStart()"
-      onresize="checkOrientation(); applyAutoLayoutFullscreen()"
+onresize="if(window.checkOrientation) window.checkOrientation(); if(window.applyAutoLayoutFullscreen) window.applyAutoLayoutFullscreen();"
       onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)"
       oncontextmenu="return blockContextMenu(event)">
     <h1>EL POLLO LOCO</h1>
