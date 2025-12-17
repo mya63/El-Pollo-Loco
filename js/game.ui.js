@@ -20,12 +20,12 @@ window.uiTap = uiTap;
  * Renders the info list with available controls.
  * @returns {void}
  */
-function renderInfoList() {
+function renderInfoList() { // [MYA CHANGE] Label als eigenes span für sauberes Styling
   let box = document.getElementById('infoList');
   if (!box) return;
   let html = '';
   for (let key in UI.controls) {
-    html += `<p><span class="kbd">${key}</span> – ${UI.controls[key]}</p>`;
+    html += `<p><span class="kbd">${key}</span><span class="info-sep">–</span><span class="info-label">${UI.controls[key]}</span></p>`;
   }
   box.innerHTML = html;
 }
@@ -71,8 +71,8 @@ function toggleInfo() {
 }
 window.toggleInfo = toggleInfo;
 
-function blockContextMenu(e) { // [MYA NEW] Rechtsklick/Longpress blocken
-  if (!e) return false;
+function blockContextMenu(e) { // [MYA FIX]
+  if (!isGameRunning) return true;
   e.preventDefault();
   return false;
 }

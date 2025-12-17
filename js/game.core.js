@@ -7,6 +7,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let isGameRunning = false; // [MYA NEW] Spielstatus
 
 const audioStart = new Audio('audio/start.ogg');
 const audioGame = new Audio('audio/game.mp3');
@@ -32,7 +33,12 @@ audioGame.loop = true;
  */
 const UI = {
   open: false,
-  controls: { '←': 'Gehen', '→': 'Gehen', SPACE: 'Springen', D: 'Tabasco werfen' }
+  controls: {
+    '←': 'Gehen',
+    '→': 'Gehen',
+    SPACE: 'Springen',
+    D: 'Tabasco werfen'
+  }
 };
 
 let lastFocusedElement = null;
@@ -93,7 +99,8 @@ function init() {
 function focusCanvas() {
   if (!canvas) canvas = document.getElementById('canvas');
   if (!canvas) return;
-  if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0');
+  if (!canvas.hasAttribute('tabindex'))
+    canvas.setAttribute('tabindex', '0');
   canvas.focus();
 }
 
@@ -113,6 +120,7 @@ function blurToCanvas(el) {
  * @returns {void}
  */
 function startGame() {
+  isGameRunning = true; // [MYA NEW]
   document.body.classList.add('play-mode');
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('startUI').style.display = 'none';
@@ -148,7 +156,8 @@ function toggleFullscreen() {
     else if (el.msRequestFullscreen) el.msRequestFullscreen();
   } else {
     if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    else if (document.webkitExitFullscreen)
+      document.webkitExitFullscreen();
   }
   setTimeout(focusCanvas, 200);
 }
@@ -158,9 +167,13 @@ function toggleFullscreen() {
  * @returns {void}
  */
 function checkOrientation() {
-  const portrait = window.matchMedia('(orientation: portrait)').matches;
+  const portrait = window.matchMedia(
+    '(orientation: portrait)'
+  ).matches;
   const overlay = document.getElementById('rotateOverlay');
-  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(
+    navigator.userAgent
+  );
   if (!overlay) return;
   overlay.style.display = portrait && isMobile ? 'flex' : 'none';
 }
@@ -272,7 +285,8 @@ function handleKeyUp(e) {
  * @returns {void}
  */
 function handleKeyDown(e) {
-  if (e.key === 'Escape' && typeof closeLegalModal === 'function') closeLegalModal();
+  if (e.key === 'Escape' && typeof closeLegalModal === 'function')
+    closeLegalModal();
   if (e.code === 'ArrowRight') keyboard.RIGHT = true;
   if (e.code === 'ArrowLeft') keyboard.LEFT = true;
   if (e.code === 'ArrowUp') keyboard.UP = true;
@@ -286,7 +300,12 @@ function handleKeyDown(e) {
  * @returns {void}
  */
 function resetGame() {
-  const ids = { a: 'gameOverOverlay', b: 'youWonOverlay', c: 'startOverlay' };
+    isGameRunning = false; // [MYA NEW]
+  const ids = {
+    a: 'gameOverOverlay',
+    b: 'youWonOverlay',
+    c: 'startOverlay'
+  };
   for (let k in ids) {
     let el = document.getElementById(ids[k]);
     if (el) el.style.display = 'none';
@@ -295,7 +314,10 @@ function resetGame() {
   if (ui) ui.style.display = 'none';
   if (world && world.stop) world.stop();
   keyboard = new Keyboard();
-  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  if (canvas)
+    canvas
+      .getContext('2d')
+      .clearRect(0, 0, canvas.width, canvas.height);
   init();
   checkOrientation();
   focusCanvas();
@@ -316,7 +338,8 @@ window.release = release;
  * Displays the game over screen and plays the lose sound.
  * @returns {void}
  */
-function showGameOver() { // [MYA NEW]
+function showGameOver() {
+  // [MYA NEW]
   audioGame.pause();
   audioGame.currentTime = 0;
   audioGameOver.currentTime = 0;
@@ -328,7 +351,8 @@ function showGameOver() { // [MYA NEW]
  * Displays the win screen and plays the victory sound.
  * @returns {void}
  */
-function showYouWon() { // [MYA NEW]
+function showYouWon() {
+  // [MYA NEW]
   audioGame.pause();
   audioGame.currentTime = 0;
   audioWin.currentTime = 0;
@@ -337,11 +361,11 @@ function showYouWon() { // [MYA NEW]
 }
 
 window.showGameOver = showGameOver; // [MYA NEW]
-window.showYouWon = showYouWon;     // [MYA NEW]
+window.showYouWon = showYouWon; // [MYA NEW]
 
 // [MYA FIX] Inline-HTML braucht globale Referenzen
 window.handleKeyDown = handleKeyDown;
-window.handleKeyUp   = handleKeyUp;
+window.handleKeyUp = handleKeyUp;
 
 // [MYA FIX] Inline-HTML braucht globale Referenzen
 window.checkOrientation = checkOrientation;
