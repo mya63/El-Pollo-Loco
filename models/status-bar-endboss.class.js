@@ -1,3 +1,7 @@
+/**
+ * Status bar that displays the endboss health.
+ * Becomes visible once the boss fight starts.
+ */
 class StatusBarEndboss extends StatusBar {
   IMAGES = [
     'img/7_statusbars/2_statusbar_endboss/green/green0.png',
@@ -8,6 +12,9 @@ class StatusBarEndboss extends StatusBar {
     'img/7_statusbars/2_statusbar_endboss/green/green100.png'
   ];
 
+  /**
+   * Creates the endboss status bar and initializes it.
+   */
   constructor() {
     super();
     this.loadImages(this.IMAGES);

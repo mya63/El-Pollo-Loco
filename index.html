@@ -17,7 +17,6 @@
     <script src="models/status-bar-bottle.class.js"></script>
     <script src="models/status-bar-endboss.class.js"></script>
     <script src="models/status-bar-coin.class.js"></script>
-    <script src="models/world.class.js"></script>
     <script src="models/background-object.class.js"></script>
     <script src="models/keyboard.class.js"></script>
     <script src="models/level.class.js"></script>
@@ -188,6 +187,10 @@
       </div>
     </div>
 
-    <script src="js/game.js"></script>
+<script src="models/world.class.js"></script>   <!-- [MYA FIX] -->
+<script src="models/world.render.js"></script>  <!-- [MYA NEW] -->
+
+<script src="js/game.core.js"></script>         <!-- [MYA NEW] -->
+<script src="js/game.ui.js"></script>           <!-- [MYA NEW] -->
   </body>
 </html>

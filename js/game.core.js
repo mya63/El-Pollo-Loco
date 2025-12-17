@@ -1,8 +1,9 @@
 /**
- * Core game bootstrap and UI handlers.
- * Provides functions to start, reset and control the game.
- * @module game
+ * Core game bootstrap and global UI handlers.
+ * Split file to keep under 400 lines.
+ * @module game-core
  */
+
 let canvas;
 let world;
 let keyboard = new Keyboard();
@@ -13,7 +14,8 @@ const audioWin = new Audio('audio/win.mp3');
 const audioGameOver = new Audio('audio/gameover.mp3');
 const throwSound = new Audio('audio/throw.mp3');
 
-const sounds = { // [MYA CHANGE] Objekt statt Array
+const sounds = {
+  // [MYA CHANGE] Objekt statt Array
   start: audioStart,
   game: audioGame,
   win: audioWin,
@@ -21,10 +23,6 @@ const sounds = { // [MYA CHANGE] Objekt statt Array
   throw: throwSound
 };
 
-function setDefaultVolumes() { // [MYA NEW] deutsche Kommentare, keine forEach
-  for (let k in sounds) sounds[k].volume = 0.2;
-}
-setDefaultVolumes(); // [MYA FIX]
 audioStart.loop = true; // [MYA FIX]
 audioGame.loop = true;
 
@@ -34,16 +32,26 @@ audioGame.loop = true;
  */
 const UI = {
   open: false,
-  controls: {
-    '←': 'Gehen',
-    '→': 'Gehen',
-    SPACE: 'Springen',
-    D: 'Tabasco werfen'
-  }
+  controls: { '←': 'Gehen', '→': 'Gehen', SPACE: 'Springen', D: 'Tabasco werfen' }
 };
 
 let lastFocusedElement = null;
-// [MYA NEW] Layout-Fullscreen für kleine Geräte (ohne Fullscreen-API)
+
+/**
+ * Sets default volume for all sounds.
+ * @returns {void}
+ */
+function setDefaultVolumes() {
+  // deutsche Kommentare, keine forEach
+  for (let k in sounds) sounds[k].volume = 0.2;
+}
+setDefaultVolumes(); // [MYA FIX]
+
+/**
+ * Applies a CSS-based "fullscreen" layout on small/touch devices.
+ * Uses media queries instead of the Fullscreen API.
+ * @returns {void}
+ */
 function applyAutoLayoutFullscreen() {
   const small = window.matchMedia('(max-width: 1024px)').matches;
   const touch = window.matchMedia('(pointer: coarse)').matches;
@@ -52,9 +60,9 @@ function applyAutoLayoutFullscreen() {
   document.body.classList.toggle('play-mode', on);
 }
 
-
 /**
  * Displays the start screen and prepares the game.
+ * @returns {void}
  */
 function showStart() {
   canvas = document.getElementById('canvas');
@@ -64,14 +72,14 @@ function showStart() {
   checkOrientation();
   audioStart.currentTime = 0;
   audioStart.play().catch(() => {});
-  loadSoundState(); // [MYA NEW] Status aus localStorage übernehmen
+  loadSoundState();
   updateMuteButton();
-  applyAutoLayoutFullscreen(); // [MYA CHANGE]
-
+  applyAutoLayoutFullscreen();
 }
 
 /**
  * Initializes the game world after level data is loaded.
+ * @returns {void}
  */
 function init() {
   initLevel();
@@ -80,6 +88,7 @@ function init() {
 
 /**
  * Moves keyboard focus to the canvas element.
+ * @returns {void}
  */
 function focusCanvas() {
   if (!canvas) canvas = document.getElementById('canvas');
@@ -101,9 +110,10 @@ function blurToCanvas(el) {
 
 /**
  * Hides the start screen and begins the game.
+ * @returns {void}
  */
 function startGame() {
-  document.body.classList.add('play-mode'); // [MYA CHANGE]
+  document.body.classList.add('play-mode');
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('startUI').style.display = 'none';
   if (canvas) canvas.style.visibility = 'visible';
@@ -116,6 +126,10 @@ function startGame() {
   audioGame.play().catch(() => {});
 }
 
+/**
+ * Updates fullscreen button state on fullscreen change.
+ * @returns {void}
+ */
 document.onfullscreenchange = function () {
   let btn = document.getElementById('fsBtn');
   if (btn) btn.innerText = document.fullscreenElement ? '✖' : '⛶';
@@ -124,6 +138,7 @@ document.onfullscreenchange = function () {
 
 /**
  * Toggles the game's fullscreen mode.
+ * @returns {void}
  */
 function toggleFullscreen() {
   let el = document.getElementById('stage');
@@ -140,30 +155,57 @@ function toggleFullscreen() {
 
 /**
  * Shows orientation overlay on mobile devices in portrait mode.
+ * @returns {void}
  */
 function checkOrientation() {
   const portrait = window.matchMedia('(orientation: portrait)').matches;
   const overlay = document.getElementById('rotateOverlay');
   const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
   if (!overlay) return;
   overlay.style.display = portrait && isMobile ? 'flex' : 'none';
 }
 
-window.onorientationchange = checkOrientation; // [MYA CHANGE]
+/**
+ * Runs orientation check on device orientation change.
+ * @returns {void}
+ */
+window.onorientationchange = function () {
+  checkOrientation();
+};
 
 /**
  * Updates the mute button to reflect current sound state.
+ * @returns {void}
  */
-function updateMuteButton() { // [MYA CHANGE]
+function updateMuteButton() {
   let btn = document.getElementById('muteBtn');
   if (btn) btn.innerText = sounds.start.muted ? '🔇' : '🔊';
 }
 
 /**
- * Toggles mute state for all game sounds.
+ * Applies the mute state to all sounds.
+ * @param {boolean} muted - True to mute all sounds.
+ * @returns {void}
  */
-function toggleMute() { // [MYA CHANGE]
+function setAllSoundsMuted(muted) {
+  for (let k in sounds) sounds[k].muted = muted;
+}
+
+/**
+ * Loads sound mute state from localStorage and applies it.
+ * @returns {void}
+ */
+function loadSoundState() {
+  const muted = localStorage.getItem('soundMuted') === 'true';
+  setAllSoundsMuted(muted);
+  updateMuteButton();
+}
+
+/**
+ * Toggles mute state for all game sounds.
+ * @returns {void}
+ */
+function toggleMute() {
   const next = !sounds.start.muted;
   setAllSoundsMuted(next);
   localStorage.setItem('soundMuted', next);
@@ -178,6 +220,7 @@ window.toggleMute = toggleMute;
  * Sets a key value on the active keyboard.
  * @param {string} key - Key name.
  * @param {boolean} val - Whether the key is pressed.
+ * @returns {void}
  */
 function setKey(key, val) {
   if (world && world.keyboard) world.keyboard[key] = val;
@@ -210,29 +253,9 @@ function release(key, el) {
 }
 
 /**
- * Resets the game world and restarts the level.
- */
-function resetGame() { // [MYA FIX]
-  const ids = { a:'gameOverOverlay', b:'youWonOverlay', c:'startOverlay' };
-  for (let k in ids) { let el = document.getElementById(ids[k]); if (el) el.style.display = 'none'; }
-  let ui = document.getElementById('startUI'); if (ui) ui.style.display = 'none';
-  if (world && world.stop) world.stop();
-  keyboard = new Keyboard(); if (canvas) canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-  init(); checkOrientation(); focusCanvas();
-  for (let s in sounds) { sounds[s].pause(); sounds[s].currentTime = 0; }
-  audioGame.play().catch(() => {});
-}
-
-// expose function for inline button handlers
-window.resetGame = resetGame;
-window.openLegalModal = openLegalModal;
-window.closeLegalModal = closeLegalModal;
-
-/**
-
-/**
  * Handles keyup events and updates the keyboard state.
  * @param {KeyboardEvent} e - Keyboard event.
+ * @returns {void}
  */
 function handleKeyUp(e) {
   if (e.code === 'ArrowRight') keyboard.RIGHT = false;
@@ -244,93 +267,12 @@ function handleKeyUp(e) {
 }
 
 /**
- * Simulates a quick tap on a control for touch devices.
- * @param {string} action - Key action name.
+ * Handles keydown events and updates keyboard state.
+ * @param {KeyboardEvent} e - Keyboard event.
+ * @returns {void}
  */
-function uiTap(action) {
-  if (!keyboard) return;
-  setKey(action, true);
-  setTimeout(() => setKey(action, false), 220);
-}
-
-/**
- * Renders the info list with available controls.
- */
-function renderInfoList() {
-  let box = document.getElementById('infoList');
-  if (!box) return;
-  box.innerHTML = Object.entries(UI.controls)
-    .map(([k, v]) => `<p><span class="kbd">${k}</span> – ${v}</p>`)
-    .join('');
-}
-
-// [MYA NEW] blockt Long-Press Kontextmenü (Mobile)
-function blockContextMenu(e) {
-  if (!e) return false;
-  e.preventDefault();
-  return false;
-}
-
-/**
- * Displays the info overlay.
- */
-function showInfo() { // ÄNDERN - MYA
-  renderInfoList();
-  let c = document.getElementById('infoCard');
-  let s = document.getElementById('startUI');
-  if (s && s.style.display !== 'none') s.style.display = 'none';
-  if (!c) return;
-  c.style.display = 'flex';
-  c.setAttribute('aria-hidden', 'false');
-  UI.open = true;
-}
-
-function hideInfo() { // ÄNDERN - MYA
-  let c = document.getElementById('infoCard');
-  let s = document.getElementById('startUI');
-  let o = document.getElementById('startOverlay');
-  if (c) c.style.display = 'none';
-  if (c) c.setAttribute('aria-hidden', 'true');
-  UI.open = false;
-  if (o && o.style.display !== 'none' && s) s.style.display = 'grid';
-  focusCanvas();
-}
-
-/**
- * Toggles the info overlay visibility.
- */
-function toggleInfo() {
-  UI.open ? hideInfo() : showInfo();
-}
-
-function openLegalModal() {
-  const modal = document.getElementById('legalModal');
-  if (!modal) return;
-  lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('modal-open');
-  const closeBtn = modal.querySelector('.legal-close');
-  if (closeBtn) closeBtn.focus();
-}
-
-function closeLegalModal() {
-  const modal = document.getElementById('legalModal');
-  if (!modal) return;
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.classList.remove('modal-open');
-  const shouldFocusCanvas = !lastFocusedElement || lastFocusedElement.id === 'canvas';
-  if (lastFocusedElement && document.body.contains(lastFocusedElement)) {
-    lastFocusedElement.focus();
-  } else {
-    const btn = document.getElementById('legalBtn');
-    if (btn) btn.focus();
-  }
-  if (shouldFocusCanvas) focusCanvas();
-  lastFocusedElement = null;
-}
-
 function handleKeyDown(e) {
-  if (e.key === 'Escape') closeLegalModal(); // [MYA CHANGE]
+  if (e.key === 'Escape' && typeof closeLegalModal === 'function') closeLegalModal();
   if (e.code === 'ArrowRight') keyboard.RIGHT = true;
   if (e.code === 'ArrowLeft') keyboard.LEFT = true;
   if (e.code === 'ArrowUp') keyboard.UP = true;
@@ -340,49 +282,59 @@ function handleKeyDown(e) {
 }
 
 /**
- * Displays the game over screen and plays the lose sound.
+ * Resets the game world and restarts the level.
+ * @returns {void}
  */
-function showGameOver() {
+function resetGame() {
+  const ids = { a: 'gameOverOverlay', b: 'youWonOverlay', c: 'startOverlay' };
+  for (let k in ids) {
+    let el = document.getElementById(ids[k]);
+    if (el) el.style.display = 'none';
+  }
+  let ui = document.getElementById('startUI');
+  if (ui) ui.style.display = 'none';
+  if (world && world.stop) world.stop();
+  keyboard = new Keyboard();
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  init();
+  checkOrientation();
+  focusCanvas();
+  for (let s in sounds) {
+    sounds[s].pause();
+    sounds[s].currentTime = 0;
+  }
+  audioGame.play().catch(() => {});
+}
+window.resetGame = resetGame;
+window.showStart = showStart;
+window.startGame = startGame;
+window.toggleFullscreen = toggleFullscreen;
+window.press = press;
+window.release = release;
+
+/**
+ * Displays the game over screen and plays the lose sound.
+ * @returns {void}
+ */
+function showGameOver() { // [MYA NEW]
   audioGame.pause();
   audioGame.currentTime = 0;
   audioGameOver.currentTime = 0;
-  audioGameOver.play();
+  audioGameOver.play().catch(() => {});
   document.getElementById('gameOverOverlay').style.display = 'block';
 }
 
 /**
  * Displays the win screen and plays the victory sound.
+ * @returns {void}
  */
-function showYouWon() {
+function showYouWon() { // [MYA NEW]
   audioGame.pause();
   audioGame.currentTime = 0;
   audioWin.currentTime = 0;
-  audioWin.play();
+  audioWin.play().catch(() => {});
   document.getElementById('youWonOverlay').style.display = 'block';
 }
 
-
-// [MYA NEW] Sound abspielen
-function playThrowSound() { // [MYA CHANGE]
-  if (sounds.throw.muted) return;
-  sounds.throw.currentTime = 0;
-  sounds.throw.play().catch(() => {});
-}
-
-/**
- * Lädt den Sound-Status aus dem LocalStorage
- */
-
-/**
- * Wendet Mute auf alle Sounds an
- */
-
-function loadSoundState() { // [MYA NEW]
-  const muted = localStorage.getItem('soundMuted') === 'true';
-  setAllSoundsMuted(muted);
-  updateMuteButton();
-}
-
-function setAllSoundsMuted(muted) { // [MYA NEW]
-  for (let k in sounds) sounds[k].muted = muted;
-}
+window.showGameOver = showGameOver; // [MYA NEW]
+window.showYouWon = showYouWon;     // [MYA NEW]

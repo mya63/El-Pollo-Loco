@@ -1,20 +1,25 @@
+/**
+ * Represents the game world (logic part).
+ * Rendering methods are in world.render.js to keep files under 400 lines.
+ */
 class World {
   character = new Character();
   level = level1;
-  canvas;
-  ctx;
-  keyboard;
-  camera_x = 0;
-  bossFocus = false;
+  canvas; ctx; keyboard;
+  camera_x = 0; bossFocus = false;
   statusBar = new StatusBar();
   bottleBar = new StatusBarBottle();
   bossBar = new StatusBarEndboss();
-  throwableObjects = [];
-  bottleCount = 0;
   coinBar = new StatusBarCoin(); // [MYA FIX]
+  throwableObjects = {};
+  bottleCount = 0;
   coinCount = 0; // [MYA FIX]
-  coinMax = 0; // [MYA FIX]
+  coinMax = 0;   // [MYA FIX]
 
+  /**
+   * @param {HTMLCanvasElement} canvas - Canvas element.
+   * @param {Keyboard} keyboard - Keyboard state.
+   */
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext('2d');
     this.canvas = canvas;
@@ -22,65 +27,59 @@ class World {
     this.setWorld();
     this.coinMax = (this.level.coins || []).length; // [MYA FIX]
     this.coinBar.setPercentage(0); // [MYA FIX]
-
     this.run();
-    this.draw();
+    this.draw(); // kommt aus world.render.js
   }
 
+  /**
+   * Links world to character and starts animation once.
+   * @returns {void}
+   */
   setWorld() {
     this.character.world = this;
-    if (!this._animStarted) {
-      this._animStarted = true;
-      this.character.animate();
-    }
+    if (this._animStarted) return;
+    this._animStarted = true;
+    this.character.animate();
   }
 
+  /**
+   * AABB collision check.
+   * @param {Object} a - First object.
+   * @param {Object} b - Second object.
+   * @returns {boolean} True if colliding.
+   */
   isColliding(a, b) {
-    return (
-      a.x + a.width > b.x &&
-      a.y + a.height > b.y &&
-      a.x < b.x + b.width &&
-      a.y < b.y + b.height
-    );
+    return a.x + a.width > b.x && a.y + a.height > b.y &&
+           a.x < b.x + b.width && a.y < b.y + b.height;
   }
 
+  /**
+   * Checks if player stomped an enemy.
+   * @param {MovableObject} c - Character.
+   * @param {MovableObject} e - Enemy.
+   * @returns {boolean} True if stomp.
+   */
   isStomp(c, e) {
-    // A stomp only counts when the player is falling and their feet
-    // are above the enemy. This prevents running into enemies from
-    // the side from defeating them instantly.
     const falling = c.speedY < 0;
     const above = c.y + c.height - e.y < 30;
     return falling && above;
   }
 
-  hitEnemy(e, d) {
-    if (!e || !e.alive) return;
-    if (e.takeDamage) e.takeDamage(d);
-    else {
-      e.hp = (e.hp || 1) - d;
-      if (e.hp <= 0 && e.die) e.die();
-    }
-    if (e instanceof Endboss && this.bossBar) {
-      this.bossBar.setPercentage((Math.max(e.hp, 0) / e.maxHp) * 100);
-    }
-  }
-
-  hitPlayer(d) {
-    if (
-      this.character &&
-      this.character.hit &&
-      !this.character.isHurt()
-    ) {
-      this.character.hit(d);
-      if (this.statusBar) {
-        this.statusBar.setPercentage(
-          (this.character.energy / this.character.maxEnergy) * 100
-        );
-      }
-    }
-  }
-
+  /**
+   * Starts all game loops.
+   * @returns {void}
+   */
   run() {
+    this.startMainLoop();
+    this.startThrowLoop();
+    this.startCoinLoop();
+  }
+
+  /**
+   * Main loop at ~60 FPS.
+   * @returns {void}
+   */
+  startMainLoop() { // [MYA NEW]
     this.runInterval = setInterval(() => {
       this.checkCollisions();
       this.checkBottleHits();
@@ -88,232 +87,225 @@ class World {
       this.checkEndbossIntro();
       this.checkGameOver();
     }, 1000 / 60);
+  }
+
+  /**
+   * Throw loop at ~60 FPS.
+   * @returns {void}
+   */
+  startThrowLoop() { // [MYA NEW]
     this.throwInterval = setInterval(() => {
       this.checkThrowObjects();
     }, 1000 / 60);
+  }
 
-    setInterval(() => {
+  /**
+   * Coin loop (lightweight).
+   * @returns {void}
+   */
+  startCoinLoop() { // [MYA NEW]
+    this.coinInterval = setInterval(() => {
       this.checkCoinCollision();
     }, 100);
   }
 
-checkThrowObjects() {
-  if (this.keyboard.D && this.bottleCount > 0) {
-    let dir = this.character.otherDirection ? -1 : 1;
-    let b = new ThrowableObject(
-      this.character.x + (dir === 1 ? this.character.width : -20),
-      this.character.y + 100,
-      dir
-    );
-    this.throwableObjects.push(b);
+  /**
+   * Handles bottle throwing.
+   * @returns {void}
+   */
+  checkThrowObjects() {
+    if (!this.keyboard.D || this.bottleCount <= 0) return;
+    const dir = this.character.otherDirection ? -1 : 1;
+    const x = this.character.x + (dir === 1 ? this.character.width : -20);
+    const y = this.character.y + 100;
+    const id = 't_' + Date.now() + '_' + Math.random(); // [MYA NEW]
+    this.throwableObjects[id] = new ThrowableObject(x, y, dir); // [MYA NEW]
+    this.afterThrow();
+  }
+
+  /**
+   * Updates UI after throwing and resets key.
+   * @returns {void}
+   */
+  afterThrow() { // [MYA NEW]
     this.bottleCount--;
-    this.bottleBar.setPercentage(
-      Math.min(this.bottleCount, 5) * 20
-    );
-
-    playThrowSound(); // [MYA NEW] Sound beim Werfen
-
+    this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
+    playThrowSound();
     this.keyboard.D = false;
   }
-}
 
-checkCoinCollision() {
-  let coins = this.level.coins || [];
-  for (let i = 0; i < coins.length; i++) {
-    if (this.isColliding(this.character, coins[i])) {
+  /**
+   * Checks coin collisions and updates coin bar.
+   * @returns {void}
+   */
+  checkCoinCollision() {
+    const coins = this.level.coins || [];
+    for (let i = 0; i < coins.length; i++) {
+      if (!this.isColliding(this.character, coins[i])) continue;
       coins.splice(i, 1); i--;
       this.coinCount++;
       this.coinBar.setPercentage(this.getCoinPercent());
     }
   }
-}
-getCoinPercent() { // [MYA NEU]
-  if (this.coinMax <= 0) return 0;
-  return (this.coinCount / this.coinMax) * 100;
-}
 
+  /**
+   * Calculates the coin percentage.
+   * @returns {number} 0..100
+   */
+  getCoinPercent() { // [MYA FIX]
+    if (this.coinMax <= 0) return 0;
+    return (this.coinCount / this.coinMax) * 100;
+  }
+
+  /**
+   * Checks bottle pickups and updates bottle bar.
+   * @returns {void}
+   */
   checkBottlePickups() {
-    let bottles = this.level.bottles || [];
+    const bottles = this.level.bottles || [];
     for (let i = 0; i < bottles.length; i++) {
-      let bo = bottles[i];
+      const bo = bottles[i];
       if (!bo || bo.collected) continue;
-      if (this.isColliding(this.character, bo)) {
-        bo.collect();
-        this.bottleCount++;
-        this.bottleBar.setPercentage(
-          Math.min(this.bottleCount, 5) * 20
-        );
-      }
+      if (!this.isColliding(this.character, bo)) continue;
+      bo.collect();
+      this.bottleCount++;
+      this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
     }
   }
 
+  /**
+   * Checks game over state once.
+   * @returns {void}
+   */
   checkGameOver() {
-    if (this.character.isDead() && !this.gameOverShown) {
-      this.gameOverShown = true;
-      showGameOver();
+    if (!this.character.isDead() || this.gameOverShown) return;
+    this.gameOverShown = true;
+    showGameOver();
+  }
+
+  /**
+   * Checks collisions with enemies.
+   * @returns {void}
+   */
+  checkCollisions() { // [MYA FIX] forEach -> for
+    const enemies = this.level.enemies || [];
+    for (let i = 0; i < enemies.length; i++) {
+      const e = enemies[i];
+      if (!e || e.alive === false) continue;
+      if (this.isColliding(this.character, e)) this.resolveCollision(e);
     }
   }
 
-  checkCollisions() {
-    const enemies = this.level.enemies;
-    if (!enemies) return;
-    enemies.forEach((e) => {
-      if (!e || e.alive === false) return;
-      if (this.isColliding(this.character, e))
-        this.resolveCollision(e);
-    });
-  }
-
+  /**
+   * Resolves collision result: stomp or damage.
+   * @param {MovableObject} e - Enemy.
+   * @returns {void}
+   */
   resolveCollision(e) {
     if (this.isStomp(this.character, e)) this.handleStomp(e);
     else this.hitPlayer(e.damage || 10);
   }
 
+  /**
+   * Applies stomp damage.
+   * @param {MovableObject} e - Enemy.
+   * @returns {void}
+   */
   handleStomp(e) {
-    if (e instanceof Chicken || e instanceof SmallChicken) {
-      this.hitEnemy(e, e.hp || 1);
-    } else {
-      this.hitEnemy(e, 1);
+    const dmg = e instanceof Chicken || e instanceof SmallChicken ? (e.hp || 1) : 1;
+    this.hitEnemy(e, dmg);
+  }
+
+  /**
+   * Damages an enemy and updates boss bar if needed.
+   * @param {MovableObject} e - Enemy.
+   * @param {number} d - Damage.
+   * @returns {void}
+   */
+  hitEnemy(e, d) {
+    if (!e || !e.alive) return;
+    if (e.takeDamage) e.takeDamage(d);
+    else { e.hp = (e.hp || 1) - d; if (e.hp <= 0 && e.die) e.die(); }
+    if (e instanceof Endboss && this.bossBar) {
+      this.bossBar.setPercentage((Math.max(e.hp, 0) / e.maxHp) * 100);
     }
   }
 
-  checkBottleHits() {
-    for (let i = 0; i < this.throwableObjects.length; i++) {
-      let t = this.throwableObjects[i];
+  /**
+   * Damages the player and updates status bar.
+   * @param {number} d - Damage.
+   * @returns {void}
+   */
+  hitPlayer(d) {
+    if (!this.character || !this.character.hit || this.character.isHurt()) return;
+    this.character.hit(d);
+    this.statusBar.setPercentage((this.character.energy / this.character.maxEnergy) * 100);
+  }
+
+  /**
+   * Checks bottle hits against enemies.
+   * @returns {void}
+   */
+  checkBottleHits() { // [MYA CHANGE] Objekt statt Array
+    for (let id in this.throwableObjects) {
+      const t = this.throwableObjects[id];
       if (!t || t.broken) continue;
-      for (let j = 0; j < this.level.enemies.length; j++) {
-        let e = this.level.enemies[j];
-        if (!e || !e.alive) continue;
-        if (this.isColliding(t, e)) {
-          this.hitEnemy(e, 1);
-          t.broken = true;
-          break;
-        }
-      }
+      if (this.tryBottleHit(t)) t.broken = true;
     }
   }
 
-
-  checkEndbossIntro() {
-    this.level.enemies.forEach((e) => {
-      if (e instanceof Endboss && !e.hadFirstContact) {
-        this.tryStartBossIntro(e);
-      }
-    });
+  /**
+   * Tries to hit any enemy with a bottle.
+   * @param {ThrowableObject} t - Bottle.
+   * @returns {boolean} True if hit.
+   */
+  tryBottleHit(t) { // [MYA NEW]
+    const enemies = this.level.enemies || [];
+    for (let i = 0; i < enemies.length; i++) {
+      const e = enemies[i];
+      if (!e || !e.alive) continue;
+      if (!this.isColliding(t, e)) continue;
+      this.hitEnemy(e, 1);
+      return true;
+    }
+    return false;
   }
 
+  /**
+   * Checks if boss intro should start.
+   * @returns {void}
+   */
+  checkEndbossIntro() { // [MYA FIX] forEach -> for
+    const enemies = this.level.enemies || [];
+    for (let i = 0; i < enemies.length; i++) {
+      const e = enemies[i];
+      if (e instanceof Endboss && !e.hadFirstContact) this.tryStartBossIntro(e);
+    }
+  }
+
+  /**
+   * Starts boss intro when player is close enough.
+   * @param {Endboss} e - Endboss.
+   * @returns {void}
+   */
   tryStartBossIntro(e) {
-    if (this.character.x > e.x - 600) {
-      e.startIntro();
-      this.bossBar.visible = true;
-      this.bossBar.setPercentage((e.hp / e.maxHp) * 100);
-      this.bossFocus = true;
-      this.camera_x = -(e.x - 200);
-      setTimeout(() => (this.bossFocus = false), 1600);
-    }
+    if (this.character.x <= e.x - 600) return;
+    e.startIntro();
+    this.bossBar.visible = true;
+    this.bossBar.setPercentage((e.hp / e.maxHp) * 100);
+    this.bossFocus = true;
+    this.camera_x = -(e.x - 200);
+    setTimeout(() => (this.bossFocus = false), 1600);
   }
 
-  clampCamera() {
-    if (this.camera_x > 0) this.camera_x = 0;
-    if (
-      this.character &&
-      this.level &&
-      this.character.x > this.level.level_end_x
-    ) {
-      this.camera_x = -(this.level.level_end_x - 100);
-    }
-  }
-
-  draw() {
-    if (this.isStopped) return;
-    this.clearCanvas();
-    this.clampCamera();
-    const cam = Math.round(this.camera_x);
-    const view = this.getViewBounds(cam);
-    this.ctx.translate(cam, 0);
-    this.drawScene(cam, view);
-    this.ctx.translate(-cam, 0);
-    requestAnimationFrame(() => this.draw());
-  }
-
-  clearCanvas() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  }
-
-  drawScene(cam, view) {
-    this.addObjectsToMap(this.level.backgroundObjects, view, true);
-    this.drawEntities(view);
-    this.ctx.translate(-cam, 0);
-    this.drawUI();
-    this.ctx.translate(cam, 0);
-  }
-
-  drawUI() {
-    this.addToMap(this.statusBar);
-    this.addToMap(this.bottleBar);
-    this.addToMap(this.coinBar); // [MYA FIX]
-
-    if (this.bossBar.visible) this.addToMap(this.bossBar);
-  }
-
-  drawEntities(view) {
-    this.addToMap(this.character);
-    this.addObjectsToMap(this.level.coins, view); // [MYA FIX] Coins im Scene-Draw
-
-    this.addObjectsToMap(this.level.clouds, view);
-    this.addObjectsToMap(this.level.bottles, view);
-    this.addObjectsToMap(this.level.enemies, view);
-    this.addObjectsToMap(this.throwableObjects, view);
-  }
-
-  addObjectsToMap(objs, view, skipCull = false) {
-    if (!Array.isArray(objs) || objs.length === 0) return;
-    const now = Date.now();
-    for (let i = 0; i < objs.length; i++) {
-      const o = objs[i];
-      if (!o || o.broken || o.collected) continue;
-      if (o.alive === false) {
-        if (!o.deadTime || now - o.deadTime > 1000) continue;
-      }
-      if (!skipCull && !this.isInView(o, view)) continue;
-      this.addToMap(o);
-    }
-  }
-
-  getViewBounds(cam) {
-    const padding = this.canvas.width;
-    const left = -cam - padding;
-    const right = left + this.canvas.width + padding * 2;
-    return { left, right };
-  }
-
-  isInView(obj, view) {
-    if (!view) return true;
-    const x = obj.x || 0;
-    const width = obj.width || 0;
-    return x + width >= view.left && x <= view.right;
-  }
-
-  addToMap(mo) {
-    if (mo.otherDirection) this.flipImage(mo);
-    mo.draw(this.ctx);
-    if (mo.otherDirection) this.flipImageBack(mo);
-  }
-
-  flipImage(mo) {
-    this.ctx.save();
-    this.ctx.translate(mo.width, 0);
-    this.ctx.scale(-1, 1);
-    mo.x *= -1;
-  }
-  flipImageBack(mo) {
-    mo.x *= -1;
-    this.ctx.restore();
-  }
-
+  /**
+   * Stops loops and drawing.
+   * @returns {void}
+   */
   stop() {
     this.isStopped = true;
     if (this.runInterval) clearInterval(this.runInterval);
     if (this.throwInterval) clearInterval(this.throwInterval);
+    if (this.coinInterval) clearInterval(this.coinInterval); // [MYA NEW]
   }
 }
