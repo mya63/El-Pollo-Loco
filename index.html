@@ -28,7 +28,10 @@
     <script src="levels/level1.js"></script>
   </head>
 
-  <body onload="showStart()" onresize="checkOrientation()" onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
+<!-- [MYA CHANGE] Body Events vereinheitlicht -->
+<body onload="showStart()"
+      onresize="checkOrientation(); applyAutoLayoutFullscreen()"
+      onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)">
     <h1>EL POLLO LOCO</h1>
 
     <main>

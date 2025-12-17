@@ -43,6 +43,15 @@ const UI = {
 };
 
 let lastFocusedElement = null;
+// [MYA NEW] Layout-Fullscreen für kleine Geräte (ohne Fullscreen-API)
+function applyAutoLayoutFullscreen() {
+  const small = window.matchMedia('(max-width: 1024px)').matches;
+  const touch = window.matchMedia('(pointer: coarse)').matches;
+  const lowH = window.matchMedia('(max-height: 700px)').matches;
+  const on = (small && touch) || lowH;
+  document.body.classList.toggle('play-mode', on);
+}
+
 
 /**
  * Displays the start screen and prepares the game.
@@ -57,6 +66,8 @@ function showStart() {
   audioStart.play().catch(() => {});
   loadSoundState(); // [MYA NEW] Status aus localStorage übernehmen
   updateMuteButton();
+  applyAutoLayoutFullscreen(); // [MYA CHANGE]
+
 }
 
 /**
@@ -92,6 +103,7 @@ function blurToCanvas(el) {
  * Hides the start screen and begins the game.
  */
 function startGame() {
+  document.body.classList.add('play-mode'); // [MYA CHANGE]
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('startUI').style.display = 'none';
   if (canvas) canvas.style.visibility = 'visible';
@@ -217,17 +229,6 @@ window.openLegalModal = openLegalModal;
 window.closeLegalModal = closeLegalModal;
 
 /**
- * Handles keydown events and updates the keyboard state.
- * @param {KeyboardEvent} e - Keyboard event.
- */
-function handleKeyDown(e) {
-  if (e.code === 'ArrowRight') keyboard.RIGHT = true;
-  if (e.code === 'ArrowLeft') keyboard.LEFT = true;
-  if (e.code === 'ArrowUp') keyboard.UP = true;
-  if (e.code === 'ArrowDown') keyboard.DOWN = true;
-  if (e.code === 'Space') keyboard.SPACE = true;
-  if (e.code === 'KeyD') keyboard.D = true;
-}
 
 /**
  * Handles keyup events and updates the keyboard state.
