@@ -60,7 +60,7 @@ class Chicken extends MovableObject {
   }
 
   hit() {
-  // [MYA NEW] Chicken-Treffer-Sound
+  // Chicken-Treffer-Sound
   this.energy = 0;
   this.playHitSound();
 }

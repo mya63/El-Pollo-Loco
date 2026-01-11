@@ -7,7 +7,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let isGameRunning = false; // [MYA NEW] Spielstatus
+let isGameRunning = false;
 
 const audioStart = new Audio('audio/start.ogg');
 const audioGame = new Audio('audio/game.mp3');
@@ -16,7 +16,6 @@ const audioGameOver = new Audio('audio/gameover.mp3');
 const throwSound = new Audio('audio/throw.mp3');
 
 const sounds = {
-  // [MYA CHANGE] Objekt statt Array
   start: audioStart,
   game: audioGame,
   win: audioWin,
@@ -24,12 +23,10 @@ const sounds = {
   throw: throwSound
 };
 
-// [MYA NEW] Extra-Sounds (Feedback Lehrer)
-const audioHit = new Audio('audio/hit.mp3'); // Flasche trifft Gegner
-const audioHurt = new Audio('audio/hurt.mp3'); // Spieler bekommt Schaden
-const audioPickup = new Audio('audio/pickup.mp3'); // Coin/Flasche eingesammelt
+const audioHit = new Audio('audio/hit.mp3');
+const audioHurt = new Audio('audio/hurt.mp3');
+const audioPickup = new Audio('audio/pickup.mp3');
 
-// [MYA NEW] Sounds erweitern (Objekt bleibt)
 sounds.hit = audioHit;
 sounds.hurt = audioHurt;
 sounds.pickup = audioPickup;
@@ -37,10 +34,10 @@ sounds.pickup = audioPickup;
 /**
  * Plays a sound safely (restarts sound).
  * @param {string} key - Sound key from sounds object.
+ * @param {number} [maxMs=0] - Optional max play time in ms.
  * @returns {void}
  */
 function playSound(key, maxMs = 0) {
-  // [MYA CHANGE]
   if (!sounds[key] || sounds[key].muted) return;
   if (sounds[key].paused === false && key === 'hurt') return;
   const s = sounds[key];
@@ -54,13 +51,12 @@ function playSound(key, maxMs = 0) {
  * @returns {void}
  */
 function playThrowSound() {
-  // [MYA NEW]
   playSound('throw');
 }
-window.playThrowSound = playThrowSound; // [MYA NEW]
-window.playSound = playSound; // [MYA NEW]
+window.playThrowSound = playThrowSound;
+window.playSound = playSound;
 
-audioStart.loop = true; // [MYA FIX]
+audioStart.loop = true;
 audioGame.loop = true;
 
 /**
@@ -70,10 +66,10 @@ audioGame.loop = true;
 const UI = {
   open: false,
   controls: {
-    '←': 'Gehen',
-    '→': 'Gehen',
-    SPACE: 'Springen',
-    D: 'Tabasco werfen'
+    '←': 'Move',
+    '→': 'Move',
+    SPACE: 'Jump',
+    D: 'Throw bottle'
   }
 };
 
@@ -84,10 +80,9 @@ let lastFocusedElement = null;
  * @returns {void}
  */
 function setDefaultVolumes() {
-  // deutsche Kommentare, keine forEach
   for (let k in sounds) sounds[k].volume = 0.2;
 }
-setDefaultVolumes(); // [MYA FIX]
+setDefaultVolumes();
 
 /**
  * Applies a CSS-based "fullscreen" layout on small/touch devices.
@@ -135,8 +130,7 @@ function init() {
 function focusCanvas() {
   if (!canvas) canvas = document.getElementById('canvas');
   if (!canvas) return;
-  if (!canvas.hasAttribute('tabindex'))
-    canvas.setAttribute('tabindex', '0');
+  if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0');
   canvas.focus();
 }
 
@@ -156,8 +150,8 @@ function blurToCanvas(el) {
  * @returns {void}
  */
 function startGame() {
-  isGameRunning = true; // [MYA NEW]
-  applyAutoLayoutFullscreen(); // [MYA CHANGE] play-mode nur wenn mobile/touch/lowH
+  isGameRunning = true;
+  applyAutoLayoutFullscreen();
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('startUI').style.display = 'none';
   if (canvas) canvas.style.visibility = 'visible';
@@ -192,8 +186,7 @@ function toggleFullscreen() {
     else if (el.msRequestFullscreen) el.msRequestFullscreen();
   } else {
     if (document.exitFullscreen) document.exitFullscreen();
-    else if (document.webkitExitFullscreen)
-      document.webkitExitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
   }
   setTimeout(focusCanvas, 200);
 }
@@ -203,13 +196,9 @@ function toggleFullscreen() {
  * @returns {void}
  */
 function checkOrientation() {
-  const portrait = window.matchMedia(
-    '(orientation: portrait)'
-  ).matches;
+  const portrait = window.matchMedia('(orientation: portrait)').matches;
   const overlay = document.getElementById('rotateOverlay');
-  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(
-    navigator.userAgent
-  );
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!overlay) return;
   overlay.style.display = portrait && isMobile ? 'flex' : 'none';
 }
@@ -276,15 +265,19 @@ function setKey(key, val) {
   else keyboard[key] = val;
 }
 
+/**
+ * Stops all sounds except a given key.
+ * @param {string} key - Sound key to keep playing.
+ * @returns {void}
+ */
 function stopAllSoundsExcept(key) {
-  // [MYA NEW]
   for (let k in sounds) {
     if (k === key) continue;
     sounds[k].pause();
     sounds[k].currentTime = 0;
   }
 }
-window.stopAllSoundsExcept = stopAllSoundsExcept; // [MYA NEW]
+window.stopAllSoundsExcept = stopAllSoundsExcept;
 
 /**
  * Activates a key from on-screen controls.
@@ -294,7 +287,7 @@ window.stopAllSoundsExcept = stopAllSoundsExcept; // [MYA NEW]
  */
 function press(key, el) {
   if (el) el.setAttribute('data-active', '1');
-  if (key === 'D') triggerThrowOnce(); // [MYA NEW]
+  if (key === 'D') triggerThrowOnce();
   setKey(key, true);
   focusCanvas();
   return false;
@@ -308,8 +301,8 @@ function press(key, el) {
  */
 function release(key, el) {
   if (el) el.removeAttribute('data-active');
-  if (key === 'D') releaseThrowLock(); // [MYA FIX]
-  else setKey(key, false);             // [MYA FIX]
+  if (key === 'D') releaseThrowLock();
+  else setKey(key, false);
   return false;
 }
 
@@ -326,19 +319,26 @@ function handleKeyUp(e) {
   if (e.code === 'Space') keyboard.SPACE = false;
 
   if (e.code === 'KeyD') {
-    releaseThrowLock();                 // [MYA FIX] D_LOCK wird frei
-    if (world) world.throwLock = false; // [MYA FIX] World-Lock frei
+    releaseThrowLock();
+    if (world) world.throwLock = false;
   }
 }
+
+/**
+ * Triggers a single throw action per key press.
+ * @returns {void}
+ */
 function triggerThrowOnce() {
-  // [MYA NEW] 1 Flasche pro Klick
   if (keyboard.D_LOCK) return;
   keyboard.D_ONCE = true;
   keyboard.D_LOCK = true;
 }
 
+/**
+ * Releases the throw lock after key release.
+ * @returns {void}
+ */
 function releaseThrowLock() {
-  // [MYA NEW] erst nach Loslassen wieder erlauben
   keyboard.D = false;
   keyboard.D_ONCE = false;
   keyboard.D_LOCK = false;
@@ -350,17 +350,17 @@ function releaseThrowLock() {
  * @returns {void}
  */
 function handleKeyDown(e) {
-  if (e.key === 'Escape' && typeof closeLegalModal === 'function')
-    closeLegalModal();
+  if (e.key === 'Escape' && typeof closeLegalModal === 'function') closeLegalModal();
   if (e.code === 'ArrowRight') keyboard.RIGHT = true;
   if (e.code === 'ArrowLeft') keyboard.LEFT = true;
   if (e.code === 'ArrowUp') keyboard.UP = true;
   if (e.code === 'ArrowDown') keyboard.DOWN = true;
   if (e.code === 'Space') keyboard.SPACE = true;
+
   if (e.code === 'KeyD') {
     keyboard.D = true;
     triggerThrowOnce();
-  } // [MYA CHANGE]
+  }
 }
 
 /**
@@ -368,28 +368,27 @@ function handleKeyDown(e) {
  * @returns {void}
  */
 function resetGame() {
-  isGameRunning = false; // [MYA NEW]
-  document.body.classList.remove('play-mode'); // [MYA NEW] Desktop wieder normal
-  const ids = {
-    a: 'gameOverOverlay',
-    b: 'youWonOverlay',
-    c: 'startOverlay'
-  };
+  isGameRunning = false;
+  document.body.classList.remove('play-mode');
+
+  const ids = { a: 'gameOverOverlay', b: 'youWonOverlay', c: 'startOverlay' };
   for (let k in ids) {
     let el = document.getElementById(ids[k]);
     if (el) el.style.display = 'none';
   }
+
   let ui = document.getElementById('startUI');
   if (ui) ui.style.display = 'none';
+
   if (world && world.stop) world.stop();
   keyboard = new Keyboard();
-  if (canvas)
-    canvas
-      .getContext('2d')
-      .clearRect(0, 0, canvas.width, canvas.height);
+
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+
   init();
   checkOrientation();
   focusCanvas();
+
   for (let s in sounds) {
     sounds[s].pause();
     sounds[s].currentTime = 0;
@@ -419,7 +418,6 @@ function showGameOver() {
  * @returns {void}
  */
 function showYouWon() {
-  // [MYA NEW]
   audioGame.pause();
   audioGame.currentTime = 0;
   audioWin.currentTime = 0;
@@ -427,13 +425,11 @@ function showYouWon() {
   document.getElementById('youWonOverlay').style.display = 'block';
 }
 
-window.showGameOver = showGameOver; // [MYA NEW]
-window.showYouWon = showYouWon; // [MYA NEW]
+window.showGameOver = showGameOver;
+window.showYouWon = showYouWon;
 
-// [MYA FIX] Inline-HTML braucht globale Referenzen
 window.handleKeyDown = handleKeyDown;
 window.handleKeyUp = handleKeyUp;
 
-// [MYA FIX] Inline-HTML braucht globale Referenzen
 window.checkOrientation = checkOrientation;
 window.applyAutoLayoutFullscreen = applyAutoLayoutFullscreen;

@@ -17,7 +17,7 @@ class StatusBarCoin extends DrawableObject {
    */
   constructor() {
     super();
-    this.x = 38; // [MYA] below health bar
+    this.x = 38; //  below health bar
     this.y = 80;
     this.width = 200;
     this.height = 60;

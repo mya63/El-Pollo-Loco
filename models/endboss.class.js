@@ -26,14 +26,14 @@ class Endboss extends MovableObject {
     f: 'img/4_enemie_boss_chicken/2_alert/G10.png',
     g: 'img/4_enemie_boss_chicken/2_alert/G11.png',
     h: 'img/4_enemie_boss_chicken/2_alert/G12.png'
-  }; // [MYA CHANGE] object instead of array
+  }; 
 
   IMAGES_WALK = {
     a: 'img/4_enemie_boss_chicken/1_walk/G1.png',
     b: 'img/4_enemie_boss_chicken/1_walk/G2.png',
     c: 'img/4_enemie_boss_chicken/1_walk/G3.png',
     d: 'img/4_enemie_boss_chicken/1_walk/G4.png'
-  }; // [MYA CHANGE]
+  }; 
 
   IMAGES_ATTACK = {
     a: 'img/4_enemie_boss_chicken/3_attack/G13.png',
@@ -44,13 +44,13 @@ class Endboss extends MovableObject {
     f: 'img/4_enemie_boss_chicken/3_attack/G18.png',
     g: 'img/4_enemie_boss_chicken/3_attack/G19.png',
     h: 'img/4_enemie_boss_chicken/3_attack/G20.png'
-  }; // [MYA CHANGE]
+  }; 
 
   IMAGES_DEAD = {
     a: 'img/4_enemie_boss_chicken/5_dead/G24.png',
     b: 'img/4_enemie_boss_chicken/5_dead/G25.png',
     c: 'img/4_enemie_boss_chicken/5_dead/G26.png'
-  }; // [MYA CHANGE]
+  }; 
 
   /**
    * Creates the endboss and loads all animation images.
@@ -66,7 +66,7 @@ class Endboss extends MovableObject {
    * Loads the default start image.
    * @returns {void}
    */
-  loadStartImage() { // [MYA NEW]
+  loadStartImage() { 
     this.loadImage(this.IMAGES_WALK.a);
   }
 
@@ -74,7 +74,7 @@ class Endboss extends MovableObject {
    * Loads all animation image sets.
    * @returns {void}
    */
-  loadAllAnimations() { // [MYA NEW]
+  loadAllAnimations() { 
     this.loadImageSet(this.IMAGES_INTRO);
     this.loadImageSet(this.IMAGES_WALK);
     this.loadImageSet(this.IMAGES_ATTACK);
@@ -86,7 +86,7 @@ class Endboss extends MovableObject {
    * @param {Object} set - Image map.
    * @returns {void}
    */
-  loadImageSet(set) { // [MYA NEW]
+  loadImageSet(set) { 
     for (let k in set) this.loadImages([set[k]]);
   }
 
@@ -95,7 +95,7 @@ class Endboss extends MovableObject {
    * @param {Object} set - Image map.
    * @returns {Array<string>} Array of image paths.
    */
-  toArray(set) { // [MYA NEW]
+  toArray(set) { 
     const arr = [];
     for (let k in set) arr.push(set[k]);
     return arr;
@@ -129,7 +129,7 @@ class Endboss extends MovableObject {
    * Clears movement/animation intervals safely.
    * @returns {void}
    */
-  stopBossIntervals() { // [MYA NEW]
+  stopBossIntervals() { 
     if (this._moveInt) clearInterval(this._moveInt);
     if (this._animInt) clearInterval(this._animInt);
     if (this._deathInt) clearInterval(this._deathInt);
@@ -139,7 +139,7 @@ class Endboss extends MovableObject {
    * Plays the death frames and triggers win screen at the end.
    * @returns {void}
    */
-  playDeathSequence() { // [MYA NEW]
+  playDeathSequence() {
     const frames = this.toArray(this.IMAGES_DEAD);
     let i = 0;
     this._deathInt = setInterval(() => {
@@ -164,7 +164,7 @@ class Endboss extends MovableObject {
    * Runs the intro animation cycles and then starts walking.
    * @returns {void}
    */
-  runIntroAnimation() { // [MYA NEW]
+  runIntroAnimation() { 
     const frames = this.toArray(this.IMAGES_INTRO);
     let cycles = 0;
     this._animInt = setInterval(() => {

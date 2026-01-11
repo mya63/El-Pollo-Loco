@@ -3,16 +3,21 @@
  * Bottle flies in a curve (gravity) and rotates.
  */
 class ThrowableObject extends MovableObject {
-  angle = 0;          // [MYA NEW] Rotationswinkel in Grad
-  rotSpeed = 18;      // [MYA NEW] Drehgeschwindigkeit
-  vx = 12;            // [MYA NEW] X-Geschwindigkeit
-  vy = 18;            // [MYA NEW] Start nach oben
-  g = 0.9;            // [MYA NEW] Schwerkraft
-  groundY = 360;      // [MYA NEW] Bodenlinie (anpassen wenn nötig)
-  flyInterval = null; // [MYA NEW] Interval-ID
-  lifeTime = 300; // [MYA NEW] ms nach Aufprall sichtbar
+  angle = 0;
+  rotSpeed = 18;
+  vx = 12;
+  vy = 18;
+  g = 0.9;
+  groundY = 360;
+  flyInterval = null;
+  lifeTime = 300;
 
-
+  /**
+   * Creates a new throwable object.
+   * @param {number} x - Start x position.
+   * @param {number} y - Start y position.
+   * @param {number} dir - Throw direction (1 = right, -1 = left).
+   */
   constructor(x, y, dir) {
     super();
     this.loadImage('img/6_salsa_bottle/salsa_bottle.png');
@@ -24,14 +29,20 @@ class ThrowableObject extends MovableObject {
     this.throw();
   }
 
+  /**
+   * Starts the throw loop.
+   * @returns {void}
+   */
   throw() {
-    // [MYA NEW] Kurve + Rotation
     this.stop();
     this.flyInterval = setInterval(() => this.stepThrow(), 1000 / 60);
   }
 
+  /**
+   * Updates throw physics per frame.
+   * @returns {void}
+   */
   stepThrow() {
-    // [MYA NEW] Physik pro Frame
     if (this.broken) return this.stop();
     this.x += this.vx;
     this.y -= this.vy;
@@ -40,15 +51,22 @@ class ThrowableObject extends MovableObject {
     if (this.y >= this.groundY) this.stop();
   }
 
+  /**
+   * Stops the internal interval.
+   * @returns {void}
+   */
   stop() {
-    // [MYA NEW] verhindert Endlos-Intervalle
     if (!this.flyInterval) return;
     clearInterval(this.flyInterval);
     this.flyInterval = null;
   }
 
+  /**
+   * Draws the bottle rotated around its center.
+   * @param {CanvasRenderingContext2D} ctx - Canvas context.
+   * @returns {void}
+   */
   draw(ctx) {
-    // [MYA NEW] rotiertes Zeichnen um die Mitte
     const cx = this.x + this.width / 2;
     const cy = this.y + this.height / 2;
     ctx.save();

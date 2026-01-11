@@ -3,24 +3,27 @@
  * Each property reflects whether a key is currently pressed.
  */
 class Keyboard {
-  /** @type {boolean} Pfeiltaste links */
+  /** @type {boolean} Left arrow key */
   LEFT = false;
 
-  /** @type {boolean} Pfeiltaste rechts */
+  /** @type {boolean} Right arrow key */
   RIGHT = false;
 
-  /** @type {boolean} Pfeiltaste nach oben */
+  /** @type {boolean} Up arrow key */
   UP = false;
 
-  /** @type {boolean} Pfeiltaste nach unten */
+  /** @type {boolean} Down arrow key */
   DOWN = false;
 
-  /** @type {boolean} Leertaste (Springen) */
+  /** @type {boolean} Space key (jump) */
   SPACE = false;
 
-  /** @type {boolean} Taste D (Flasche werfen) */
+  /** @type {boolean} D key (throw bottle) */
   D = false;
 
-  D_ONCE = false; // [MYA NEW] nur 1 Frame "true" zum Werfen
+  /** @type {boolean} True if one throw is requested */
+  D_ONCE = false;
+
+  /** @type {boolean} Prevents repeated throws while holding the key */
   D_LOCK = false;
 }

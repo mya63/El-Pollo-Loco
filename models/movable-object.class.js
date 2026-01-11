@@ -64,18 +64,18 @@ class MovableObject extends DrawableObject {
    * @param {number} [damage=20] - Damage amount.
    * @returns {void}
    */
-  hit(damage = 20) { // [MYA NEW]
+  hit(damage = 20) {
     this.energy -= damage;
     if (this.energy < 0) this.energy = 0;
-    this.lastHit = Date.now(); // [MYA NEW]
+    this.lastHit = Date.now();
   }
 
   /**
-   * Checks if the object is currently hurt (invulnerable phase).
+   * Checks if the object is currently hurt (invulnerability phase).
    * @returns {boolean} True if recently hit.
    */
-  isHurt() { // [MYA NEW]
-    return (Date.now() - this.lastHit) < 300;
+  isHurt() {
+    return Date.now() - this.lastHit < 300;
   }
 
   /**

@@ -13,13 +13,12 @@ class World {
   statusBar = new StatusBar();
   bottleBar = new StatusBarBottle();
   bossBar = new StatusBarEndboss();
-  coinBar = new StatusBarCoin(); // [MYA FIX]
+  coinBar = new StatusBarCoin();
   throwableObjects = {};
   bottleCount = 0;
-  coinCount = 0; // [MYA FIX]
-  coinMax = 0; // [MYA FIX]
-  throwLock = false; // [MYA NEW] verhindert Mehrfachwurf pro Klick
-
+  coinCount = 0;
+  coinMax = 0;
+  throwLock = false;
 
   /**
    * @param {HTMLCanvasElement} canvas - Canvas element.
@@ -30,10 +29,10 @@ class World {
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.setWorld();
-    this.coinMax = (this.level.coins || []).length; // [MYA FIX]
-    this.coinBar.setPercentage(0); // [MYA FIX]
+    this.coinMax = (this.level.coins || []).length;
+    this.coinBar.setPercentage(0);
     this.run();
-    this.draw(); // kommt aus world.render.js
+    this.draw();
   }
 
   /**
@@ -89,7 +88,6 @@ class World {
    * @returns {void}
    */
   startMainLoop() {
-    // [MYA NEW]
     this.runInterval = setInterval(() => {
       this.checkCollisions();
       this.checkBottleHits();
@@ -104,7 +102,6 @@ class World {
    * @returns {void}
    */
   startThrowLoop() {
-    // [MYA NEW]
     this.throwInterval = setInterval(() => {
       this.checkThrowObjects();
     }, 1000 / 60);
@@ -115,7 +112,6 @@ class World {
    * @returns {void}
    */
   startCoinLoop() {
-    // [MYA NEW]
     this.coinInterval = setInterval(() => {
       this.checkCoinCollision();
     }, 100);
@@ -125,34 +121,35 @@ class World {
    * Handles bottle throwing.
    * @returns {void}
    */
-checkThrowObjects() {
-  // [MYA NEW] Lock löst sich automatisch nach Loslassen
-  if (!this.keyboard.D) this.throwLock = false;
+  checkThrowObjects() {
+    if (!this.keyboard.D) this.throwLock = false;
+    if (this.throwLock) return;
+    if (!this.keyboard.D_ONCE) return;
+    if (this.bottleCount <= 0) return;
 
-  if (this.throwLock) return;
-  if (!this.keyboard.D_ONCE) return;
-  if (this.bottleCount <= 0) return;
-
-  this.throwLock = true;
-  this.keyboard.D_ONCE = false; // sofort verbrauchen
-  this.spawnBottle();
-  this.afterThrow();
-}
-spawnBottle() {
-  // [MYA NEW] Flasche erzeugen
-  const dir = this.character.otherDirection ? -1 : 1;
-  const x = this.character.x + (dir === 1 ? this.character.width : -20);
-  const y = this.character.y + 100;
-  const id = 't_' + Date.now() + '_' + Math.random();
-  this.throwableObjects[id] = new ThrowableObject(x, y, dir);
-}
+    this.throwLock = true;
+    this.keyboard.D_ONCE = false;
+    this.spawnBottle();
+    this.afterThrow();
+  }
 
   /**
-   * Updates UI after throwing and resets key.
+   * Spawns a new throwable bottle.
+   * @returns {void}
+   */
+  spawnBottle() {
+    const dir = this.character.otherDirection ? -1 : 1;
+    const x = this.character.x + (dir === 1 ? this.character.width : -20);
+    const y = this.character.y + 100;
+    const id = 't_' + Date.now() + '_' + Math.random();
+    this.throwableObjects[id] = new ThrowableObject(x, y, dir);
+  }
+
+  /**
+   * Updates UI after throwing.
    * @returns {void}
    */
   afterThrow() {
-    // [MYA NEW]
     this.bottleCount--;
     this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
     playThrowSound();
@@ -169,17 +166,16 @@ spawnBottle() {
       coins.splice(i, 1);
       i--;
       this.coinCount++;
-      playSound('pickup'); // [MYA NEW] Coin Sound
+      playSound('pickup');
       this.coinBar.setPercentage(this.getCoinPercent());
     }
   }
 
   /**
-   * Calculates the coin percentage.
+   * Calculates coin percentage.
    * @returns {number} 0..100
    */
   getCoinPercent() {
-    // [MYA FIX]
     if (this.coinMax <= 0) return 0;
     return (this.coinCount / this.coinMax) * 100;
   }
@@ -195,11 +191,9 @@ spawnBottle() {
       if (!bo || bo.collected) continue;
       if (!this.isColliding(this.character, bo)) continue;
       bo.collect();
-      playSound('pickup'); // [MYA NEW] Bottle Pickup Sound
+      playSound('pickup');
       this.bottleCount++;
-      this.bottleBar.setPercentage(
-        Math.min(this.bottleCount, 5) * 20
-      );
+      this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
     }
   }
 
@@ -218,13 +212,11 @@ spawnBottle() {
    * @returns {void}
    */
   checkCollisions() {
-    // [MYA FIX] forEach -> for
     const enemies = this.level.enemies || [];
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
       if (!e || e.alive === false) continue;
-      if (this.isColliding(this.character, e))
-        this.resolveCollision(e);
+      if (this.isColliding(this.character, e)) this.resolveCollision(e);
     }
   }
 
@@ -245,9 +237,7 @@ spawnBottle() {
    */
   handleStomp(e) {
     const dmg =
-      e instanceof Chicken || e instanceof SmallChicken
-        ? e.hp || 1
-        : 1;
+      e instanceof Chicken || e instanceof SmallChicken ? e.hp || 1 : 1;
     this.hitEnemy(e, dmg);
   }
 
@@ -275,15 +265,9 @@ spawnBottle() {
    * @returns {void}
    */
   hitPlayer(d) {
-    if (
-      !this.character ||
-      !this.character.hit ||
-      this.character.isHurt()
-    )
-      return;
+    if (!this.character || !this.character.hit || this.character.isHurt()) return;
     this.character.hit(d);
-    playSound('hurt'); // [MYA NEW] Spieler Schaden Sound
-
+    playSound('hurt');
     this.statusBar.setPercentage(
       (this.character.energy / this.character.maxEnergy) * 100
     );
@@ -294,7 +278,6 @@ spawnBottle() {
    * @returns {void}
    */
   checkBottleHits() {
-    // [MYA CHANGE] Objekt statt Array
     for (let id in this.throwableObjects) {
       const t = this.throwableObjects[id];
       if (!t || t.broken) continue;
@@ -308,15 +291,14 @@ spawnBottle() {
    * @returns {boolean} True if hit.
    */
   tryBottleHit(t) {
-    // [MYA NEW]
     const enemies = this.level.enemies || [];
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
       if (!e || !e.alive) continue;
       if (!this.isColliding(t, e)) continue;
       this.hitEnemy(e, 1);
-      playSound('hit'); // [MYA NEW] Treffer Sound
-      playSound('break'); // [MYA NEW] Flasche zerbricht
+      playSound('hit');
+      playSound('break');
       return true;
     }
     return false;
@@ -327,12 +309,10 @@ spawnBottle() {
    * @returns {void}
    */
   checkEndbossIntro() {
-    // [MYA FIX] forEach -> for
     const enemies = this.level.enemies || [];
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
-      if (e instanceof Endboss && !e.hadFirstContact)
-        this.tryStartBossIntro(e);
+      if (e instanceof Endboss && !e.hadFirstContact) this.tryStartBossIntro(e);
     }
   }
 
@@ -359,6 +339,6 @@ spawnBottle() {
     this.isStopped = true;
     if (this.runInterval) clearInterval(this.runInterval);
     if (this.throwInterval) clearInterval(this.throwInterval);
-    if (this.coinInterval) clearInterval(this.coinInterval); // [MYA NEW]
+    if (this.coinInterval) clearInterval(this.coinInterval);
   }
 }

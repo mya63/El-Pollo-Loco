@@ -1,6 +1,6 @@
 /**
  * Player character (Pepe).
- * Steuert Bewegung, Kamera und Animationen abhängig vom Keyboard-State.
+ * Controls movement, camera and animations based on keyboard state.
  */
 class Character extends MovableObject {
   height = 250;
@@ -14,7 +14,7 @@ class Character extends MovableObject {
     d: 'img/2_character_pepe/2_walk/W-24.png',
     e: 'img/2_character_pepe/2_walk/W-25.png',
     f: 'img/2_character_pepe/2_walk/W-26.png'
-  }; // [MYA CHANGE] Objekt statt Array
+  };
 
   IMAGES_JUMPING = {
     a: 'img/2_character_pepe/3_jump/J-31.png',
@@ -26,7 +26,7 @@ class Character extends MovableObject {
     g: 'img/2_character_pepe/3_jump/J-37.png',
     h: 'img/2_character_pepe/3_jump/J-38.png',
     i: 'img/2_character_pepe/3_jump/J-39.png'
-  }; // [MYA CHANGE]
+  };
 
   IMAGES_DEAD = {
     a: 'img/2_character_pepe/5_dead/D-51.png',
@@ -36,13 +36,13 @@ class Character extends MovableObject {
     e: 'img/2_character_pepe/5_dead/D-55.png',
     f: 'img/2_character_pepe/5_dead/D-56.png',
     g: 'img/2_character_pepe/5_dead/D-57.png'
-  }; // [MYA CHANGE]
+  };
 
   IMAGES_HURT = {
     a: 'img/2_character_pepe/4_hurt/H-41.png',
     b: 'img/2_character_pepe/4_hurt/H-42.png',
     c: 'img/2_character_pepe/4_hurt/H-43.png'
-  }; // [MYA CHANGE]
+  };
 
   IMAGES_IDLE = {
     a: 'img/2_character_pepe/1_idle/idle/I-1.png',
@@ -55,7 +55,7 @@ class Character extends MovableObject {
     h: 'img/2_character_pepe/1_idle/idle/I-8.png',
     i: 'img/2_character_pepe/1_idle/idle/I-9.png',
     j: 'img/2_character_pepe/1_idle/idle/I-10.png'
-  }; // [MYA CHANGE]
+  };
 
   IMAGES_LONG_IDLE = {
     a: 'img/2_character_pepe/1_idle/long_idle/I-11.png',
@@ -68,7 +68,7 @@ class Character extends MovableObject {
     h: 'img/2_character_pepe/1_idle/long_idle/I-18.png',
     i: 'img/2_character_pepe/1_idle/long_idle/I-19.png',
     j: 'img/2_character_pepe/1_idle/long_idle/I-20.png'
-  }; // [MYA CHANGE]
+  };
 
   world;
   lastMoveTime = 0;
@@ -89,7 +89,7 @@ class Character extends MovableObject {
    * Loads the default start image.
    * @returns {void}
    */
-  loadStartImage() { // [MYA NEW]
+  loadStartImage() {
     this.loadImage(this.IMAGES_WALKING.a);
   }
 
@@ -97,7 +97,7 @@ class Character extends MovableObject {
    * Loads all animation image sets.
    * @returns {void}
    */
-  loadAllAnimations() { // [MYA NEW] keine Arrays -> Objekt-Loop
+  loadAllAnimations() {
     this.loadImageSet(this.IMAGES_WALKING);
     this.loadImageSet(this.IMAGES_JUMPING);
     this.loadImageSet(this.IMAGES_DEAD);
@@ -107,11 +107,11 @@ class Character extends MovableObject {
   }
 
   /**
-   * Loads an image set stored as an object.
+   * Loads an image set stored as an object map.
    * @param {Object} set - Image map.
    * @returns {void}
    */
-  loadImageSet(set) { // [MYA NEW]
+  loadImageSet(set) {
     for (let k in set) this.loadImages([set[k]]);
   }
 
@@ -187,13 +187,13 @@ class Character extends MovableObject {
    * Updates camera position if boss intro is not locking the camera.
    * @returns {void}
    */
-  updateCamera() { // [MYA NEW]
+  updateCamera() {
     if (!this.world || this.world.bossFocus) return;
     this.world.camera_x = -this.x + 100;
   }
 
   /**
-   * Starts animation loop (slower to avoid jitter).
+   * Starts the animation loop.
    * @returns {void}
    */
   startAnimationCycle() {
@@ -218,7 +218,7 @@ class Character extends MovableObject {
    * Checks if character is walking (left/right pressed).
    * @returns {boolean} True if walking.
    */
-  isWalking() { // [MYA NEW]
+  isWalking() {
     return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
   }
 
@@ -237,17 +237,17 @@ class Character extends MovableObject {
    * @param {Object} set - Image map.
    * @returns {void}
    */
-  playImageSet(set) { // [MYA NEW] kompatibel zu playAnimation(array)
+  playImageSet(set) {
     const arr = this.toArray(set);
     this.playAnimation(arr);
   }
 
   /**
-   * Converts an object map to an array for existing animation functions.
+   * Converts an object map to an array.
    * @param {Object} set - Image map.
    * @returns {Array<string>} Array of image paths.
    */
-  toArray(set) { // [MYA NEW] einfache Schleife
+  toArray(set) {
     const arr = [];
     for (let k in set) arr.push(set[k]);
     return arr;
