@@ -121,7 +121,7 @@ function blurToCanvas(el) {
  */
 function startGame() {
   isGameRunning = true; // [MYA NEW]
-  document.body.classList.add('play-mode');
+  applyAutoLayoutFullscreen(); // [MYA CHANGE] play-mode nur wenn mobile/touch/lowH
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('startUI').style.display = 'none';
   if (canvas) canvas.style.visibility = 'visible';
@@ -300,7 +300,8 @@ function handleKeyDown(e) {
  * @returns {void}
  */
 function resetGame() {
-    isGameRunning = false; // [MYA NEW]
+  isGameRunning = false; // [MYA NEW]
+  document.body.classList.remove('play-mode'); // [MYA NEW] Desktop wieder normal
   const ids = {
     a: 'gameOverOverlay',
     b: 'youWonOverlay',
@@ -333,6 +334,7 @@ window.startGame = startGame;
 window.toggleFullscreen = toggleFullscreen;
 window.press = press;
 window.release = release;
+
 
 /**
  * Displays the game over screen and plays the lose sound.
