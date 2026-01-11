@@ -18,6 +18,8 @@ class World {
   bottleCount = 0;
   coinCount = 0; // [MYA FIX]
   coinMax = 0; // [MYA FIX]
+  throwLock = false; // [MYA NEW] verhindert Mehrfachwurf pro Klick
+
 
   /**
    * @param {HTMLCanvasElement} canvas - Canvas element.
@@ -123,16 +125,27 @@ class World {
    * Handles bottle throwing.
    * @returns {void}
    */
-  checkThrowObjects() {
-    if (!this.keyboard.D || this.bottleCount <= 0) return;
-    const dir = this.character.otherDirection ? -1 : 1;
-    const x =
-      this.character.x + (dir === 1 ? this.character.width : -20);
-    const y = this.character.y + 100;
-    const id = 't_' + Date.now() + '_' + Math.random(); // [MYA NEW]
-    this.throwableObjects[id] = new ThrowableObject(x, y, dir); // [MYA NEW]
-    this.afterThrow();
-  }
+checkThrowObjects() {
+  // [MYA NEW] Lock löst sich automatisch nach Loslassen
+  if (!this.keyboard.D) this.throwLock = false;
+
+  if (this.throwLock) return;
+  if (!this.keyboard.D_ONCE) return;
+  if (this.bottleCount <= 0) return;
+
+  this.throwLock = true;
+  this.keyboard.D_ONCE = false; // sofort verbrauchen
+  this.spawnBottle();
+  this.afterThrow();
+}
+spawnBottle() {
+  // [MYA NEW] Flasche erzeugen
+  const dir = this.character.otherDirection ? -1 : 1;
+  const x = this.character.x + (dir === 1 ? this.character.width : -20);
+  const y = this.character.y + 100;
+  const id = 't_' + Date.now() + '_' + Math.random();
+  this.throwableObjects[id] = new ThrowableObject(x, y, dir);
+}
 
   /**
    * Updates UI after throwing and resets key.
@@ -143,7 +156,6 @@ class World {
     this.bottleCount--;
     this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
     playThrowSound();
-    this.keyboard.D = false;
   }
 
   /**

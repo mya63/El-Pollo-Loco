@@ -20,4 +20,7 @@ class Keyboard {
 
   /** @type {boolean} Taste D (Flasche werfen) */
   D = false;
+
+  D_ONCE = false; // [MYA NEW] nur 1 Frame "true" zum Werfen
+  D_LOCK = false;
 }

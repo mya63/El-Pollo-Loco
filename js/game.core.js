@@ -39,7 +39,8 @@ sounds.pickup = audioPickup;
  * @param {string} key - Sound key from sounds object.
  * @returns {void}
  */
-function playSound(key, maxMs = 0) { // [MYA CHANGE]
+function playSound(key, maxMs = 0) {
+  // [MYA CHANGE]
   if (!sounds[key] || sounds[key].muted) return;
   if (sounds[key].paused === false && key === 'hurt') return;
   const s = sounds[key];
@@ -293,6 +294,7 @@ window.stopAllSoundsExcept = stopAllSoundsExcept; // [MYA NEW]
  */
 function press(key, el) {
   if (el) el.setAttribute('data-active', '1');
+  if (key === 'D') triggerThrowOnce(); // [MYA NEW]
   setKey(key, true);
   focusCanvas();
   return false;
@@ -306,7 +308,8 @@ function press(key, el) {
  */
 function release(key, el) {
   if (el) el.removeAttribute('data-active');
-  setKey(key, false);
+  if (key === 'D') releaseThrowLock(); // [MYA FIX]
+  else setKey(key, false);             // [MYA FIX]
   return false;
 }
 
@@ -321,7 +324,24 @@ function handleKeyUp(e) {
   if (e.code === 'ArrowUp') keyboard.UP = false;
   if (e.code === 'ArrowDown') keyboard.DOWN = false;
   if (e.code === 'Space') keyboard.SPACE = false;
-  if (e.code === 'KeyD') keyboard.D = false;
+
+  if (e.code === 'KeyD') {
+    releaseThrowLock();                 // [MYA FIX] D_LOCK wird frei
+    if (world) world.throwLock = false; // [MYA FIX] World-Lock frei
+  }
+}
+function triggerThrowOnce() {
+  // [MYA NEW] 1 Flasche pro Klick
+  if (keyboard.D_LOCK) return;
+  keyboard.D_ONCE = true;
+  keyboard.D_LOCK = true;
+}
+
+function releaseThrowLock() {
+  // [MYA NEW] erst nach Loslassen wieder erlauben
+  keyboard.D = false;
+  keyboard.D_ONCE = false;
+  keyboard.D_LOCK = false;
 }
 
 /**
@@ -337,7 +357,10 @@ function handleKeyDown(e) {
   if (e.code === 'ArrowUp') keyboard.UP = true;
   if (e.code === 'ArrowDown') keyboard.DOWN = true;
   if (e.code === 'Space') keyboard.SPACE = true;
-  if (e.code === 'KeyD') keyboard.D = true;
+  if (e.code === 'KeyD') {
+    keyboard.D = true;
+    triggerThrowOnce();
+  } // [MYA CHANGE]
 }
 
 /**
