@@ -3,7 +3,7 @@
  * Moves from right to left and can be defeated by the player.
  */
 class Chicken extends MovableObject {
-  y = 350;
+  y = 370;
   height = 60;
   width = 70;
 
