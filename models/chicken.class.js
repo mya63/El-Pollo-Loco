@@ -58,4 +58,16 @@ class Chicken extends MovableObject {
     this.deadTime = Date.now();
     this.playAnimation(this.IMAGES_DEAD);
   }
+
+  hit() {
+  // [MYA NEW] Chicken-Treffer-Sound
+  this.energy = 0;
+  this.playHitSound();
+}
+
+playHitSound() {
+  sounds.chicken.currentTime = 0;
+  sounds.chicken.play();
+}
+
 }

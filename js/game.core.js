@@ -24,6 +24,41 @@ const sounds = {
   throw: throwSound
 };
 
+// [MYA NEW] Extra-Sounds (Feedback Lehrer)
+const audioHit = new Audio('audio/hit.mp3'); // Flasche trifft Gegner
+const audioHurt = new Audio('audio/hurt.mp3'); // Spieler bekommt Schaden
+const audioPickup = new Audio('audio/pickup.mp3'); // Coin/Flasche eingesammelt
+
+// [MYA NEW] Sounds erweitern (Objekt bleibt)
+sounds.hit = audioHit;
+sounds.hurt = audioHurt;
+sounds.pickup = audioPickup;
+
+/**
+ * Plays a sound safely (restarts sound).
+ * @param {string} key - Sound key from sounds object.
+ * @returns {void}
+ */
+function playSound(key, maxMs = 0) { // [MYA CHANGE]
+  if (!sounds[key] || sounds[key].muted) return;
+  if (sounds[key].paused === false && key === 'hurt') return;
+  const s = sounds[key];
+  s.currentTime = 0;
+  s.play().catch(() => {});
+  if (maxMs > 0) setTimeout(() => s.pause(), maxMs);
+}
+
+/**
+ * Plays the throw sound (used by World).
+ * @returns {void}
+ */
+function playThrowSound() {
+  // [MYA NEW]
+  playSound('throw');
+}
+window.playThrowSound = playThrowSound; // [MYA NEW]
+window.playSound = playSound; // [MYA NEW]
+
 audioStart.loop = true; // [MYA FIX]
 audioGame.loop = true;
 
@@ -240,6 +275,16 @@ function setKey(key, val) {
   else keyboard[key] = val;
 }
 
+function stopAllSoundsExcept(key) {
+  // [MYA NEW]
+  for (let k in sounds) {
+    if (k === key) continue;
+    sounds[k].pause();
+    sounds[k].currentTime = 0;
+  }
+}
+window.stopAllSoundsExcept = stopAllSoundsExcept; // [MYA NEW]
+
 /**
  * Activates a key from on-screen controls.
  * @param {string} key - Key name.
@@ -335,15 +380,12 @@ window.toggleFullscreen = toggleFullscreen;
 window.press = press;
 window.release = release;
 
-
 /**
  * Displays the game over screen and plays the lose sound.
  * @returns {void}
  */
 function showGameOver() {
-  // [MYA NEW]
-  audioGame.pause();
-  audioGame.currentTime = 0;
+  stopAllSoundsExcept('over');
   audioGameOver.currentTime = 0;
   audioGameOver.play().catch(() => {});
   document.getElementById('gameOverOverlay').style.display = 'block';
