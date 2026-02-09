@@ -54,20 +54,10 @@ class Chicken extends MovableObject {
    * @returns {void}
    */
   die() {
+    if (!this.alive) return;
     this.alive = false;
     this.deadTime = Date.now();
+    playSound('enemyDead')
     this.playAnimation(this.IMAGES_DEAD);
   }
-
-  hit() {
-  // Chicken-Treffer-Sound
-  this.energy = 0;
-  this.playHitSound();
-}
-
-playHitSound() {
-  sounds.chicken.currentTime = 0;
-  sounds.chicken.play();
-}
-
 }

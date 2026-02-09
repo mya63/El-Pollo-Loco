@@ -26,7 +26,11 @@ const sounds = {
 const audioHit = new Audio('audio/hit.mp3');
 const audioHurt = new Audio('audio/hurt.mp3');
 const audioPickup = new Audio('audio/pickup.mp3');
+const audioEnemyDead = new Audio('audio/enemy-dead.mp3');
+const audioBreak = new Audio('audio/break.mp3');
 
+sounds.enemyDead = audioEnemyDead;
+sounds.break = audioBreak;
 sounds.hit = audioHit;
 sounds.hurt = audioHurt;
 sounds.pickup = audioPickup;

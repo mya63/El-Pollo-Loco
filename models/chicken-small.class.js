@@ -41,9 +41,11 @@ class SmallChicken extends MovableObject {
    * @returns {void}
    */
   die() {
+    if (!this.alive) return;
     this.alive = false;
     this.speed = 0;
     this.deadTime = Date.now();
+    playSound('enemyDead');
     this.playAnimation(this.IMAGES_DEAD);
   }
 
