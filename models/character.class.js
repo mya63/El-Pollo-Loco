@@ -8,72 +8,73 @@ class Character extends MovableObject {
   speed = 10;
 
   IMAGES_WALKING = {
-    a: 'img/2_character_pepe/2_walk/W-21.png',
-    b: 'img/2_character_pepe/2_walk/W-22.png',
-    c: 'img/2_character_pepe/2_walk/W-23.png',
-    d: 'img/2_character_pepe/2_walk/W-24.png',
-    e: 'img/2_character_pepe/2_walk/W-25.png',
-    f: 'img/2_character_pepe/2_walk/W-26.png'
+    a: "img/2_character_pepe/2_walk/W-21.png",
+    b: "img/2_character_pepe/2_walk/W-22.png",
+    c: "img/2_character_pepe/2_walk/W-23.png",
+    d: "img/2_character_pepe/2_walk/W-24.png",
+    e: "img/2_character_pepe/2_walk/W-25.png",
+    f: "img/2_character_pepe/2_walk/W-26.png",
   };
 
   IMAGES_JUMPING = {
-    a: 'img/2_character_pepe/3_jump/J-31.png',
-    b: 'img/2_character_pepe/3_jump/J-32.png',
-    c: 'img/2_character_pepe/3_jump/J-33.png',
-    d: 'img/2_character_pepe/3_jump/J-34.png',
-    e: 'img/2_character_pepe/3_jump/J-35.png',
-    f: 'img/2_character_pepe/3_jump/J-36.png',
-    g: 'img/2_character_pepe/3_jump/J-37.png',
-    h: 'img/2_character_pepe/3_jump/J-38.png',
-    i: 'img/2_character_pepe/3_jump/J-39.png'
+    a: "img/2_character_pepe/3_jump/J-31.png",
+    b: "img/2_character_pepe/3_jump/J-32.png",
+    c: "img/2_character_pepe/3_jump/J-33.png",
+    d: "img/2_character_pepe/3_jump/J-34.png",
+    e: "img/2_character_pepe/3_jump/J-35.png",
+    f: "img/2_character_pepe/3_jump/J-36.png",
+    g: "img/2_character_pepe/3_jump/J-37.png",
+    h: "img/2_character_pepe/3_jump/J-38.png",
+    i: "img/2_character_pepe/3_jump/J-39.png",
   };
 
   IMAGES_DEAD = {
-    a: 'img/2_character_pepe/5_dead/D-51.png',
-    b: 'img/2_character_pepe/5_dead/D-52.png',
-    c: 'img/2_character_pepe/5_dead/D-53.png',
-    d: 'img/2_character_pepe/5_dead/D-54.png',
-    e: 'img/2_character_pepe/5_dead/D-55.png',
-    f: 'img/2_character_pepe/5_dead/D-56.png',
-    g: 'img/2_character_pepe/5_dead/D-57.png'
+    a: "img/2_character_pepe/5_dead/D-51.png",
+    b: "img/2_character_pepe/5_dead/D-52.png",
+    c: "img/2_character_pepe/5_dead/D-53.png",
+    d: "img/2_character_pepe/5_dead/D-54.png",
+    e: "img/2_character_pepe/5_dead/D-55.png",
+    f: "img/2_character_pepe/5_dead/D-56.png",
+    g: "img/2_character_pepe/5_dead/D-57.png",
   };
 
   IMAGES_HURT = {
-    a: 'img/2_character_pepe/4_hurt/H-41.png',
-    b: 'img/2_character_pepe/4_hurt/H-42.png',
-    c: 'img/2_character_pepe/4_hurt/H-43.png'
+    a: "img/2_character_pepe/4_hurt/H-41.png",
+    b: "img/2_character_pepe/4_hurt/H-42.png",
+    c: "img/2_character_pepe/4_hurt/H-43.png",
   };
 
   IMAGES_IDLE = {
-    a: 'img/2_character_pepe/1_idle/idle/I-1.png',
-    b: 'img/2_character_pepe/1_idle/idle/I-2.png',
-    c: 'img/2_character_pepe/1_idle/idle/I-3.png',
-    d: 'img/2_character_pepe/1_idle/idle/I-4.png',
-    e: 'img/2_character_pepe/1_idle/idle/I-5.png',
-    f: 'img/2_character_pepe/1_idle/idle/I-6.png',
-    g: 'img/2_character_pepe/1_idle/idle/I-7.png',
-    h: 'img/2_character_pepe/1_idle/idle/I-8.png',
-    i: 'img/2_character_pepe/1_idle/idle/I-9.png',
-    j: 'img/2_character_pepe/1_idle/idle/I-10.png'
+    a: "img/2_character_pepe/1_idle/idle/I-1.png",
+    b: "img/2_character_pepe/1_idle/idle/I-2.png",
+    c: "img/2_character_pepe/1_idle/idle/I-3.png",
+    d: "img/2_character_pepe/1_idle/idle/I-4.png",
+    e: "img/2_character_pepe/1_idle/idle/I-5.png",
+    f: "img/2_character_pepe/1_idle/idle/I-6.png",
+    g: "img/2_character_pepe/1_idle/idle/I-7.png",
+    h: "img/2_character_pepe/1_idle/idle/I-8.png",
+    i: "img/2_character_pepe/1_idle/idle/I-9.png",
+    j: "img/2_character_pepe/1_idle/idle/I-10.png",
   };
 
   IMAGES_LONG_IDLE = {
-    a: 'img/2_character_pepe/1_idle/long_idle/I-11.png',
-    b: 'img/2_character_pepe/1_idle/long_idle/I-12.png',
-    c: 'img/2_character_pepe/1_idle/long_idle/I-13.png',
-    d: 'img/2_character_pepe/1_idle/long_idle/I-14.png',
-    e: 'img/2_character_pepe/1_idle/long_idle/I-15.png',
-    f: 'img/2_character_pepe/1_idle/long_idle/I-16.png',
-    g: 'img/2_character_pepe/1_idle/long_idle/I-17.png',
-    h: 'img/2_character_pepe/1_idle/long_idle/I-18.png',
-    i: 'img/2_character_pepe/1_idle/long_idle/I-19.png',
-    j: 'img/2_character_pepe/1_idle/long_idle/I-20.png'
+    a: "img/2_character_pepe/1_idle/long_idle/I-11.png",
+    b: "img/2_character_pepe/1_idle/long_idle/I-12.png",
+    c: "img/2_character_pepe/1_idle/long_idle/I-13.png",
+    d: "img/2_character_pepe/1_idle/long_idle/I-14.png",
+    e: "img/2_character_pepe/1_idle/long_idle/I-15.png",
+    f: "img/2_character_pepe/1_idle/long_idle/I-16.png",
+    g: "img/2_character_pepe/1_idle/long_idle/I-17.png",
+    h: "img/2_character_pepe/1_idle/long_idle/I-18.png",
+    i: "img/2_character_pepe/1_idle/long_idle/I-19.png",
+    j: "img/2_character_pepe/1_idle/long_idle/I-20.png",
   };
 
   world;
   lastMoveTime = 0;
   energy = 100;
   maxEnergy = 100;
+  longIdleSoundPlayed = false;
 
   /**
    * Creates the character and loads all animation images.
@@ -207,13 +208,28 @@ class Character extends MovableObject {
    * @returns {void}
    */
   playCurrentAnimation() {
-    if (this.isDead()) return this.playImageSet(this.IMAGES_DEAD);
-    if (this.isHurt()) return this.playImageSet(this.IMAGES_HURT);
-    if (this.isAboveGround()) return this.playImageSet(this.IMAGES_JUMPING);
-    if (this.isWalking()) return this.playImageSet(this.IMAGES_WALKING);
+    if (this.isDead()) {
+      this.stopLongIdleSound();
+      return this.playImageSet(this.IMAGES_DEAD);
+    }
+
+    if (this.isHurt()) {
+      this.stopLongIdleSound();
+      return this.playImageSet(this.IMAGES_HURT);
+    }
+
+    if (this.isAboveGround()) {
+      this.stopLongIdleSound();
+      return this.playImageSet(this.IMAGES_JUMPING);
+    }
+
+    if (this.isWalking()) {
+      this.stopLongIdleSound();
+      return this.playImageSet(this.IMAGES_WALKING);
+    }
+
     this.playIdleAnimation();
   }
-
   /**
    * Checks if character is walking (left/right pressed).
    * @returns {boolean} True if walking.
@@ -228,10 +244,31 @@ class Character extends MovableObject {
    */
   playIdleAnimation() {
     const idleTime = Date.now() - this.lastMoveTime;
-    if (idleTime > 5000) this.playImageSet(this.IMAGES_LONG_IDLE);
-    else this.playImageSet(this.IMAGES_IDLE);
+
+    if (idleTime > 5000) {
+      this.playImageSet(this.IMAGES_LONG_IDLE);
+      this.playLongIdleSound();
+      return;
+    }
+
+    this.stopLongIdleSound();
+    this.playImageSet(this.IMAGES_IDLE);
   }
 
+  playLongIdleSound() {
+    if (this.longIdleSoundPlayed) return;
+    this.longIdleSoundPlayed = true;
+    if (window.playSnoreSound) window.playSnoreSound();
+  }
+
+  /**
+   * Stops the long-idle snore sound and resets the flag.
+   * @returns {void}
+   */
+  stopLongIdleSound() {
+    this.longIdleSoundPlayed = false;
+    if (window.stopSnoreSound) window.stopSnoreSound();
+  }
   /**
    * Plays an animation set stored as object (converted to array).
    * @param {Object} set - Image map.

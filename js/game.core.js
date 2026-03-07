@@ -14,20 +14,24 @@ const audioGame = new Audio('audio/game.mp3');
 const audioWin = new Audio('audio/win.mp3');
 const audioGameOver = new Audio('audio/gameover.mp3');
 const throwSound = new Audio('audio/throw.mp3');
+const audioSnore = new Audio('audio/snore.mp3'); 
+
+audioSnore.loop = true;
 
 const sounds = {
   start: audioStart,
   game: audioGame,
   win: audioWin,
   over: audioGameOver,
-  throw: throwSound
-};
+  throw: throwSound,
+  snore: audioSnore};
 
 const audioHit = new Audio('audio/hit.mp3');
 const audioHurt = new Audio('audio/hurt.mp3');
 const audioPickup = new Audio('audio/pickup.mp3');
 const audioEnemyDead = new Audio('audio/enemy-dead.mp3');
 const audioBreak = new Audio('audio/break.mp3');
+
 
 sounds.enemyDead = audioEnemyDead;
 sounds.break = audioBreak;
@@ -59,6 +63,29 @@ function playThrowSound() {
 }
 window.playThrowSound = playThrowSound;
 window.playSound = playSound;
+
+/**
+ * Plays the snore sound once safely.
+ * @returns {void}
+ */
+function playSnoreSound() {
+  if (!sounds.snore || sounds.snore.muted) return;
+  if (!sounds.snore.paused) return;
+  sounds.snore.currentTime = 0;
+  sounds.snore.play().catch(() => {});
+}
+window.playSnoreSound = playSnoreSound;
+
+/**
+ * Stops the snore sound.
+ * @returns {void}
+ */
+function stopSnoreSound() {
+  if (!sounds.snore) return;
+  sounds.snore.pause();
+  sounds.snore.currentTime = 0;
+}
+window.stopSnoreSound = stopSnoreSound;
 
 audioStart.loop = true;
 audioGame.loop = true;
