@@ -25,7 +25,7 @@ class World {
    * @param {Keyboard} keyboard - Keyboard state.
    */
   constructor(canvas, keyboard) {
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
     this.setWorld();
@@ -58,6 +58,18 @@ class World {
       a.y + a.height > b.y &&
       a.x < b.x + b.width &&
       a.y < b.y + b.height
+    );
+  }
+
+  isDamageCollision(a, b) {
+    const offsetX = 15;
+    const offsetY = 5;
+
+    return (
+      a.x + a.width - offsetX > b.x + offsetX &&
+      a.y + a.height - offsetY > b.y + offsetY &&
+      a.x + offsetX < b.x + b.width - offsetX &&
+      a.y + offsetY < b.y + b.height - offsetY
     );
   }
 
@@ -141,7 +153,7 @@ class World {
     const dir = this.character.otherDirection ? -1 : 1;
     const x = this.character.x + (dir === 1 ? this.character.width : -20);
     const y = this.character.y + 100;
-    const id = 't_' + Date.now() + '_' + Math.random();
+    const id = "t_" + Date.now() + "_" + Math.random();
     this.throwableObjects[id] = new ThrowableObject(x, y, dir);
   }
 
@@ -166,7 +178,7 @@ class World {
       coins.splice(i, 1);
       i--;
       this.coinCount++;
-      playSound('pickup');
+      playSound("pickup");
       this.coinBar.setPercentage(this.getCoinPercent());
     }
   }
@@ -191,7 +203,7 @@ class World {
       if (!bo || bo.collected) continue;
       if (!this.isColliding(this.character, bo)) continue;
       bo.collect();
-      playSound('pickup');
+      playSound("pickup");
       this.bottleCount++;
       this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
     }
@@ -216,10 +228,15 @@ class World {
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
       if (!e || e.alive === false) continue;
-      if (this.isColliding(this.character, e)) this.resolveCollision(e);
+      if (!this.isColliding(this.character, e)) continue;
+      if (
+        this.isStomp(this.character, e) ||
+        this.isDamageCollision(this.character, e)
+      ) {
+        this.resolveCollision(e);
+      }
     }
   }
-
   /**
    * Resolves collision result: stomp or damage.
    * @param {MovableObject} e - Enemy.
@@ -265,11 +282,12 @@ class World {
    * @returns {void}
    */
   hitPlayer(d) {
-    if (!this.character || !this.character.hit || this.character.isHurt()) return;
+    if (!this.character || !this.character.hit || this.character.isHurt())
+      return;
     this.character.hit(d);
-    playSound('hurt');
+    playSound("hurt");
     this.statusBar.setPercentage(
-      (this.character.energy / this.character.maxEnergy) * 100
+      (this.character.energy / this.character.maxEnergy) * 100,
     );
   }
 
@@ -297,8 +315,8 @@ class World {
       if (!e || !e.alive) continue;
       if (!this.isColliding(t, e)) continue;
       this.hitEnemy(e, 1);
-      playSound('hit');
-      playSound('break');
+      playSound("hit");
+      playSound("break");
       return true;
     }
     return false;
