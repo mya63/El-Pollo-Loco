@@ -19,6 +19,8 @@ class World {
   coinCount = 0;
   coinMax = 0;
   throwLock = false;
+  lastThrowTime = 0;      
+  throwCooldown = 650;
 
   /**
    * @param {HTMLCanvasElement} canvas - Canvas element.
@@ -133,18 +135,21 @@ class World {
    * Handles bottle throwing.
    * @returns {void}
    */
-  checkThrowObjects() {
+checkThrowObjects() {
+    const now = Date.now(); // [MYA NEW]
+
     if (!this.keyboard.D) this.throwLock = false;
     if (this.throwLock) return;
     if (!this.keyboard.D_ONCE) return;
     if (this.bottleCount <= 0) return;
+    if (now - this.lastThrowTime < this.throwCooldown) return; // [MYA NEW]
 
     this.throwLock = true;
     this.keyboard.D_ONCE = false;
+    this.lastThrowTime = now; // [MYA NEW]
     this.spawnBottle();
     this.afterThrow();
   }
-
   /**
    * Spawns a new throwable bottle.
    * @returns {void}
