@@ -9,87 +9,6 @@ let world;
 let keyboard = new Keyboard();
 let isGameRunning = false;
 
-const audioStart = new Audio('audio/start.ogg');
-const audioGame = new Audio('audio/game.mp3');
-const audioWin = new Audio('audio/win.mp3');
-const audioGameOver = new Audio('audio/gameover.mp3');
-const throwSound = new Audio('audio/throw.mp3');
-const audioSnore = new Audio('audio/snore.mp3'); 
-
-audioSnore.loop = true;
-
-const sounds = {
-  start: audioStart,
-  game: audioGame,
-  win: audioWin,
-  over: audioGameOver,
-  throw: throwSound,
-  snore: audioSnore};
-
-const audioHit = new Audio('audio/hit.mp3');
-const audioHurt = new Audio('audio/hurt.mp3');
-const audioPickup = new Audio('audio/pickup.mp3');
-const audioEnemyDead = new Audio('audio/enemy-dead.mp3');
-const audioBreak = new Audio('audio/break.mp3');
-
-
-sounds.enemyDead = audioEnemyDead;
-sounds.break = audioBreak;
-sounds.hit = audioHit;
-sounds.hurt = audioHurt;
-sounds.pickup = audioPickup;
-
-/**
- * Plays a sound safely (restarts sound).
- * @param {string} key - Sound key from sounds object.
- * @param {number} [maxMs=0] - Optional max play time in ms.
- * @returns {void}
- */
-function playSound(key, maxMs = 0) {
-  if (!sounds[key] || sounds[key].muted) return;
-  if (sounds[key].paused === false && key === 'hurt') return;
-  const s = sounds[key];
-  s.currentTime = 0;
-  s.play().catch(() => {});
-  if (maxMs > 0) setTimeout(() => s.pause(), maxMs);
-}
-
-/**
- * Plays the throw sound (used by World).
- * @returns {void}
- */
-function playThrowSound() {
-  playSound('throw');
-}
-window.playThrowSound = playThrowSound;
-window.playSound = playSound;
-
-/**
- * Plays the snore sound once safely.
- * @returns {void}
- */
-function playSnoreSound() {
-  if (!sounds.snore || sounds.snore.muted) return;
-  if (!sounds.snore.paused) return;
-  sounds.snore.currentTime = 0;
-  sounds.snore.play().catch(() => {});
-}
-window.playSnoreSound = playSnoreSound;
-
-/**
- * Stops the snore sound.
- * @returns {void}
- */
-function stopSnoreSound() {
-  if (!sounds.snore) return;
-  sounds.snore.pause();
-  sounds.snore.currentTime = 0;
-}
-window.stopSnoreSound = stopSnoreSound;
-
-audioStart.loop = true;
-audioGame.loop = true;
-
 /**
  * User interface state and control descriptions.
  * @type {{open: boolean, controls: Record<string, string>}}
@@ -97,23 +16,14 @@ audioGame.loop = true;
 const UI = {
   open: false,
   controls: {
-    '←': 'Move',
-    '→': 'Move',
-    SPACE: 'Jump',
-    D: 'Throw bottle'
-  }
+    "←": "Move",
+    "→": "Move",
+    SPACE: "Jump",
+    D: "Throw bottle",
+  },
 };
 
 let lastFocusedElement = null;
-
-/**
- * Sets default volume for all sounds.
- * @returns {void}
- */
-function setDefaultVolumes() {
-  for (let k in sounds) sounds[k].volume = 0.2;
-}
-setDefaultVolumes();
 
 /**
  * Applies a CSS-based "fullscreen" layout on small/touch devices.
@@ -121,18 +31,22 @@ setDefaultVolumes();
  * @returns {void}
  */
 function applyAutoLayoutFullscreen() {
-  const small = window.matchMedia('(max-width: 1024px)').matches;
-  const touch = window.matchMedia('(pointer: coarse)').matches;
-  const lowH = window.matchMedia('(max-height: 700px)').matches;
+  const small = window.matchMedia("(max-width: 1024px)").matches;
+  const touch = window.matchMedia("(pointer: coarse)").matches;
+  const lowH = window.matchMedia("(max-height: 700px)").matches;
   const on = (small && touch) || lowH;
-  document.body.classList.toggle('play-mode', on);
+  document.body.classList.toggle("play-mode", on);
 }
 
-// [MYA NEW] HUD je nach Spielstatus ein-/ausblenden
+/**
+ * Shows or hides the HUD based on game state.
+ * @param {boolean} show - True to show HUD.
+ * @returns {void}
+ */
 function setHudVisible(show) {
-  let hud = document.getElementById('hud');
+  let hud = document.getElementById("hud");
   if (!hud) return;
-  hud.style.display = show ? 'flex' : 'none';
+  hud.style.display = show ? "flex" : "none";
 }
 
 /**
@@ -140,10 +54,10 @@ function setHudVisible(show) {
  * @returns {void}
  */
 function showStart() {
-  canvas = document.getElementById('canvas');
-  if (canvas) canvas.style.visibility = 'hidden';
-  document.getElementById('startOverlay').style.display = 'block';
-  document.getElementById('startUI').style.display = 'grid';
+  canvas = document.getElementById("canvas");
+  if (canvas) canvas.style.visibility = "hidden";
+  document.getElementById("startOverlay").style.display = "block";
+  document.getElementById("startUI").style.display = "grid";
   setHudVisible(false);
   checkOrientation();
   audioStart.currentTime = 0;
@@ -151,7 +65,6 @@ function showStart() {
   loadSoundState();
   updateMuteButton();
   applyAutoLayoutFullscreen();
-  
 }
 
 /**
@@ -168,9 +81,9 @@ function init() {
  * @returns {void}
  */
 function focusCanvas() {
-  if (!canvas) canvas = document.getElementById('canvas');
+  if (!canvas) canvas = document.getElementById("canvas");
   if (!canvas) return;
-  if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0');
+  if (!canvas.hasAttribute("tabindex")) canvas.setAttribute("tabindex", "0");
   canvas.focus();
 }
 
@@ -193,9 +106,9 @@ function startGame() {
   isGameRunning = true;
   setHudVisible(true);
   applyAutoLayoutFullscreen();
-  document.getElementById('startOverlay').style.display = 'none';
-  document.getElementById('startUI').style.display = 'none';
-  if (canvas) canvas.style.visibility = 'visible';
+  document.getElementById("startOverlay").style.display = "none";
+  document.getElementById("startUI").style.display = "none";
+  if (canvas) canvas.style.visibility = "visible";
   init();
   checkOrientation();
   focusCanvas();
@@ -210,8 +123,8 @@ function startGame() {
  * @returns {void}
  */
 document.onfullscreenchange = function () {
-  let btn = document.getElementById('fsBtn');
-  if (btn) btn.innerText = document.fullscreenElement ? '✖' : '⛶';
+  let btn = document.getElementById("fsBtn");
+  if (btn) btn.innerText = document.fullscreenElement ? "✖" : "⛶";
   focusCanvas();
 };
 
@@ -220,7 +133,7 @@ document.onfullscreenchange = function () {
  * @returns {void}
  */
 function toggleFullscreen() {
-  let el = document.getElementById('stage');
+  let el = document.getElementById("stage");
   if (!document.fullscreenElement) {
     if (el.requestFullscreen) el.requestFullscreen();
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
@@ -237,11 +150,11 @@ function toggleFullscreen() {
  * @returns {void}
  */
 function checkOrientation() {
-  const portrait = window.matchMedia('(orientation: portrait)').matches;
-  const overlay = document.getElementById('rotateOverlay');
+  const portrait = window.matchMedia("(orientation: portrait)").matches;
+  const overlay = document.getElementById("rotateOverlay");
   const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!overlay) return;
-  overlay.style.display = portrait && isMobile ? 'flex' : 'none';
+  overlay.style.display = portrait && isMobile ? "flex" : "none";
 }
 
 /**
@@ -251,49 +164,6 @@ function checkOrientation() {
 window.onorientationchange = function () {
   checkOrientation();
 };
-
-/**
- * Updates the mute button to reflect current sound state.
- * @returns {void}
- */
-function updateMuteButton() {
-  let btn = document.getElementById('muteBtn');
-  if (btn) btn.innerText = sounds.start.muted ? '🔇' : '🔊';
-}
-
-/**
- * Applies the mute state to all sounds.
- * @param {boolean} muted - True to mute all sounds.
- * @returns {void}
- */
-function setAllSoundsMuted(muted) {
-  for (let k in sounds) sounds[k].muted = muted;
-}
-
-/**
- * Loads sound mute state from localStorage and applies it.
- * @returns {void}
- */
-function loadSoundState() {
-  const muted = localStorage.getItem('soundMuted') === 'true';
-  setAllSoundsMuted(muted);
-  updateMuteButton();
-}
-
-/**
- * Toggles mute state for all game sounds.
- * @returns {void}
- */
-function toggleMute() {
-  const next = !sounds.start.muted;
-  setAllSoundsMuted(next);
-  localStorage.setItem('soundMuted', next);
-  updateMuteButton();
-  const btn = document.getElementById('muteBtn');
-  if (btn && document.activeElement === btn) btn.blur();
-  focusCanvas();
-}
-window.toggleMute = toggleMute;
 
 /**
  * Sets a key value on the active keyboard.
@@ -307,28 +177,14 @@ function setKey(key, val) {
 }
 
 /**
- * Stops all sounds except a given key.
- * @param {string} key - Sound key to keep playing.
- * @returns {void}
- */
-function stopAllSoundsExcept(key) {
-  for (let k in sounds) {
-    if (k === key) continue;
-    sounds[k].pause();
-    sounds[k].currentTime = 0;
-  }
-}
-window.stopAllSoundsExcept = stopAllSoundsExcept;
-
-/**
  * Activates a key from on-screen controls.
  * @param {string} key - Key name.
  * @param {HTMLElement} [el] - Control element.
  * @returns {boolean} Always returns false.
  */
 function press(key, el) {
-  if (el) el.setAttribute('data-active', '1');
-  if (key === 'D') triggerThrowOnce();
+  if (el) el.setAttribute("data-active", "1");
+  if (key === "D") triggerThrowOnce();
   setKey(key, true);
   focusCanvas();
   return false;
@@ -341,8 +197,8 @@ function press(key, el) {
  * @returns {boolean} Always returns false.
  */
 function release(key, el) {
-  if (el) el.removeAttribute('data-active');
-  if (key === 'D') releaseThrowLock();
+  if (el) el.removeAttribute("data-active");
+  if (key === "D") releaseThrowLock();
   else setKey(key, false);
   return false;
 }
@@ -353,13 +209,13 @@ function release(key, el) {
  * @returns {void}
  */
 function handleKeyUp(e) {
-  if (e.code === 'ArrowRight') keyboard.RIGHT = false;
-  if (e.code === 'ArrowLeft') keyboard.LEFT = false;
-  if (e.code === 'ArrowUp') keyboard.UP = false;
-  if (e.code === 'ArrowDown') keyboard.DOWN = false;
-  if (e.code === 'Space') keyboard.SPACE = false;
+  if (e.code === "ArrowRight") keyboard.RIGHT = false;
+  if (e.code === "ArrowLeft") keyboard.LEFT = false;
+  if (e.code === "ArrowUp") keyboard.UP = false;
+  if (e.code === "ArrowDown") keyboard.DOWN = false;
+  if (e.code === "Space") keyboard.SPACE = false;
 
-  if (e.code === 'KeyD') {
+  if (e.code === "KeyD") {
     releaseThrowLock();
     if (world) world.throwLock = false;
   }
@@ -391,14 +247,15 @@ function releaseThrowLock() {
  * @returns {void}
  */
 function handleKeyDown(e) {
-  if (e.key === 'Escape' && typeof closeLegalModal === 'function') closeLegalModal();
-  if (e.code === 'ArrowRight') keyboard.RIGHT = true;
-  if (e.code === 'ArrowLeft') keyboard.LEFT = true;
-  if (e.code === 'ArrowUp') keyboard.UP = true;
-  if (e.code === 'ArrowDown') keyboard.DOWN = true;
-  if (e.code === 'Space') keyboard.SPACE = true;
+  if (e.key === "Escape" && typeof closeLegalModal === "function")
+    closeLegalModal();
+  if (e.code === "ArrowRight") keyboard.RIGHT = true;
+  if (e.code === "ArrowLeft") keyboard.LEFT = true;
+  if (e.code === "ArrowUp") keyboard.UP = true;
+  if (e.code === "ArrowDown") keyboard.DOWN = true;
+  if (e.code === "Space") keyboard.SPACE = true;
 
-  if (e.code === 'KeyD') {
+  if (e.code === "KeyD") {
     keyboard.D = true;
     triggerThrowOnce();
   }
@@ -410,23 +267,24 @@ function handleKeyDown(e) {
  */
 function resetGame() {
   if (!isGameRunning) return;
-  
-  isGameRunning = false;
-  document.body.classList.remove('play-mode');
 
-  const ids = { a: 'gameOverOverlay', b: 'youWonOverlay', c: 'startOverlay' };
+  isGameRunning = false;
+  document.body.classList.remove("play-mode");
+
+  const ids = { a: "gameOverOverlay", b: "youWonOverlay", c: "startOverlay" };
   for (let k in ids) {
     let el = document.getElementById(ids[k]);
-    if (el) el.style.display = 'none';
+    if (el) el.style.display = "none";
   }
 
-  let ui = document.getElementById('startUI');
-  if (ui) ui.style.display = 'none';
+  let ui = document.getElementById("startUI");
+  if (ui) ui.style.display = "none";
 
   if (world && world.stop) world.stop();
   keyboard = new Keyboard();
 
-  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  if (canvas)
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
 
   init();
   checkOrientation();
@@ -438,22 +296,25 @@ function resetGame() {
   }
   audioGame.play().catch(() => {});
 }
+
 window.resetGame = resetGame;
 window.showStart = showStart;
 window.startGame = startGame;
 window.toggleFullscreen = toggleFullscreen;
 window.press = press;
 window.release = release;
+window.blurToCanvas = blurToCanvas;
+window.focusCanvas = focusCanvas;
 
 /**
  * Displays the game over screen and plays the lose sound.
  * @returns {void}
  */
 function showGameOver() {
-  stopAllSoundsExcept('over');
+  stopAllSoundsExcept("over");
   audioGameOver.currentTime = 0;
   audioGameOver.play().catch(() => {});
-  document.getElementById('gameOverOverlay').style.display = 'block';
+  document.getElementById("gameOverOverlay").style.display = "block";
 }
 
 /**
@@ -465,14 +326,12 @@ function showYouWon() {
   audioGame.currentTime = 0;
   audioWin.currentTime = 0;
   audioWin.play().catch(() => {});
-  document.getElementById('youWonOverlay').style.display = 'block';
+  document.getElementById("youWonOverlay").style.display = "block";
 }
 
 window.showGameOver = showGameOver;
 window.showYouWon = showYouWon;
-
 window.handleKeyDown = handleKeyDown;
 window.handleKeyUp = handleKeyUp;
-
 window.checkOrientation = checkOrientation;
 window.applyAutoLayoutFullscreen = applyAutoLayoutFullscreen;
