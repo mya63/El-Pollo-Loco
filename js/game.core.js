@@ -101,6 +101,13 @@ function applyAutoLayoutFullscreen() {
   document.body.classList.toggle('play-mode', on);
 }
 
+// [MYA NEW] HUD je nach Spielstatus ein-/ausblenden
+function setHudVisible(show) {
+  let hud = document.getElementById('hud');
+  if (!hud) return;
+  hud.style.display = show ? 'flex' : 'none';
+}
+
 /**
  * Displays the start screen and prepares the game.
  * @returns {void}
@@ -110,12 +117,14 @@ function showStart() {
   if (canvas) canvas.style.visibility = 'hidden';
   document.getElementById('startOverlay').style.display = 'block';
   document.getElementById('startUI').style.display = 'grid';
+  setHudVisible(false);
   checkOrientation();
   audioStart.currentTime = 0;
   audioStart.play().catch(() => {});
   loadSoundState();
   updateMuteButton();
   applyAutoLayoutFullscreen();
+  
 }
 
 /**
@@ -155,6 +164,7 @@ function blurToCanvas(el) {
  */
 function startGame() {
   isGameRunning = true;
+  setHudVisible(true);
   applyAutoLayoutFullscreen();
   document.getElementById('startOverlay').style.display = 'none';
   document.getElementById('startUI').style.display = 'none';
@@ -372,6 +382,8 @@ function handleKeyDown(e) {
  * @returns {void}
  */
 function resetGame() {
+  if (!isGameRunning) return;
+  
   isGameRunning = false;
   document.body.classList.remove('play-mode');
 

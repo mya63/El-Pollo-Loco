@@ -13,19 +13,21 @@ main{display:flex;justify-content:center;width:100%;max-width:1280px;padding:0 1
 /* ========================= */
 :root{--pads:0px;--stage-offset:clamp(140px,22vh,260px);--game-max-w:1100px;--game-max-vw:85vw}
 #stage{position:relative;margin:0 auto;width:min(var(--game-max-w),var(--game-max-vw),max(0px,calc((100vh - var(--pads) - var(--stage-offset))*(720/480))));max-width:960px;aspect-ratio:720/480}
-canvas{background:#000;width:100%;height:100%;display:block;border:2px solid #333;border-radius:8px}
-
+canvas{background:#000;width:100%;height:100%;display:block;border:0;border-radius:8px;box-sizing:border-box}
+canvas:focus {
+  outline: none;
+}
 /* ========================= */
 /* Overlays                  */
 /* ========================= */
-.overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;background:#000;z-index:4}
+.overlay{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#000;z-index:4;border-radius:8px}
 #rotateOverlay{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;z-index:9999!important;background:rgba(0,0,0,.85)!important;display:none}
 .rotate-center{display:flex;align-items:center;justify-content:center}
 .rotate-box{font-family:Arial,Helvetica,sans-serif;text-align:center;background:rgba(0,0,0,.55);padding:16px 20px;border-radius:10px;color:#fff;max-width:min(420px,90vw)}
 .rotate-box h2{margin:0 0 6px;font-size:20px}
 .rotate-box p{margin:0;font-size:14px}
 
-/* ========================= */
+/* ========================= */ 
 /* Start UI                  */
 /* ========================= */
 .start-ui{position:absolute;inset:0;display:none;place-items:center;z-index:10;pointer-events:none}
