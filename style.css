@@ -27,6 +27,12 @@ canvas:focus {
 .rotate-box h2{margin:0 0 6px;font-size:20px}
 .rotate-box p{margin:0;font-size:14px}
 
+#gameOverOverlay,
+#youWonOverlay {
+  object-fit: contain;
+  background: #000;
+}
+
 /* ========================= */ 
 /* Start UI                  */
 /* ========================= */
