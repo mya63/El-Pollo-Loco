@@ -41,13 +41,17 @@ const sounds = {
  */
 function playSound(key, maxMs = 0) {
   if (!sounds[key] || sounds[key].muted) return;
-  if (sounds[key].paused === false && key === "hurt") return;
+
   const s = sounds[key];
+
+  
+  if (!s.paused) return;
+
   s.currentTime = 0;
   s.play().catch(() => {});
+
   if (maxMs > 0) setTimeout(() => s.pause(), maxMs);
 }
-
 /**
  * Plays the throw sound (used by World).
  * @returns {void}

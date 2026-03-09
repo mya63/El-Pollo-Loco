@@ -307,23 +307,36 @@ window.blurToCanvas = blurToCanvas;
 window.focusCanvas = focusCanvas;
 
 /**
+ * Stops the current game session completely.
+ * @returns {void}
+ */
+function stopGameSession() {
+  isGameRunning = false;
+
+  if (world && world.stop) world.stop();
+
+  keyboard = new Keyboard();
+
+  stopAllSoundsExcept("");
+  stopSnoreSound();
+}
+
+/**
  * Displays the game over screen and plays the lose sound.
  * @returns {void}
  */
 function showGameOver() {
-  stopAllSoundsExcept("over");
+  stopGameSession();
   audioGameOver.currentTime = 0;
   audioGameOver.play().catch(() => {});
   document.getElementById("gameOverOverlay").style.display = "block";
 }
-
 /**
  * Displays the win screen and plays the victory sound.
  * @returns {void}
  */
 function showYouWon() {
-  audioGame.pause();
-  audioGame.currentTime = 0;
+  stopGameSession();
   audioWin.currentTime = 0;
   audioWin.play().catch(() => {});
   document.getElementById("youWonOverlay").style.display = "block";
@@ -335,3 +348,4 @@ window.handleKeyDown = handleKeyDown;
 window.handleKeyUp = handleKeyUp;
 window.checkOrientation = checkOrientation;
 window.applyAutoLayoutFullscreen = applyAutoLayoutFullscreen;
+window.isGameRunning = () => isGameRunning;

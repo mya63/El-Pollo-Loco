@@ -71,7 +71,7 @@ class Character extends MovableObject {
   };
 
   world;
-  lastMoveTime = 0;
+  lastMoveTime = Date.now();
   energy = 100;
   maxEnergy = 100;
   longIdleSoundPlayed = false;
@@ -79,13 +79,13 @@ class Character extends MovableObject {
   /**
    * Creates the character and loads all animation images.
    */
-  constructor() {
-    super();
-    this.loadStartImage();
-    this.loadAllAnimations();
-    this.applyGravity();
-  }
-
+constructor() {
+  super();
+  this.lastMoveTime = Date.now();
+  this.loadStartImage();
+  this.loadAllAnimations();
+  this.applyGravity();
+}
   /**
    * Loads the default start image.
    * @returns {void}
@@ -255,12 +255,12 @@ class Character extends MovableObject {
     this.playImageSet(this.IMAGES_IDLE);
   }
 
-  playLongIdleSound() {
-    if (this.longIdleSoundPlayed) return;
-    this.longIdleSoundPlayed = true;
-    if (window.playSnoreSound) window.playSnoreSound();
-  }
-
+playLongIdleSound() {
+  if (this.longIdleSoundPlayed) return;
+  if (window.isGameRunning && !window.isGameRunning()) return;
+  this.longIdleSoundPlayed = true;
+  if (window.playSnoreSound) window.playSnoreSound();
+}
   /**
    * Stops the long-idle snore sound and resets the flag.
    * @returns {void}
