@@ -106,13 +106,15 @@ class Endboss extends MovableObject {
    * @param {number} d - Damage amount.
    * @returns {void}
    */
-  takeDamage(d) {
-    if (!this.alive) return;
-    this.hp -= d;
-    if (this.hp <= 3 && !this.aggressive) this.becomeAggressive();
-    if (this.hp <= 0) this.die();
-  }
+takeDamage(d) {
+  if (!this.alive) return;
 
+  this.hp -= d;
+  this.showHitReaction();
+
+  if (this.hp <= 3 && !this.aggressive) this.becomeAggressive();
+  if (this.hp <= 0) this.die();
+}
   /**
    * Starts the death animation and ends the game (win).
    * @returns {void}
@@ -124,6 +126,18 @@ class Endboss extends MovableObject {
     this.stopBossIntervals();
     this.playDeathSequence();
   }
+
+  showHitReaction() {
+  if (this.hitReactionActive) return;
+
+  this.hitReactionActive = true;
+  this.x += 25;
+
+  setTimeout(() => {
+    this.x -= 25;
+    this.hitReactionActive = false;
+  }, 120);
+}
 
   /**
    * Clears movement/animation intervals safely.
