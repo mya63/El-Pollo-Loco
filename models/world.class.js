@@ -81,12 +81,16 @@ class World {
    * @param {MovableObject} e - Enemy.
    * @returns {boolean} True if stomp.
    */
-  isStomp(c, e) {
-    const falling = c.speedY < 0;
-    const above = c.y + c.height - e.y < 30;
-    return falling && above;
-  }
+isStomp(c, e) {
+  const falling = c.speedY < 0;
+  const footY = c.y + c.height;
+  const footX = c.x + c.width / 2;
 
+  const verticalHit = footY > e.y && footY < e.y + 18;
+  const horizontalHit = footX > e.x + 8 && footX < e.x + e.width - 8;
+
+  return falling && verticalHit && horizontalHit;
+}
   /**
    * Starts all game loops.
    * @returns {void}
