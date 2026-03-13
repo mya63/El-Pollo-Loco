@@ -19,7 +19,7 @@ class World {
   coinCount = 0;
   coinMax = 0;
   throwLock = false;
-  lastThrowTime = 0;      
+  lastThrowTime = 0;
   throwCooldown = 650;
 
   /**
@@ -81,16 +81,16 @@ class World {
    * @param {MovableObject} e - Enemy.
    * @returns {boolean} True if stomp.
    */
-isStomp(c, e) {
-  const falling = c.speedY < 0;
-  const footY = c.y + c.height;
-  const footX = c.x + c.width / 2;
+  isStomp(c, e) {
+    const falling = c.speedY < 0;
+    const footY = c.y + c.height;
+    const footX = c.x + c.width / 2;
 
-  const verticalHit = footY > e.y && footY < e.y + 18;
-  const horizontalHit = footX > e.x + 8 && footX < e.x + e.width - 8;
+    const verticalHit = footY > e.y && footY < e.y + 18;
+    const horizontalHit = footX > e.x + 8 && footX < e.x + e.width - 8;
 
-  return falling && verticalHit && horizontalHit;
-}
+    return falling && verticalHit && horizontalHit;
+  }
   /**
    * Starts all game loops.
    * @returns {void}
@@ -139,7 +139,7 @@ isStomp(c, e) {
    * Handles bottle throwing.
    * @returns {void}
    */
-checkThrowObjects() {
+  checkThrowObjects() {
     const now = Date.now(); // [MYA NEW]
 
     if (!this.keyboard.D) this.throwLock = false;
@@ -180,10 +180,14 @@ checkThrowObjects() {
    * Checks coin collisions and updates coin bar.
    * @returns {void}
    */
+  /* [MYA CHANGE] Coins werden jetzt erst bei echtem Kontakt eingesammelt */
   checkCoinCollision() {
     const coins = this.level.coins || [];
+
     for (let i = 0; i < coins.length; i++) {
-      if (!this.isColliding(this.character, coins[i])) continue;
+      const coin = coins[i];
+      if (!this.isCoinPickupCollision(this.character, coin)) continue;
+
       coins.splice(i, 1);
       i--;
       this.coinCount++;
@@ -193,6 +197,28 @@ checkThrowObjects() {
   }
 
   /**
+   * @param {MovableObject} c - Character.
+   * @param {MovableObject} coin - Coin.
+   * @returns {boolean} True if pickup should happen.
+   */
+  isCoinPickupCollision(c, coin) {
+    const charLeft = c.x + 45;
+    const charRight = c.x + c.width - 45;
+    const charTop = c.y + 70;
+    const charBottom = c.y + c.height - 80;
+
+    const coinLeft = coin.x + 10;
+    const coinRight = coin.x + coin.width - 10;
+    const coinTop = coin.y + 10;
+    const coinBottom = coin.y + coin.height - 10;
+
+    return (
+      charRight > coinLeft &&
+      charLeft < coinRight &&
+      charBottom > coinTop &&
+      charTop < coinBottom
+    );
+  } /**
    * Calculates coin percentage.
    * @returns {number} 0..100
    */
@@ -205,34 +231,34 @@ checkThrowObjects() {
    * Checks bottle pickups and updates bottle bar.
    * @returns {void}
    */
-checkBottlePickups() {
-  const bottles = this.level.bottles || [];
+  checkBottlePickups() {
+    const bottles = this.level.bottles || [];
 
-  for (let i = 0; i < bottles.length; i++) {
-    const bo = bottles[i];
-    if (!bo || bo.collected) continue;
-    if (!this.isBottlePickupCollision(this.character, bo)) continue;
+    for (let i = 0; i < bottles.length; i++) {
+      const bo = bottles[i];
+      if (!bo || bo.collected) continue;
+      if (!this.isBottlePickupCollision(this.character, bo)) continue;
 
-    bo.collect();
-    playSound("pickup");
-    this.bottleCount++;
-    this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
+      bo.collect();
+      playSound("pickup");
+      this.bottleCount++;
+      this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
+    }
   }
-}
 
-/**
- * @param {MovableObject} c - Character.
- * @param {MovableObject} b - Bottle.
- * @returns {boolean} True if pickup should happen.
- */
-isBottlePickupCollision(c, b) {
-  return (
-    c.x + 35 < b.x + b.width &&
-    c.x + c.width - 35 > b.x &&
-    c.y + 40 < b.y + b.height &&
-    c.y + c.height - 25 > b.y
-  );
-}
+  /**
+   * @param {MovableObject} c - Character.
+   * @param {MovableObject} b - Bottle.
+   * @returns {boolean} True if pickup should happen.
+   */
+  isBottlePickupCollision(c, b) {
+    return (
+      c.x + 35 < b.x + b.width &&
+      c.x + c.width - 35 > b.x &&
+      c.y + 40 < b.y + b.height &&
+      c.y + c.height - 25 > b.y
+    );
+  }
   /**
    * Checks game over state once.
    * @returns {void}
