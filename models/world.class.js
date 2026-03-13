@@ -205,19 +205,34 @@ checkThrowObjects() {
    * Checks bottle pickups and updates bottle bar.
    * @returns {void}
    */
-  checkBottlePickups() {
-    const bottles = this.level.bottles || [];
-    for (let i = 0; i < bottles.length; i++) {
-      const bo = bottles[i];
-      if (!bo || bo.collected) continue;
-      if (!this.isColliding(this.character, bo)) continue;
-      bo.collect();
-      playSound("pickup");
-      this.bottleCount++;
-      this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
-    }
-  }
+checkBottlePickups() {
+  const bottles = this.level.bottles || [];
 
+  for (let i = 0; i < bottles.length; i++) {
+    const bo = bottles[i];
+    if (!bo || bo.collected) continue;
+    if (!this.isBottlePickupCollision(this.character, bo)) continue;
+
+    bo.collect();
+    playSound("pickup");
+    this.bottleCount++;
+    this.bottleBar.setPercentage(Math.min(this.bottleCount, 5) * 20);
+  }
+}
+
+/**
+ * @param {MovableObject} c - Character.
+ * @param {MovableObject} b - Bottle.
+ * @returns {boolean} True if pickup should happen.
+ */
+isBottlePickupCollision(c, b) {
+  return (
+    c.x + 35 < b.x + b.width &&
+    c.x + c.width - 35 > b.x &&
+    c.y + 40 < b.y + b.height &&
+    c.y + c.height - 25 > b.y
+  );
+}
   /**
    * Checks game over state once.
    * @returns {void}
