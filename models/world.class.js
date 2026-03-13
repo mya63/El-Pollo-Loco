@@ -82,15 +82,28 @@ class World {
    * @returns {boolean} True if stomp.
    */
   isStomp(c, e) {
-    const falling = c.speedY < 0;
-    const footY = c.y + c.height;
-    const footX = c.x + c.width / 2;
+    const isFalling = c.speedY < 0; 
+    if (!isFalling) return false; 
 
-    const verticalHit = footY > e.y && footY < e.y + 18;
-    const horizontalHit = footX > e.x + 8 && footX < e.x + e.width - 8;
+    const charBottom = c.y + c.height; 
+    const charLeft = c.x + 25; 
+    const charRight = c.x + c.width - 25; 
 
-    return falling && verticalHit && horizontalHit;
-  }
+    const enemyTop = e.y; 
+    const enemyLeft = e.x + 5; 
+    const enemyRight = e.x + e.width - 5; 
+
+    const topRange = e instanceof SmallChicken ? 20 : 25; 
+
+    const hitsTopArea =
+      charBottom >= enemyTop && charBottom <= enemyTop + topRange; 
+
+    const overlapsX =
+      charRight > enemyLeft && charLeft < enemyRight; 
+
+    return hitsTopArea && overlapsX; 
+  }  
+  
   /**
    * Starts all game loops.
    * @returns {void}
@@ -180,7 +193,7 @@ class World {
    * Checks coin collisions and updates coin bar.
    * @returns {void}
    */
-  /* [MYA CHANGE] Coins werden jetzt erst bei echtem Kontakt eingesammelt */
+  /*  Coins werden jetzt erst bei echtem Kontakt eingesammelt */
   checkCoinCollision() {
     const coins = this.level.coins || [];
 
@@ -275,19 +288,22 @@ class World {
    */
   checkCollisions() {
     const enemies = this.level.enemies || [];
+
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
-      if (!e || e.alive === false) continue;
-      if (!this.isColliding(this.character, e)) continue;
-      if (
-        this.isStomp(this.character, e) ||
-        this.isDamageCollision(this.character, e)
-      ) {
-        this.resolveCollision(e);
+      if (!e || e.alive === false) continue; // [MYA KEEP]
+      if (!this.isColliding(this.character, e)) continue; // [MYA KEEP]
+
+      if (this.isStomp(this.character, e)) { 
+        this.handleStomp(e); 
+        continue; 
+      }
+
+      if (this.isDamageCollision(this.character, e)) { 
+        this.hitPlayer(e.damage || 10); 
       }
     }
-  }
-  /**
+  }  /**
    * Resolves collision result: stomp or damage.
    * @param {MovableObject} e - Enemy.
    * @returns {void}
@@ -305,9 +321,10 @@ class World {
   handleStomp(e) {
     const dmg =
       e instanceof Chicken || e instanceof SmallChicken ? e.hp || 1 : 1;
-    this.hitEnemy(e, dmg);
-  }
 
+    this.character.speedY = 12; 
+    this.hitEnemy(e, dmg); // [MYA KEEP]
+  }
   /**
    * Damages an enemy and updates boss bar if needed.
    * @param {MovableObject} e - Enemy.
