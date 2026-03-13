@@ -63,47 +63,55 @@ class World {
     );
   }
 
-  isDamageCollision(a, b) {
-    const offsetX = 15;
-    const offsetY = 5;
+isDamageCollision(a, b) {
+  const charLeft = a.x + 30;
+  const charRight = a.x + a.width - 30;
+  const charTop = a.y + 20;
+  const charBottom = a.y + a.height - 20;
 
-    return (
-      a.x + a.width - offsetX > b.x + offsetX &&
-      a.y + a.height - offsetY > b.y + offsetY &&
-      a.x + offsetX < b.x + b.width - offsetX &&
-      a.y + offsetY < b.y + b.height - offsetY
-    );
-  }
+  const enemyLeft = b.x + 5;
+  const enemyRight = b.x + b.width - 5;
+  const enemyTop = b.y + 5;
+  const enemyBottom = b.y + b.height - 5;
 
-  /**
-   * Checks if player stomped an enemy.
-   * @param {MovableObject} c - Character.
-   * @param {MovableObject} e - Enemy.
-   * @returns {boolean} True if stomp.
-   */
-  isStomp(c, e) {
-    const isFalling = c.speedY < 0; 
-    if (!isFalling) return false; 
+  return (
+    charRight > enemyLeft &&
+    charLeft < enemyRight &&
+    charBottom > enemyTop &&
+    charTop < enemyBottom
+  );
+}
+/**
+ * Checks if player stomped an enemy.
+ * @param {MovableObject} c - Character.
+ * @param {MovableObject} e - Enemy.
+ * @returns {boolean} True if stomp.
+ */
+isStomp(c, e) {
+  const isFalling = c.speedY < 0;
+  if (!isFalling) return false;
 
-    const charBottom = c.y + c.height; 
-    const charLeft = c.x + 25; 
-    const charRight = c.x + c.width - 25; 
+  const charBottom = c.y + c.height;
+  const charLeft = c.x + 35;
+  const charRight = c.x + c.width - 35;
 
-    const enemyTop = e.y; 
-    const enemyLeft = e.x + 5; 
-    const enemyRight = e.x + e.width - 5; 
+  const enemyTop = e.y;
+  const enemyLeft = e.x + 8;
+  const enemyRight = e.x + e.width - 8;
 
-    const topRange = e instanceof SmallChicken ? 20 : 25; 
+  const topRange = e instanceof SmallChicken ? 35 : 30;
 
-    const hitsTopArea =
-      charBottom >= enemyTop && charBottom <= enemyTop + topRange; 
+  const hitsTopArea =
+    charBottom >= enemyTop &&
+    charBottom <= enemyTop + topRange;
 
-    const overlapsX =
-      charRight > enemyLeft && charLeft < enemyRight; 
+  const overlapsX =
+    charRight > enemyLeft &&
+    charLeft < enemyRight;
 
-    return hitsTopArea && overlapsX; 
-  }  
-  
+  return hitsTopArea && overlapsX;
+}
+
   /**
    * Starts all game loops.
    * @returns {void}
@@ -282,6 +290,8 @@ class World {
     showGameOver();
   }
 
+
+  
   /**
    * Checks collisions with enemies.
    * @returns {void}
@@ -291,19 +301,21 @@ class World {
 
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
-      if (!e || e.alive === false) continue; // [MYA KEEP]
-      if (!this.isColliding(this.character, e)) continue; // [MYA KEEP]
+      if (!e || e.alive === false) continue; 
+      if (!this.isColliding(this.character, e)) continue;
 
       if (this.isStomp(this.character, e)) { 
         this.handleStomp(e); 
         continue; 
       }
 
-      if (this.isDamageCollision(this.character, e)) { 
         this.hitPlayer(e.damage || 10); 
       }
     }
-  }  /**
+  
+
+
+   /**
    * Resolves collision result: stomp or damage.
    * @param {MovableObject} e - Enemy.
    * @returns {void}
