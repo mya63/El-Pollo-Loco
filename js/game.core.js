@@ -265,10 +265,8 @@ function handleKeyDown(e) {
  * Resets the game world and restarts the level.
  * @returns {void}
  */
+/* [MYA CHANGE] Restart funktioniert jetzt auch auf Win-/Lose-Screen */
 function resetGame() {
-  if (!isGameRunning) return;
-
-  isGameRunning = false;
   document.body.classList.remove("play-mode");
 
   const ids = { a: "gameOverOverlay", b: "youWonOverlay", c: "startOverlay" };
@@ -282,10 +280,14 @@ function resetGame() {
 
   if (world && world.stop) world.stop();
   keyboard = new Keyboard();
+  isGameRunning = true;
 
-  if (canvas)
+  if (canvas) {
+    canvas.style.visibility = "visible";
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  }
 
+  setHudVisible(true);
   init();
   checkOrientation();
   focusCanvas();
@@ -294,9 +296,10 @@ function resetGame() {
     sounds[s].pause();
     sounds[s].currentTime = 0;
   }
+
+  audioGame.currentTime = 0;
   audioGame.play().catch(() => {});
 }
-
 window.resetGame = resetGame;
 window.showStart = showStart;
 window.startGame = startGame;
