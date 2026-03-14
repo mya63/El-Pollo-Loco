@@ -161,17 +161,17 @@ isStomp(c, e) {
    * @returns {void}
    */
   checkThrowObjects() {
-    const now = Date.now(); // [MYA NEW]
+    const now = Date.now(); 
 
     if (!this.keyboard.D) this.throwLock = false;
     if (this.throwLock) return;
     if (!this.keyboard.D_ONCE) return;
     if (this.bottleCount <= 0) return;
-    if (now - this.lastThrowTime < this.throwCooldown) return; // [MYA NEW]
+    if (now - this.lastThrowTime < this.throwCooldown) return; 
 
     this.throwLock = true;
     this.keyboard.D_ONCE = false;
-    this.lastThrowTime = now; // [MYA NEW]
+    this.lastThrowTime = now; 
     this.spawnBottle();
     this.afterThrow();
   }
@@ -355,21 +355,26 @@ isStomp(c, e) {
     }
   }
 
-  /**
-   * Damages the player and updates status bar.
-   * @param {number} d - Damage.
-   * @returns {void}
-   */
-  hitPlayer(d) {
-    if (!this.character || !this.character.hit || this.character.isHurt())
-      return;
-    this.character.hit(d);
-    playSound("hurt");
-    this.statusBar.setPercentage(
-      (this.character.energy / this.character.maxEnergy) * 100,
-    );
-  }
+/**
+ * Damages the player and updates status bar.
+ * @param {number} d - Damage.
+ * @returns {void}
+ */
+hitPlayer(d) {
+  if (!this.character || !this.character.hit || this.character.isHurt()) return;
 
+  this.character.hit(d);
+  playSound("hurt");
+
+  this.statusBar.setPercentage(
+    (this.character.energy / this.character.maxEnergy) * 100
+  );
+
+  if (this.character.energy <= 0 && !this.gameOverShown) { 
+    this.gameOverShown = true; 
+    showGameOver(); 
+  }
+}
   /**
    * Checks bottle hits against enemies.
    * @returns {void}

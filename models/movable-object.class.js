@@ -82,10 +82,9 @@ class MovableObject extends DrawableObject {
    * Checks whether the object is dead.
    * @returns {boolean} True if energy is zero.
    */
-  isDead() {
-    return this.energy === 0;
-  }
-
+isDead() {
+  return this.energy <= 0;
+}
   /**
    * Plays an animation from a list of images.
    * @param {Array<string>} images - Image paths.
