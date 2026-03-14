@@ -1,6 +1,5 @@
 /**
  * Core game bootstrap and global UI handlers.
- * Split file to keep under 400 lines.
  * @module game-core
  */
 
@@ -265,7 +264,7 @@ function handleKeyDown(e) {
  * Resets the game world and restarts the level.
  * @returns {void}
  */
-/* [MYA CHANGE] Restart funktioniert jetzt auch auf Win-/Lose-Screen */
+/*  Restart funktioniert jetzt auch auf Win-/Lose-Screen */
 function resetGame() {
   document.body.classList.remove("play-mode");
 

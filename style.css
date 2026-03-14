@@ -136,5 +136,5 @@ body.play-mode main{max-width:none;padding:0}
 body.play-mode #stage{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;margin:0;aspect-ratio:auto}
 body.play-mode canvas{width:100%;height:100%;border:0;border-radius:0}
 
-/* [MYA CHANGE] prevents iOS callout + selection */
+/* prevents iOS callout + selection */
 .no-context,.no-context *,canvas{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}

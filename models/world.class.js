@@ -1,6 +1,5 @@
 /**
  * Represents the game world (logic part).
- * Rendering methods are in world.render.js to keep files under 400 lines.
  */
 class World {
   character = new Character();
@@ -335,7 +334,7 @@ isStomp(c, e) {
       e instanceof Chicken || e instanceof SmallChicken ? e.hp || 1 : 1;
 
     this.character.speedY = 12; 
-    this.hitEnemy(e, dmg); // [MYA KEEP]
+    this.hitEnemy(e, dmg); 
   }
   /**
    * Damages an enemy and updates boss bar if needed.

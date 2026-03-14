@@ -60,7 +60,7 @@ World.prototype.drawScene = function (cam, view) {
 World.prototype.drawUI = function () {
   this.addToMap(this.statusBar);
   this.addToMap(this.bottleBar);
-  this.addToMap(this.coinBar); // [MYA FIX]
+  this.addToMap(this.coinBar); 
   if (this.bossBar.visible) this.addToMap(this.bossBar);
 };
 
@@ -71,11 +71,11 @@ World.prototype.drawUI = function () {
  */
 World.prototype.drawEntities = function (view) {
   this.addToMap(this.character);
-  this.addObjectsToMap(this.level.coins, view); // [MYA FIX]
+  this.addObjectsToMap(this.level.coins, view); 
   this.addObjectsToMap(this.level.clouds, view);
   this.addObjectsToMap(this.level.bottles, view);
   this.addObjectsToMap(this.level.enemies, view);
-  this.addThrowableToMap(view); // [MYA NEW]
+  this.addThrowableToMap(view); 
 };
 
 /**
@@ -83,7 +83,7 @@ World.prototype.drawEntities = function (view) {
  * @param {{left:number,right:number}} view - View bounds.
  * @returns {void}
  */
-World.prototype.addThrowableToMap = function (view) { // [MYA NEW]
+World.prototype.addThrowableToMap = function (view) { 
   for (let id in this.throwableObjects) {
     const o = this.throwableObjects[id];
     if (!o || o.broken) continue;
