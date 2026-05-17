@@ -1,11 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
     <title>EL POLLO LOCO</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="icon" type="image/gif" href="img/4_enemie_boss_chicken/2_alert/G11.png" />
+    <link
+      rel="icon"
+      type="image/gif"
+      href="img/4_enemie_boss_chicken/2_alert/G11.png"
+    />
 
     <script src="models/drawable-object.class.js"></script>
     <script src="models/movable-object.class.js"></script>
@@ -27,23 +34,50 @@
     <script src="levels/level1.js"></script>
   </head>
 
-<body onload="showStart()"
-onresize="if(window.checkOrientation) window.checkOrientation(); if(window.applyAutoLayoutFullscreen) window.applyAutoLayoutFullscreen();"
-      onkeydown="handleKeyDown(event)" onkeyup="handleKeyUp(event)"
-      oncontextmenu="return blockContextMenu(event)">
+  <body
+    onload="showStart()"
+    onresize="
+      if (window.checkOrientation) window.checkOrientation();
+      if (window.applyAutoLayoutFullscreen) window.applyAutoLayoutFullscreen();
+    "
+    onkeydown="handleKeyDown(event)"
+    onkeyup="handleKeyUp(event)"
+    oncontextmenu="return blockContextMenu(event);"
+  >
     <h1>EL POLLO LOCO</h1>
 
     <main>
       <div id="stage">
-<canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
+        <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
 
-        <img id="startOverlay" class="overlay" src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Startscreen" />
+        <img
+          id="startOverlay"
+          class="overlay"
+          src="img/9_intro_outro_screens/start/startscreen_1.png"
+          alt="Startscreen"
+        />
 
-        <img id="gameOverOverlay" class="overlay" src="img/You won, you lost/You lost.png" alt="You Lost" style="display:none" />
+        <img
+          id="gameOverOverlay"
+          class="overlay"
+          src="img/You won, you lost/You lost.png"
+          alt="You Lost"
+          style="display: none"
+        />
 
-        <img id="youWonOverlay" class="overlay" src="img/You won, you lost/You Win A.png" alt="You Won" style="display:none" />
+        <img
+          id="youWonOverlay"
+          class="overlay"
+          src="img/You won, you lost/You Win A.png"
+          alt="You Won"
+          style="display: none"
+        />
 
-        <div id="rotateOverlay" class="overlay rotate-center" style="display:none">
+        <div
+          id="rotateOverlay"
+          class="overlay rotate-center"
+          style="display: none"
+        >
           <div class="rotate-box">
             <h2>Turn your device</h2>
             <p>This game works best in <b>landscape mode</b>.</p>
@@ -51,73 +85,171 @@ onresize="if(window.checkOrientation) window.checkOrientation(); if(window.apply
         </div>
 
         <div id="startUI" class="start-ui">
-          <button class="start-btn" tabindex="-1"
-                  onclick="startGame()" onmousedown="return blurToCanvas(this)"
-                  aria-label="Spiel starten">▶</button>
+          <button
+            class="start-btn"
+            tabindex="-1"
+            onclick="startGame()"
+            onmousedown="return blurToCanvas(this);"
+            aria-label="Spiel starten"
+          >
+            ▶
+          </button>
         </div>
 
-<div id="hud">
-          <button id="resetBtn" class="hud-btn" tabindex="-1"                  onclick="resetGame()" onmousedown="return blurToCanvas(this)"
-                  aria-label="Reset"><span class="icon">↻</span></button>
-          <button id="fsBtn" class="hud-btn" tabindex="-1"
-                  onclick="toggleFullscreen()" onmousedown="return blurToCanvas(this)"
-                  aria-label="Fullscreen">⛶</button>
-                  <button id="muteBtn" class="hud-btn" tabindex="-1"
-                  onclick="toggleMute()" onmousedown="return blurToCanvas(this)"
-                  aria-label="Ton umschalten">🔊</button>
-          <button id="infoBtn" class="hud-btn" tabindex="-1"
-                  onclick="toggleInfo()" onmousedown="return blurToCanvas(this)"
-                  aria-label="Info">i</button>
+        <div id="hud">
+          <button
+            id="resetBtn"
+            class="hud-btn"
+            tabindex="-1"
+            onclick="resetGame()"
+            onmousedown="return blurToCanvas(this);"
+            aria-label="Reset"
+          >
+            <span class="icon">↻</span>
+          </button>
+          <button
+            id="fsBtn"
+            class="hud-btn"
+            tabindex="-1"
+            onclick="toggleFullscreen()"
+            onmousedown="return blurToCanvas(this);"
+            aria-label="Fullscreen"
+          >
+            ⛶
+          </button>
+          <button
+            id="muteBtn"
+            class="hud-btn"
+            tabindex="-1"
+            onclick="toggleMute()"
+            onmousedown="return blurToCanvas(this);"
+            aria-label="Ton umschalten"
+          >
+            🔊
+          </button>
+          <button
+            id="infoBtn"
+            class="hud-btn"
+            tabindex="-1"
+            onclick="toggleInfo()"
+            onmousedown="return blurToCanvas(this);"
+            aria-label="Info"
+          >
+            i
+          </button>
         </div>
 
-        <div id="infoCard" class="info-card" onclick="hideInfo()" aria-hidden="true">
+        <div
+          id="infoCard"
+          class="info-card"
+          onclick="hideInfo()"
+          aria-hidden="true"
+        >
           <div class="info-box" onclick="event.stopPropagation()">
             <h3>Steuerung</h3>
             <div id="infoList"></div>
-            <button class="close-btn" tabindex="-1"
-                    onclick="hideInfo()" onmousedown="return blurToCanvas(this)">OK</button>
+            <button
+              class="close-btn"
+              tabindex="-1"
+              onclick="hideInfo()"
+              onmousedown="return blurToCanvas(this);"
+            >
+              OK
+            </button>
           </div>
         </div>
       </div>
     </main>
 
-<div id="pads" class="pads no-context" aria-hidden="true" oncontextmenu="return false">
+    <div
+      id="pads"
+      class="pads no-context"
+      aria-hidden="true"
+      oncontextmenu="return false;"
+    >
       <div class="pad pad-left">
-        <button class="pad-btn"
-          onpointerdown="press('LEFT',this)"  onpointerup="release('LEFT',this)"
+        <button
+          class="pad-btn"
+          onpointerdown="press('LEFT',this)"
+          onpointerup="release('LEFT',this)"
           onpointerout="release('LEFT',this)"
-          onmousedown="press('LEFT',this)"    onmouseup="release('LEFT',this)"
-          onmouseleave="release('LEFT',this)">◀</button>
+          onmousedown="press('LEFT', this)"
+          onmouseup="release('LEFT', this)"
+          onmouseleave="release('LEFT', this)"
+        >
+          ◀
+        </button>
 
-        <button class="pad-btn"
-          onpointerdown="press('RIGHT',this)" onpointerup="release('RIGHT',this)"
+        <button
+          class="pad-btn"
+          onpointerdown="press('RIGHT',this)"
+          onpointerup="release('RIGHT',this)"
           onpointerout="release('RIGHT',this)"
-          onmousedown="press('RIGHT',this)"   onmouseup="release('RIGHT',this)"
-          onmouseleave="release('RIGHT',this)">▶</button>
+          onmousedown="press('RIGHT', this)"
+          onmouseup="release('RIGHT', this)"
+          onmouseleave="release('RIGHT', this)"
+        >
+          ▶
+        </button>
       </div>
 
       <div class="pad pad-right">
-        <button class="pad-btn"
-          onpointerdown="press('SPACE',this)" onpointerup="release('SPACE',this)"
+        <button
+          class="pad-btn"
+          onpointerdown="press('SPACE',this)"
+          onpointerup="release('SPACE',this)"
           onpointerout="release('SPACE',this)"
-          onmousedown="press('SPACE',this)"   onmouseup="release('SPACE',this)"
-          onmouseleave="release('SPACE',this)">Jump</button>
+          onmousedown="press('SPACE', this)"
+          onmouseup="release('SPACE', this)"
+          onmouseleave="release('SPACE', this)"
+        >
+          Jump
+        </button>
 
-        <button class="pad-btn"
-          onpointerdown="press('D',this)"     onpointerup="release('D',this)"
+        <button
+          class="pad-btn"
+          onpointerdown="press('D',this)"
+          onpointerup="release('D',this)"
           onpointerout="release('D',this)"
-          onmousedown="press('D',this)"       onmouseup="release('D',this)"
-          onmouseleave="release('D',this)">🧴</button>
+          onmousedown="press('D', this)"
+          onmouseup="release('D', this)"
+          onmouseleave="release('D', this)"
+        >
+          🧴
+        </button>
       </div>
     </div>
 
-    <button id="legalBtn" class="legal-btn" type="button" onclick="openLegalModal()">
+    <button
+      id="legalBtn"
+      class="legal-btn"
+      type="button"
+      onclick="openLegalModal()"
+    >
       Impressum
     </button>
 
-    <div id="legalModal" class="legal-modal" aria-hidden="true" role="dialog" aria-modal="true" onclick="closeLegalModal()">
-      <div class="legal-dialog" role="document" onclick="event.stopPropagation()">
-        <button class="legal-close" type="button" aria-label="Schließen" onclick="closeLegalModal()">&times;</button>
+    <div
+      id="legalModal"
+      class="legal-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      onclick="closeLegalModal()"
+    >
+      <div
+        class="legal-dialog"
+        role="document"
+        onclick="event.stopPropagation()"
+      >
+        <button
+          class="legal-close"
+          type="button"
+          aria-label="Schließen"
+          onclick="closeLegalModal()"
+        >
+          &times;
+        </button>
         <div class="legal-scroll">
           <section id="impressum">
             <h2>Impressum</h2>
@@ -129,67 +261,86 @@ onresize="if(window.checkOrientation) window.checkOrientation(); if(window.apply
               Deutschland
             </p>
 
-            <p><strong>Kontakt:</strong><br />
-              E-Mail: <a href="mailto:muhammedyunusamini4@gmail.com">muhammedyunusamini4@gmail.com</a>
+            <p>
+              <strong>Kontakt:</strong><br />
+              E-Mail:
+              <a href="mailto:contact@yunusamini.dev">contact@yunusamini.dev</a>
             </p>
 
-            <p><strong>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</strong><br />
+            <p>
+              <strong
+                >Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</strong
+              ><br />
               Muhammed Yunus Amini<br />
               Frankfurter Straße<br />
               63263 Neu-Isenburg
             </p>
 
-            <p><em>Hinweis:</em> Das Spiel "El Pollo Loco" ist ein nicht-kommerzielles Lern- und Ausbildungsprojekt im Rahmen der Developer Akademie.</p>
+            <p>
+              <em>Hinweis:</em> Das Spiel "El Pollo Loco" ist ein
+              nicht-kommerzielles Lern- und Ausbildungsprojekt im Rahmen der
+              Developer Akademie.
+            </p>
           </section>
 
           <section id="datenschutz">
             <h2>Datenschutzerklärung</h2>
             <p><strong>Allgemeiner Hinweis</strong></p>
             <p>
-              Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website dient ausschließlich
-              zu Lern- und Demonstrationszwecken. Personenbezogene Daten werden nur im technisch notwendigen Umfang verarbeitet.
+              Der Schutz Ihrer persönlichen Daten ist mir wichtig. Diese Website
+              dient ausschließlich zu Lern- und Demonstrationszwecken.
+              Personenbezogene Daten werden nur im technisch notwendigen Umfang
+              verarbeitet.
             </p>
 
             <h3>Erhebung und Verarbeitung von Daten</h3>
             <p>
-              Beim Aufrufen dieser Website werden automatisch technische Informationen gespeichert,
-              wie z. B. Browsertyp, Betriebssystem, Datum und Uhrzeit des Zugriffs. Diese Daten sind nicht bestimmten Personen zuordenbar.
+              Beim Aufrufen dieser Website werden automatisch technische
+              Informationen gespeichert, wie z. B. Browsertyp, Betriebssystem,
+              Datum und Uhrzeit des Zugriffs. Diese Daten sind nicht bestimmten
+              Personen zuordenbar.
             </p>
 
             <h3>Cookies</h3>
             <p>
-              Dieses Spiel verwendet keine Cookies, die personenbezogene Daten speichern.
+              Dieses Spiel verwendet keine Cookies, die personenbezogene Daten
+              speichern.
             </p>
 
             <h3>Externe Inhalte</h3>
             <p>
-              Das Spiel „El Pollo Loco“ kann externe Bibliotheken oder Medien (z. B. Audio-/Grafikdateien)
-              laden. Hierbei können technisch bedingt Daten wie die IP-Adresse an den jeweiligen Anbieter übertragen werden.
+              Das Spiel „El Pollo Loco“ kann externe Bibliotheken oder Medien
+              (z. B. Audio-/Grafikdateien) laden. Hierbei können technisch
+              bedingt Daten wie die IP-Adresse an den jeweiligen Anbieter
+              übertragen werden.
             </p>
 
             <h3>Ihre Rechte</h3>
             <p>
-              Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten,
-              deren Herkunft und Empfänger sowie den Zweck der Datenverarbeitung. Außerdem haben Sie ein Recht auf
-              Berichtigung, Sperrung oder Löschung dieser Daten.
+              Sie haben jederzeit das Recht auf unentgeltliche Auskunft über
+              Ihre gespeicherten personenbezogenen Daten, deren Herkunft und
+              Empfänger sowie den Zweck der Datenverarbeitung. Außerdem haben
+              Sie ein Recht auf Berichtigung, Sperrung oder Löschung dieser
+              Daten.
             </p>
 
             <h3>Kontakt</h3>
             <p>
               Bei Fragen zum Datenschutz wenden Sie sich bitte an:<br />
               Muhammed Yunus Amini<br />
-              E-Mail: <a href="mailto:muhammedyunusamini4@gmail.com">muhammedyunusamini4@gmail.com</a>
+              E-Mail:
+              <a href="mailto:contact@yunusamini.dev">contact@yunusamini.dev</a>
             </p>
           </section>
         </div>
       </div>
     </div>
 
-<script src="models/world.class.js"></script>   
-<script src="models/world.render.js"></script>  
+    <script src="models/world.class.js"></script>
+    <script src="models/world.render.js"></script>
 
-<script src="js/game.audio.js"></script> 
-<script src="js/game.core.js"></script>         
-<script src="js/game.ui.js"></script>           
+    <script src="js/game.audio.js"></script>
+    <script src="js/game.core.js"></script>
+    <script src="js/game.ui.js"></script>
   </body>
 </html>
